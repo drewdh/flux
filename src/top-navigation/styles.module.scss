@@ -1,0 +1,9 @@
+@use '@cloudscape-design/design-tokens' as awsui;
+
+.topNavigation {
+  position: sticky;
+  top: 0;
+  // https://cloudscape.design/get-started/dev-guides/z-index/
+  z-index: 1999;
+  border-bottom: 2px solid awsui.$color-border-divider-default;
+}

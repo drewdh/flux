@@ -1,0 +1,72 @@
+@use '@cloudscape-design/design-tokens' as awsui;
+
+.username {
+  color: awsui.$color-text-status-inactive;
+  font-size: 13px;
+  padding-right: awsui.$space-scaled-xxs;
+}
+.message {
+  word-break: break-word;
+}
+.messageWrapper {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: awsui.$space-scaled-xs;
+  padding: awsui.$space-scaled-xxs 0;
+}
+.normalMessage {
+  align-self: center;
+}
+.chatContainer {
+  border-top: 1px solid awsui.$color-border-divider-default;
+  height: 500px;
+  min-height: 600px;
+  padding: awsui.$space-scaled-xs awsui.$space-scaled-l;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column-reverse;
+}
+.containerBody {
+  position: relative;
+}
+.messages {
+  display: flex;
+  flex-direction: column-reverse;
+}
+.chatHeader {
+  padding: awsui.$space-scaled-s awsui.$space-scaled-l;
+}
+.statusContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: awsui.$space-scaled-l 0;
+}
+.empty {
+  display: flex;
+  flex-direction: column;
+  gap: awsui.$space-scaled-s;
+  text-align: center;
+  color: awsui.$color-text-empty;
+}
+.unreadBadge {
+  position: absolute;
+  bottom: awsui.$space-scaled-s;
+  left: 50%;
+  z-index: -1;
+  pointer-events: none;
+  visibility: hidden;
+  opacity: 0;
+  border-radius: awsui.$border-radius-button;
+  overflow: hidden;
+  box-shadow: awsui.$shadow-container-active;
+  transform: translateX(-50%);
+  transition: opacity 150ms ease-out;
+  &.visible {
+    opacity: 1;
+    z-index: 1;
+    pointer-events: all;
+    visibility: unset;
+  }
+}

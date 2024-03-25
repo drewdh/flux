@@ -1,0 +1,19 @@
+@use '@cloudscape-design/design-tokens' as awsui;
+
+.container {
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: awsui.$color-background-container-content;
+  height: awsui.$space-scaled-xxxl;
+  padding: 0 awsui.$space-scaled-m;
+  color: awsui.$color-text-home-header-default;
+  border-top: 1px solid awsui.$color-text-body-secondary;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  * {
+    color: awsui.$color-text-home-header-default;
+    font-size: 12px !important;
+  }
+}

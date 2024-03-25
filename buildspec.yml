@@ -1,0 +1,18 @@
+version: 0.1
+env:
+  secrets-manager:
+    FONTAWESOME_NPM_AUTH_TOKEN: "PortfolioBuild:FONTAWESOME_NPM_AUTH_TOKEN"
+phases:
+  pre_build:
+    commands:
+      - echo Installing NPM dependencies from package-lock.json...
+      - npm i
+  build:
+    commands:
+      - echo Build started on `date`
+      - node -v
+      - npm run build
+artifacts:
+  files:
+    - '**/*'
+  base-directory: build

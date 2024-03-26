@@ -5,7 +5,6 @@ import DhAppLayout from 'common/flux-app-layout';
 import widgetDetails from 'common/widget-details';
 import FluxBreadcrumbs from 'common/flux-breadcrumbs';
 import { Pathname } from 'utilities/routes';
-import useTitle from 'utilities/use-title';
 import Alert from '@cloudscape-design/components/alert';
 import Button from '@cloudscape-design/components/button';
 import { useLocation, useNavigate } from 'react-router';

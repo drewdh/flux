@@ -24,7 +24,7 @@ export default function TwitchComponent() {
   const { data: userData } = useGetUsers({ logins: [username ?? ''] });
   const user = userData?.data[0];
   const { data: followersData } = useGetChannelFollowers(user?.id);
-  useTitle(username, { isNested: true });
+  useTitle(`${username} - Flux`);
 
   useEffect(() => {
     // Force player to update channel when URL changes

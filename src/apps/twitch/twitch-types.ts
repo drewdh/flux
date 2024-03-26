@@ -378,3 +378,41 @@ export interface GetChannelFollowersRequest {
 export interface GetChannelFollowersResponse {
   total: number;
 }
+export interface SearchChannelsRequest {
+  /** The URI-encoded search string. For example, encode search strings like angel of death as angel%20of%20death. */
+  query: string;
+  /** A Boolean value that determines whether the response includes only channels that are currently streaming live. Set to `true` to get only channels that are streaming live; otherwise, `false` to get live and offline channels. The default is `false`. */
+  live_only?: boolean;
+  /** The maximum number of items to return per page in the response. The minimum page size is 1 item per page and the maximum is 100 items per page. The default is 20. */
+  pageSize?: number;
+  /** The cursor used to get the next page of results. The Pagination object in the response contains the cursor’s value. [Read More](https://dev.twitch.tv/docs/api/guide#pagination) */
+  nextToken?: string;
+}
+export interface ChannelResult {
+  /** The ISO 639-1 two-letter language code of the language used by the broadcaster. For example, `en` for English. If the broadcaster uses a language not in the list of [supported stream languages](https://help.twitch.tv/s/article/languages-on-twitch#streamlang), the value is `other`. */
+  broadcaster_language: string;
+  /** The broadcaster’s login name */
+  broadcaster_login: string;
+  /** The broadcaster’s display name. */
+  display_name: string;
+  /** The ID of the game that the broadcaster is playing or last played. */
+  game_id: string;
+  /** The name of the game that the broadcaster is playing or last played. */
+  game_name: string;
+  /** An ID that uniquely identifies the channel (this is the broadcaster’s ID). */
+  id: string;
+  /** A Boolean value that determines whether the broadcaster is streaming live. Is true if the broadcaster is streaming live; otherwise, false. */
+  is_live: boolean;
+  /** The tags applied to the channel. */
+  tags: string[];
+  /** A URL to a thumbnail of the broadcaster’s profile image. */
+  thumbnail_url: string;
+  /** The stream’s title. Is an empty string if the broadcaster didn’t set it. */
+  title: string;
+  /** The UTC date and time (in RFC3339 format) of when the broadcaster started streaming. The string is empty if the broadcaster is not streaming live. */
+  started_at: string;
+}
+export interface SearchChannelsResponse {
+  data: ChannelResult[];
+  pagination: Pagination;
+}

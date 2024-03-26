@@ -22,6 +22,7 @@ export enum QueryKey {
   GetChatSettings = 'GetChatSettings',
   GetChannelFollowers = 'GetChannelFollowers',
   GetEmoteSets = 'GetEmoteSets',
+  SearchChannels = 'SearchChannels',
 }
 
 export const twitchClient = new TwitchApiClient({
@@ -95,5 +96,18 @@ export function useGetEmoteSets(emoteSetIds: string[]) {
     queryFn: () => twitchClient.getEmoteSets({ emoteSetIds }),
     queryKey: [QueryKey.GetEmoteSets, ...emoteSetIds],
     staleTime: Number.MAX_VALUE,
+  });
+}
+
+export function useSearchChannels(query: string) {
+  return useQuery({
+    queryFn: () =>
+      twitchClient.searchChannels({
+        query,
+        pageSize: 10,
+        live_only: true,
+      }),
+    queryKey: [QueryKey.SearchChannels, query],
+    enabled: !!query,
   });
 }

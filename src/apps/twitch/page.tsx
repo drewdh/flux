@@ -58,8 +58,8 @@ export default function TwitchPage() {
         <SpaceBetween size="l">
           {isConnected && (
             <Alert type="info" header="Welcome to Flux">
-              Flux was created to provide a simpler, more delightful Twitch experience. Flux is
-              still in beta, so some functionality may not work as expected.
+              Flux is a simpler, more delightful Twitch experience. Flux is still in beta, so some
+              functionality may not work as expected.
             </Alert>
           )}
           {!isConnected && (

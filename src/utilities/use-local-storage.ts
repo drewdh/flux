@@ -2,18 +2,7 @@ import { Dispatch, SetStateAction, useCallback, useState } from 'react';
 
 export enum LocalStorageKey {
   GlobalSettings = 'globalSettings',
-  PomodoroSettings = 'pomodoroSettings',
-  IsPreviewNotificationDismissed = 'previewNotification',
-  DashboardLayout = 'dashboardLayout',
-  WidgetPanelSize = 'widgetPanelSize',
-  CoffeeWeight = 'coffeeWeight',
-  DiabloWorldTier = 'diabloWorldTier',
-  DiabloPlayerLevel = 'diabloPlayerLevel',
-  DiabloSigilTier = 'diabloSigilTier',
-  DiabloMonsterLevelOffset = 'diabloMonsterLevelOffset',
-  ContentDensity = 'contentDensity',
-  VisualMode = 'visualMode',
-  IsNewVisitor = 'isNewVisitor',
+  WelcomeMessage = 'welcomeMessage',
 }
 
 /** Helper functions for accessing local storage that safely stringify and parse values */

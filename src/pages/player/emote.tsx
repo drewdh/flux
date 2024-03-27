@@ -1,5 +1,5 @@
-import { EmoteFragment } from '../twitch-types';
-import { useGetEmoteSets } from '../api';
+import { EmoteFragment } from '../../api/twitch-types';
+import { useGetEmoteSets } from '../../api/api';
 import interpolate from 'utilities/interpolate';
 import { useMemo } from 'react';
 

@@ -99,15 +99,23 @@ export function useGetEmoteSets(emoteSetIds: string[]) {
   });
 }
 
-export function useSearchChannels(query: string) {
-  return useQuery({
-    queryFn: () =>
+interface UseSearchChannelsOptions {
+  query: string;
+  pageSize?: number;
+}
+export function useSearchChannels({ query, pageSize = 10 }: UseSearchChannelsOptions) {
+  return useInfiniteQuery({
+    queryFn: ({ pageParam }) =>
       twitchClient.searchChannels({
         query,
-        pageSize: 10,
+        pageSize,
         live_only: true,
+        nextToken: pageParam,
       }),
+    initialPageParam: undefined as string | undefined,
+    getNextPageParam: (lastPage) => lastPage.pagination.cursor,
     queryKey: [QueryKey.SearchChannels, query],
     enabled: !!query,
+    refetchOnWindowFocus: false,
   });
 }

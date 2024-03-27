@@ -1,26 +1,29 @@
 import { TopNavigationProps } from '@cloudscape-design/components/top-navigation';
 import { AutosuggestProps } from '@cloudscape-design/components/autosuggest';
 import { NonCancelableCustomEvent } from '@cloudscape-design/components';
-import { useMemo, useState } from 'react';
+import { Ref, useMemo, useState } from 'react';
 
 import { Pathname } from 'utilities/routes';
 import useNavigateWithRef from 'common/use-navigate-with-ref';
-import { useSearchChannels } from '../apps/twitch/api';
+import { useSearchChannels } from '../api/api';
+import { useLocation } from 'react-router';
 
 export default function useTopNavigation(): State {
+  const { search } = useLocation();
+  const searchParams = new URLSearchParams(search);
   const navigate = useNavigateWithRef();
-  const [filteringText, setFilteringText] = useState<string>('');
-  const [searchValue, setSearchValue] = useState<string>('');
+  const [debouncedQuery, setDebouncedQuery] = useState<string>('');
+  const [query, setQuery] = useState<string>(searchParams.get('query') ?? '');
   const [isSettingsVisible, setIsSettingsVisible] = useState<boolean>(false);
   const [isFeedbackVisible, setIsFeedbackVisible] = useState<boolean>(false);
 
-  const { data: searchData } = useSearchChannels(filteringText);
+  const { data: searchData } = useSearchChannels({ query: debouncedQuery, pageSize: 10 });
 
-  const autoSuggestOptions = useMemo((): AutosuggestProps.Option[] => {
+  const autosuggestOptions = useMemo((): AutosuggestProps.Option[] => {
     if (!searchData) {
       return [];
     }
-    return searchData.data.map((result) => {
+    return searchData.pages[0].data.map((result) => {
       return {
         iconName: 'search',
         label: result.display_name.toLowerCase(),
@@ -33,11 +36,18 @@ export default function useTopNavigation(): State {
     setIsFeedbackVisible(false);
   }
 
+  function submitSearch(nextQuery?: string) {
+    navigate({
+      pathname: Pathname.Results,
+      search: `?query=${nextQuery || query}`,
+    });
+  }
+
   function handleKeyDown(event: NonCancelableCustomEvent<AutosuggestProps.KeyDetail>) {
     if (event.detail.key !== 'Enter') {
       return;
     }
-    navigate(`/channel/${searchValue}`);
+    submitSearch();
   }
 
   function handleSettingsDismiss() {
@@ -79,20 +89,19 @@ export default function useTopNavigation(): State {
   ];
 
   function handleLoadItems(event: NonCancelableCustomEvent<AutosuggestProps.LoadItemsDetail>) {
-    setFilteringText(event.detail.filteringText);
+    setDebouncedQuery(event.detail.filteringText);
   }
 
   function handleSearchChange(event: NonCancelableCustomEvent<AutosuggestProps.ChangeDetail>) {
-    setSearchValue(event.detail.value);
+    setQuery(event.detail.value);
   }
 
   function handleSelect(event: NonCancelableCustomEvent<AutosuggestProps.SelectDetail>) {
-    console.log(event);
-    navigate(`/channel/${event.detail.value}`);
+    submitSearch(event.detail.value);
   }
 
   return {
-    autoSuggestOptions,
+    autosuggestOptions,
     handleFeedbackDismiss,
     handleKeyDown,
     handleLoadItems,
@@ -103,13 +112,13 @@ export default function useTopNavigation(): State {
     identity,
     isFeedbackVisible,
     isSettingsVisible,
-    searchValue,
+    searchInputValue: query,
     utilities,
   };
 }
 
 interface State {
-  autoSuggestOptions: AutosuggestProps.Option[];
+  autosuggestOptions: AutosuggestProps.Option[];
   handleFeedbackDismiss: () => void;
   handleKeyDown: (event: NonCancelableCustomEvent<AutosuggestProps.KeyDetail>) => void;
   handleLoadItems: (event: NonCancelableCustomEvent<AutosuggestProps.LoadItemsDetail>) => void;
@@ -120,6 +129,6 @@ interface State {
   identity: TopNavigationProps.Identity;
   isFeedbackVisible: boolean;
   isSettingsVisible: boolean;
-  searchValue: string;
+  searchInputValue: string;
   utilities: TopNavigationProps.Utility[];
 }

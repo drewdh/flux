@@ -3,5 +3,6 @@ export enum Pathname {
   Fallback = '*',
   Signin = '/auth/signin',
   PasswordReset = '/auth/reset',
-  TwitchChannel = '/channel/:user',
+  Channel = '/channel/:user',
+  Results = '/results',
 }

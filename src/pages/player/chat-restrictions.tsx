@@ -1,6 +1,6 @@
 import Modal from '@cloudscape-design/components/modal';
 import Header from '@cloudscape-design/components/header';
-import { useGetChatSettings } from '../api';
+import { useGetChatSettings } from '../../api/api';
 import StatusIndicator from '@cloudscape-design/components/status-indicator';
 import ColumnLayout from '@cloudscape-design/components/column-layout';
 import { ReactNode } from 'react';

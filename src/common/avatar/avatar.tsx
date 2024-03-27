@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import { colorBackgroundInputDisabled } from '@cloudscape-design/design-tokens';
 
 import styles from './styles.module.scss';
-import { useGetUsers } from './api';
+import { useGetUsers } from '../../api/api';
 
 export default function Avatar({ userId, size, color }: Props) {
   const { data } = useGetUsers({ ids: [userId] });

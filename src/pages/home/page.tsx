@@ -1,23 +1,20 @@
-import ContentLayout from '@cloudscape-design/components/content-layout';
 import Header from '@cloudscape-design/components/header';
-
-import DhAppLayout from 'common/flux-app-layout';
-import widgetDetails from 'common/widget-details';
-import FluxBreadcrumbs from 'common/flux-breadcrumbs';
-import { Pathname } from 'utilities/routes';
 import Alert from '@cloudscape-design/components/alert';
 import Button from '@cloudscape-design/components/button';
 import { useLocation, useNavigate } from 'react-router';
 import { useEffect, useState } from 'react';
 import ColumnLayout from '@cloudscape-design/components/column-layout';
 import Container from '@cloudscape-design/components/container';
-import InternalLink from 'common/internal-link';
 import Box from '@cloudscape-design/components/box';
-import styles from './styles.module.scss';
-import { useGetFollowedStreams } from './api';
-import Avatar from './avatar';
 import { colorBackgroundInputDisabled } from '@cloudscape-design/design-tokens';
 import SpaceBetween from '@cloudscape-design/components/space-between';
+
+import DhAppLayout from 'common/flux-app-layout';
+import InternalLink from 'common/internal-link';
+import styles from './styles.module.scss';
+import { useGetFollowedStreams } from '../../api/api';
+import Avatar from 'common/avatar/avatar';
+import useLocalStorage, { LocalStorageKey } from 'utilities/use-local-storage';
 
 const connectSearchParams = new URLSearchParams({
   response_type: 'token',
@@ -30,6 +27,7 @@ const scope = 'user%3Aread%3Afollows+user%3Aread%3Achat';
 export const connectHref = `https://id.twitch.tv/oauth2/authorize?${connectSearchParams.toString()}&scope=${scope}`;
 
 export default function TwitchPage() {
+  const [hasWelcome, setHasWelcome] = useLocalStorage(LocalStorageKey.WelcomeMessage, true);
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const { hash } = useLocation();
   const navigate = useNavigate();
@@ -37,9 +35,7 @@ export default function TwitchPage() {
   useEffect(() => {
     const hashParams = new URLSearchParams(hash.split('#')[1]);
     const hashAccessToken = hashParams.get('access_token');
-    console.log(hashAccessToken);
     if (hashAccessToken) {
-      console.log(hashAccessToken);
       localStorage.setItem('access_token', hashAccessToken);
       navigate({ hash: '' }, { replace: true });
     }
@@ -55,8 +51,13 @@ export default function TwitchPage() {
       toolsHide
       content={
         <SpaceBetween size="l">
-          {isConnected && (
-            <Alert type="info" header="Welcome to Flux">
+          {isConnected && hasWelcome && (
+            <Alert
+              dismissible
+              type="info"
+              header="Welcome to Flux"
+              onDismiss={() => setHasWelcome(false)}
+            >
               Flux is an updated take on Twitch. Flux is not associated with Twitch. All Twitch
               functionality uses Twitch's APIs directly—none of your Twitch data is sent to Flux.
             </Alert>
@@ -101,9 +102,9 @@ export default function TwitchPage() {
                       <div className={styles.thumbnailWrapper}>
                         <Avatar userId={stream.user_id} />
                         <div>
-                          <Button variant="inline-link" href={href}>
+                          <InternalLink href={href}>
                             <div className={styles.header}>{stream.title}</div>
-                          </Button>
+                          </InternalLink>
                           <Box color="text-status-inactive" fontSize="body-s">
                             <div>{stream.user_name}</div>
                             <div>{viewerCount} watching</div>

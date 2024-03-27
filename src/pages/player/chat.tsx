@@ -1,7 +1,7 @@
 import Container from '@cloudscape-design/components/container';
 import Header from '@cloudscape-design/components/header';
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { twitchClient, useGetUsers } from '../api';
+import { twitchClient, useGetUsers } from '../../api/api';
 import Box from '@cloudscape-design/components/box';
 import styles from './chat.module.scss';
 import SpaceBetween from '@cloudscape-design/components/space-between';
@@ -16,8 +16,8 @@ import {
 } from '@cloudscape-design/components';
 import Link from '@cloudscape-design/components/link';
 import Button from '@cloudscape-design/components/button';
-import { connectHref } from '../page';
-import Feedback from '../../../feedback/feedback';
+import { connectHref } from '../home/page';
+import Feedback from '../../feedback/feedback';
 import StatusIndicator from '@cloudscape-design/components/status-indicator';
 import clsx from 'clsx';
 import ChatRestrictions from './chat-restrictions';
@@ -28,11 +28,11 @@ import {
   ChatMessage as ChatMessageType,
   Fragment,
   ChatEvent,
-} from '../twitch-types';
+} from '../../api/twitch-types';
 import Popover from '@cloudscape-design/components/popover';
 import Input from '@cloudscape-design/components/input';
 import FormField from '@cloudscape-design/components/form-field';
-import Avatar from '../avatar';
+import Avatar from 'common/avatar/avatar';
 import FormikInput from 'common/formik/input';
 import { useFormik } from 'formik';
 import { spaceScaledXs } from '@cloudscape-design/design-tokens';

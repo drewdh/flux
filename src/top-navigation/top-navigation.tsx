@@ -9,7 +9,7 @@ import Feedback from '../feedback/feedback';
 
 export default function TopNavigation() {
   const {
-    autoSuggestOptions,
+    autosuggestOptions,
     handleFeedbackDismiss,
     handleKeyDown,
     handleLoadItems,
@@ -20,7 +20,7 @@ export default function TopNavigation() {
     identity,
     isFeedbackVisible,
     isSettingsVisible,
-    searchValue,
+    searchInputValue,
     utilities,
   } = useTopNavigation();
 
@@ -38,9 +38,9 @@ export default function TopNavigation() {
               onKeyDown={handleKeyDown}
               onLoadItems={handleLoadItems}
               onSelect={handleSelect}
-              placeholder="Go to live channel"
-              value={searchValue}
-              options={autoSuggestOptions}
+              placeholder="Search live channels"
+              value={searchInputValue}
+              options={autosuggestOptions}
             />
           }
         />

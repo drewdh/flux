@@ -7,8 +7,8 @@ import ContentLayout from '@cloudscape-design/components/content-layout';
 
 import styles from './styles.module.scss';
 import useTitle from 'utilities/use-title';
-import { useGetChannelFollowers, useGetStreamByUserLogin, useGetUsers } from '../api';
-import Avatar from '../avatar';
+import { useGetChannelFollowers, useGetStreamByUserLogin, useGetUsers } from '../../api/api';
+import Avatar from 'common/avatar/avatar';
 import RelativeTime from 'common/relative-time';
 import Chat from './chat';
 import Icon from '@cloudscape-design/components/icon';

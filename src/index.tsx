@@ -7,11 +7,13 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import { Pathname } from 'utilities/routes';
 import './index.scss';
-import App from './app';
+import App from './app/app';
 import reportWebVitals from './reportWebVitals';
-import TwitchPlayerPage from './apps/twitch/player/twitch-page';
-import TwitchPage from './apps/twitch/page';
+import TwitchPlayerPage from './pages/player/twitch-page';
+import TwitchPage from './pages/home/page';
+import ResultsPage from './pages/results/page';
 import ErrorBoundary from 'common/error-boundary';
+import NotFoundPage from './pages/not-found-page';
 
 interface GlobalFlags {
   removeHighContrastHeader?: boolean;
@@ -33,15 +35,19 @@ const router = createBrowserRouter([
       {
         path: Pathname.Fallback,
         // TODO: Log 404s since it could be a broken link
-        element: <Navigate to={Pathname.Home} replace />,
+        element: <NotFoundPage />,
       },
       {
-        path: Pathname.TwitchChannel,
+        path: Pathname.Channel,
         element: <TwitchPlayerPage />,
       },
       {
         path: Pathname.Home,
         element: <TwitchPage />,
+      },
+      {
+        path: Pathname.Results,
+        element: <ResultsPage />,
       },
     ],
   },

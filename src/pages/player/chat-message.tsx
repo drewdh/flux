@@ -1,6 +1,6 @@
 import styles from './chat.module.scss';
-import Avatar from '../avatar';
-import { useGetChannelFollowers, useGetUsers } from '../api';
+import Avatar from 'common/avatar/avatar';
+import { useGetChannelFollowers, useGetUsers } from '../../api/api';
 import Box from '@cloudscape-design/components/box';
 import Icon from '@cloudscape-design/components/icon';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -10,7 +10,7 @@ import Link from '@cloudscape-design/components/link';
 import { ReactNode } from 'react';
 import clsx from 'clsx';
 import ButtonDropdown from '@cloudscape-design/components/button-dropdown';
-import { ChatEvent } from '../twitch-types';
+import { ChatEvent } from '../../api/twitch-types';
 import { formatDate } from 'date-fns';
 import Button from '@cloudscape-design/components/button';
 import Header from '@cloudscape-design/components/header';

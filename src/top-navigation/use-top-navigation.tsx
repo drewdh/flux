@@ -8,7 +8,7 @@ import { faClockRotateLeft } from '@fortawesome/pro-solid-svg-icons';
 
 import { Pathname } from 'utilities/routes';
 import useNavigateWithRef from 'common/use-navigate-with-ref';
-import { useSearchChannels } from '../api/api';
+import { useSearchCategories, useSearchChannels } from '../api/api';
 import useLocalStorage, { LocalStorageKey } from 'utilities/use-local-storage';
 
 export default function useTopNavigation(): State {
@@ -23,33 +23,68 @@ export default function useTopNavigation(): State {
   const [isSettingsVisible, setIsSettingsVisible] = useState<boolean>(false);
   const [isFeedbackVisible, setIsFeedbackVisible] = useState<boolean>(false);
 
-  const { data: searchData } = useSearchChannels({ query: debouncedQuery, pageSize: 10 });
+  const { data: channelSearchData } = useSearchChannels({ query: debouncedQuery, pageSize: 5 });
+  // const { data: }
+  const { data: gameSearchData } = useSearchCategories({ query: debouncedQuery, pageSize: 5 });
 
-  const autosuggestOptions = useMemo((): AutosuggestProps.Option[] => {
-    const searchHistoryOptions: AutosuggestProps.Option[] = searchHistory.map((term) => {
-      return {
-        iconSvg: <FontAwesomeIcon icon={faClockRotateLeft} />,
-        label: term.toLowerCase(),
-        value: term.toLowerCase(),
-      };
-    });
+  const autosuggestOptions = useMemo((): AutosuggestProps.Options => {
+    const options: AutosuggestProps.OptionGroup[] = [];
+    const searchHistoryOptions: AutosuggestProps.Option[] = searchHistory
+      .filter((term) => term.toLowerCase().includes(query.toLowerCase()))
+      .map((term) => {
+        return {
+          iconSvg: <FontAwesomeIcon icon={faClockRotateLeft} />,
+          label: term.toLowerCase(),
+          value: term.toLowerCase(),
+        };
+      });
     if (!query) {
       return searchHistoryOptions;
     }
     const searchResultOptions: AutosuggestProps.Option[] =
-      searchData?.pages[0].data
-        .filter((result) => result.is_live)
+      channelSearchData?.pages
+        .flatMap((page) => page.data)
+        .filter((result) => {
+          return result.is_live && result.display_name.toLowerCase().includes(query.toLowerCase());
+        })
         .map((result) => {
           return {
             iconName: 'search',
             label: result.display_name.toLowerCase(),
-            value: result.broadcaster_login,
+            value: result.display_name.toLowerCase(),
           };
         }) ?? [];
-    return [...searchHistoryOptions, ...searchResultOptions].filter(
-      (item) => item.label?.includes(query.toLowerCase())
-    );
-  }, [query, searchData, searchHistory]);
+    const gameResultOptions: AutosuggestProps.Option[] =
+      gameSearchData?.pages
+        .flatMap((page) => page.data)
+        .filter((result) => result.name.toLowerCase().includes(query.toLowerCase()))
+        .map((result) => {
+          return {
+            iconName: 'search',
+            label: result.name.toLowerCase(),
+            value: result.name.toLowerCase(),
+          };
+        }) ?? [];
+    if (searchHistoryOptions.length) {
+      options.push({
+        label: 'Recent',
+        options: searchHistoryOptions,
+      });
+    }
+    if (searchResultOptions.length) {
+      options.push({
+        label: 'Channels',
+        options: searchResultOptions,
+      });
+    }
+    if (gameResultOptions.length) {
+      options.push({
+        label: 'Categories',
+        options: gameResultOptions,
+      });
+    }
+    return options;
+  }, [searchHistory, query, channelSearchData?.pages, gameSearchData?.pages]);
 
   function handleFeedbackDismiss() {
     setIsFeedbackVisible(false);
@@ -61,7 +96,7 @@ export default function useTopNavigation(): State {
       if (prev.includes(finalQuery)) {
         return prev;
       }
-      return [finalQuery, ...prev].slice(0, 10);
+      return [finalQuery, ...prev].slice(0, 5);
     });
     navigate({
       pathname: Pathname.Results,

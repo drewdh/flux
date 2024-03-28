@@ -15,6 +15,8 @@ import {
   GetStreamsResponse,
   GetUsersRequest,
   GetUsersResponse,
+  SearchCategoriesRequest,
+  SearchCategoriesResponse,
   SearchChannelsRequest,
   SearchChannelsResponse,
   TwitchApiClientOptions,
@@ -179,12 +181,31 @@ export class TwitchApiClient {
 
   async searchChannels(request: SearchChannelsRequest): Promise<SearchChannelsResponse> {
     const searchParams = new URLSearchParams();
-    searchParams.append('query', request.query);
-    request.live_only && searchParams.append('live_only', JSON.stringify(request.live_only));
-    request.pageSize && searchParams.append('first', request.pageSize.toString());
-    request.nextToken && searchParams.append('after', request.nextToken);
+    searchParams.set('query', request.query);
+    request.live_only && searchParams.set('live_only', JSON.stringify(request.live_only));
+    request.pageSize && searchParams.set('first', request.pageSize.toString());
+    request.nextToken && searchParams.set('after', request.nextToken);
     const resp = await fetch(
       `https://api.twitch.tv/helix/search/channels?${searchParams.toString()}`,
+      {
+        method: 'GET',
+        headers: this.getDefaultHeaders(),
+      }
+    );
+    const respBody = await resp.json();
+    if (!resp.ok) {
+      throw respBody;
+    }
+    return respBody;
+  }
+
+  async searchCategories(request: SearchCategoriesRequest): Promise<SearchCategoriesResponse> {
+    const searchParams = new URLSearchParams();
+    searchParams.set('query', request.query);
+    request.pageSize && searchParams.set('first', request.pageSize.toString());
+    request.nextToken && searchParams.set('after', request.nextToken);
+    const resp = await fetch(
+      `https://api.twitch.tv/helix/search/categories?${searchParams.toString()}`,
       {
         method: 'GET',
         headers: this.getDefaultHeaders(),

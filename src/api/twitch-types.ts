@@ -416,3 +416,23 @@ export interface SearchChannelsResponse {
   data: ChannelResult[];
   pagination: Pagination;
 }
+export interface SearchCategoriesRequest {
+  /** The URI-encoded search string. For example, encode search strings like angel of death as angel%20of%20death. */
+  query: string;
+  /** The maximum number of items to return per page in the response. The minimum page size is 1 item per page and the maximum is 100 items per page. The default is 20. */
+  pageSize?: number;
+  /** The cursor used to get the next page of results. The Pagination object in the response contains the cursor’s value. [Read More](https://dev.twitch.tv/docs/api/guide#pagination) */
+  nextToken?: string;
+}
+export interface CategoryResult {
+  /** A URL to an image of the game’s box art or streaming category. */
+  box_art_url: string;
+  /** The name of the game or category. */
+  name: string;
+  /** An ID that uniquely identifies the game or category. */
+  id: string;
+}
+export interface SearchCategoriesResponse {
+  data: CategoryResult[];
+  pagination: Pagination;
+}

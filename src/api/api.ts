@@ -23,6 +23,7 @@ export enum QueryKey {
   GetChannelFollowers = 'GetChannelFollowers',
   GetEmoteSets = 'GetEmoteSets',
   SearchChannels = 'SearchChannels',
+  SearchCategories = 'SearchCategories',
 }
 
 export const twitchClient = new TwitchApiClient({
@@ -99,11 +100,11 @@ export function useGetEmoteSets(emoteSetIds: string[]) {
   });
 }
 
-interface UseSearchChannelsOptions {
+interface UseSearchOptions {
   query: string;
   pageSize?: number;
 }
-export function useSearchChannels({ query, pageSize = 10 }: UseSearchChannelsOptions) {
+export function useSearchChannels({ query, pageSize = 10 }: UseSearchOptions) {
   return useInfiniteQuery({
     queryFn: ({ pageParam }) =>
       twitchClient.searchChannels({
@@ -116,6 +117,28 @@ export function useSearchChannels({ query, pageSize = 10 }: UseSearchChannelsOpt
     getNextPageParam: (lastPage) => lastPage.pagination.cursor,
     queryKey: [QueryKey.SearchChannels, query],
     enabled: !!query,
+    // Order of results can change, so don't refetch
     refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+  });
+}
+
+export function useSearchCategories({ query, pageSize = 10 }: UseSearchOptions) {
+  return useInfiniteQuery({
+    queryFn: ({ pageParam }) =>
+      twitchClient.searchCategories({
+        query,
+        pageSize,
+        nextToken: pageParam,
+      }),
+    initialPageParam: undefined as string | undefined,
+    getNextPageParam: (lastPage) => lastPage.pagination.cursor,
+    queryKey: [QueryKey.SearchCategories, query],
+    enabled: !!query,
+    // Order of results can change, so don't refetch
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
   });
 }

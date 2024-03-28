@@ -15,6 +15,7 @@ import styles from './styles.module.scss';
 import { useGetFollowedStreams } from '../../api/api';
 import Avatar from 'common/avatar/avatar';
 import useLocalStorage, { LocalStorageKey } from 'utilities/use-local-storage';
+import useTitle from 'utilities/use-title';
 
 const connectSearchParams = new URLSearchParams({
   response_type: 'token',
@@ -27,6 +28,7 @@ const scope = 'user%3Aread%3Afollows+user%3Aread%3Achat';
 export const connectHref = `https://id.twitch.tv/oauth2/authorize?${connectSearchParams.toString()}&scope=${scope}`;
 
 export default function TwitchPage() {
+  useTitle('Flux');
   const [hasWelcome, setHasWelcome] = useLocalStorage(LocalStorageKey.WelcomeMessage, true);
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const { hash } = useLocation();

@@ -3,6 +3,7 @@ import { Dispatch, SetStateAction, useCallback, useState } from 'react';
 export enum LocalStorageKey {
   GlobalSettings = 'globalSettings',
   WelcomeMessage = 'welcomeMessage',
+  SearchHistory = 'searchHistory',
 }
 
 /** Helper functions for accessing local storage that safely stringify and parse values */

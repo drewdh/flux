@@ -1,16 +1,22 @@
 import { TopNavigationProps } from '@cloudscape-design/components/top-navigation';
 import { AutosuggestProps } from '@cloudscape-design/components/autosuggest';
 import { NonCancelableCustomEvent } from '@cloudscape-design/components';
-import { Ref, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faClockRotateLeft } from '@fortawesome/pro-solid-svg-icons';
 
 import { Pathname } from 'utilities/routes';
 import useNavigateWithRef from 'common/use-navigate-with-ref';
 import { useSearchChannels } from '../api/api';
-import { useLocation } from 'react-router';
+import useLocalStorage, { LocalStorageKey } from 'utilities/use-local-storage';
 
 export default function useTopNavigation(): State {
-  const { search } = useLocation();
-  const searchParams = new URLSearchParams(search);
+  const [searchHistory, setSearchHistory] = useLocalStorage<string[]>(
+    LocalStorageKey.SearchHistory,
+    []
+  );
+  const [searchParams] = useSearchParams();
   const navigate = useNavigateWithRef();
   const [debouncedQuery, setDebouncedQuery] = useState<string>('');
   const [query, setQuery] = useState<string>(searchParams.get('query') ?? '');
@@ -20,26 +26,46 @@ export default function useTopNavigation(): State {
   const { data: searchData } = useSearchChannels({ query: debouncedQuery, pageSize: 10 });
 
   const autosuggestOptions = useMemo((): AutosuggestProps.Option[] => {
-    if (!searchData) {
-      return [];
-    }
-    return searchData.pages[0].data.map((result) => {
+    const searchHistoryOptions: AutosuggestProps.Option[] = searchHistory.map((term) => {
       return {
-        iconName: 'search',
-        label: result.display_name.toLowerCase(),
-        value: result.broadcaster_login,
+        iconSvg: <FontAwesomeIcon icon={faClockRotateLeft} />,
+        label: term.toLowerCase(),
+        value: term.toLowerCase(),
       };
     });
-  }, [searchData]);
+    if (!query) {
+      return searchHistoryOptions;
+    }
+    const searchResultOptions: AutosuggestProps.Option[] =
+      searchData?.pages[0].data
+        .filter((result) => result.is_live)
+        .map((result) => {
+          return {
+            iconName: 'search',
+            label: result.display_name.toLowerCase(),
+            value: result.broadcaster_login,
+          };
+        }) ?? [];
+    return [...searchHistoryOptions, ...searchResultOptions].filter(
+      (item) => item.label?.includes(query.toLowerCase())
+    );
+  }, [query, searchData, searchHistory]);
 
   function handleFeedbackDismiss() {
     setIsFeedbackVisible(false);
   }
 
   function submitSearch(nextQuery?: string) {
+    const finalQuery = nextQuery || query;
+    setSearchHistory((prev) => {
+      if (prev.includes(finalQuery)) {
+        return prev;
+      }
+      return [finalQuery, ...prev].slice(0, 10);
+    });
     navigate({
       pathname: Pathname.Results,
-      search: `?query=${nextQuery || query}`,
+      search: `?query=${finalQuery}`,
     });
   }
 

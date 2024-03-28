@@ -1,7 +1,7 @@
 import { TopNavigationProps } from '@cloudscape-design/components/top-navigation';
 import { AutosuggestProps } from '@cloudscape-design/components/autosuggest';
 import { NonCancelableCustomEvent } from '@cloudscape-design/components';
-import { useMemo, useState } from 'react';
+import { FormEvent, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClockRotateLeft } from '@fortawesome/pro-solid-svg-icons';
@@ -69,13 +69,6 @@ export default function useTopNavigation(): State {
     });
   }
 
-  function handleKeyDown(event: NonCancelableCustomEvent<AutosuggestProps.KeyDetail>) {
-    if (event.detail.key !== 'Enter') {
-      return;
-    }
-    submitSearch();
-  }
-
   function handleSettingsDismiss() {
     setIsSettingsVisible(false);
   }
@@ -126,14 +119,19 @@ export default function useTopNavigation(): State {
     submitSearch(event.detail.value);
   }
 
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    submitSearch();
+  }
+
   return {
     autosuggestOptions,
     handleFeedbackDismiss,
-    handleKeyDown,
     handleLoadItems,
     handleSearchChange,
     handleSelect,
     handleSettingsDismiss,
+    handleSubmit,
     i18nStrings,
     identity,
     isFeedbackVisible,
@@ -144,13 +142,13 @@ export default function useTopNavigation(): State {
 }
 
 interface State {
-  autosuggestOptions: AutosuggestProps.Option[];
+  autosuggestOptions: AutosuggestProps.Options;
   handleFeedbackDismiss: () => void;
-  handleKeyDown: (event: NonCancelableCustomEvent<AutosuggestProps.KeyDetail>) => void;
   handleLoadItems: (event: NonCancelableCustomEvent<AutosuggestProps.LoadItemsDetail>) => void;
   handleSearchChange: (event: NonCancelableCustomEvent<AutosuggestProps.ChangeDetail>) => void;
   handleSelect: (event: NonCancelableCustomEvent<AutosuggestProps.SelectDetail>) => void;
   handleSettingsDismiss: () => void;
+  handleSubmit: (event: FormEvent<HTMLFormElement>) => void;
   i18nStrings: TopNavigationProps.I18nStrings;
   identity: TopNavigationProps.Identity;
   isFeedbackVisible: boolean;

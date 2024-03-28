@@ -11,11 +11,11 @@ export default function TopNavigation() {
   const {
     autosuggestOptions,
     handleFeedbackDismiss,
-    handleKeyDown,
     handleLoadItems,
     handleSearchChange,
     handleSelect,
     handleSettingsDismiss,
+    handleSubmit,
     i18nStrings,
     identity,
     isFeedbackVisible,
@@ -32,16 +32,17 @@ export default function TopNavigation() {
           i18nStrings={i18nStrings}
           utilities={utilities}
           search={
-            <Autosuggest
-              filteringType="manual"
-              onChange={handleSearchChange}
-              onKeyDown={handleKeyDown}
-              onLoadItems={handleLoadItems}
-              onSelect={handleSelect}
-              placeholder="Search live channels"
-              value={searchInputValue}
-              options={autosuggestOptions}
-            />
+            <form onSubmit={handleSubmit}>
+              <Autosuggest
+                filteringType="manual"
+                onChange={handleSearchChange}
+                onLoadItems={handleLoadItems}
+                onSelect={handleSelect}
+                placeholder="Search live channels"
+                value={searchInputValue}
+                options={autosuggestOptions}
+              />
+            </form>
           }
         />
       </div>

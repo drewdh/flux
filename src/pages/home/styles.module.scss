@@ -1,4 +1,4 @@
-@use '../../../node_modules/@cloudscape-design/design-tokens/index' as awsui;
+@use '@cloudscape-design/design-tokens' as cs;
 
 .header {
   display: -webkit-box;
@@ -7,11 +7,11 @@
   overflow: hidden;
   text-overflow: ellipsis;
   font-weight: bold;
-  font-size: awsui.$font-size-heading-s;
+  font-size: cs.$font-size-heading-s;
 }
 .thumbnailWrapper {
-  padding: awsui.$space-scaled-s;
+  padding: cs.$space-scaled-s;
   display: flex;
-  gap: awsui.$space-scaled-s;
+  gap: cs.$space-scaled-s;
   flex-wrap: nowrap;
 }

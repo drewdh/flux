@@ -1,10 +1,12 @@
-@use '../../../node_modules/@cloudscape-design/design-tokens/index' as awsui;
+@use '@cloudscape-design/design-tokens' as cs;
+
+$viewport-breakpoint-xs: 688px;
 
 .container {
   padding: 16px 20px;
   border-radius: 16px;
   position: relative;
-  border: 1px solid awsui.$color-border-divider-default;
+  border: 1px solid cs.$color-border-divider-default;
 }
 .player {
   border-radius: 16px;
@@ -12,10 +14,10 @@
 }
 .stats {
   white-space: nowrap;
-  padding-left: awsui.$space-scaled-s;
+  padding-left: cs.$space-scaled-s;
   text-align: right;
 }
-@media screen and (max-width: 688px) {
+@media screen and (max-width: $viewport-breakpoint-xs) {
   .player {
     border-radius: 0;
     // TODO: Not working
@@ -34,7 +36,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: awsui.$space-scaled-s;
+  padding: cs.$space-scaled-s;
   overflow: hidden;
   text-align: center;
 }
@@ -43,10 +45,10 @@
   align-items: center;
 }
 .icon {
-  padding: awsui.$space-scaled-xs awsui.$space-scaled-s;
-  color: awsui.$color-text-body-secondary;
+  padding: cs.$space-scaled-xs cs.$space-scaled-s;
+  color: cs.$color-text-body-secondary;
   transition: color 150ms;
   &:hover {
-    color: awsui.$color-text-interactive-hover;
+    color: cs.$color-text-interactive-hover;
   }
 }

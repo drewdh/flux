@@ -1,9 +1,9 @@
-@use '../../../node_modules/@cloudscape-design/design-tokens/index' as awsui;
+@use '@cloudscape-design/design-tokens' as cs;
 
 .username {
-  color: awsui.$color-text-status-inactive;
+  color: cs.$color-text-status-inactive;
   font-size: 13px;
-  padding-right: awsui.$space-scaled-xxs;
+  padding-right: cs.$space-scaled-xxs;
 }
 .message {
   word-break: break-word;
@@ -11,17 +11,17 @@
 .messageWrapper {
   display: flex;
   flex-wrap: nowrap;
-  gap: awsui.$space-scaled-xs;
-  padding: awsui.$space-scaled-xxs 0;
+  gap: cs.$space-scaled-xs;
+  padding: cs.$space-scaled-xxs 0;
 }
 .normalMessage {
   align-self: center;
 }
 .chatContainer {
-  border-top: 1px solid awsui.$color-border-divider-default;
+  border-top: 1px solid cs.$color-border-divider-default;
   height: 500px;
   min-height: 600px;
-  padding: awsui.$space-scaled-xs awsui.$space-scaled-l;
+  padding: cs.$space-scaled-xs cs.$space-scaled-l;
   overflow-y: auto;
   display: flex;
   flex-direction: column-reverse;
@@ -34,33 +34,33 @@
   flex-direction: column-reverse;
 }
 .chatHeader {
-  padding: awsui.$space-scaled-s awsui.$space-scaled-l;
+  padding: cs.$space-scaled-s cs.$space-scaled-l;
 }
 .statusContainer {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100%;
-  padding: awsui.$space-scaled-l 0;
+  padding: cs.$space-scaled-l 0;
 }
 .empty {
   display: flex;
   flex-direction: column;
-  gap: awsui.$space-scaled-s;
+  gap: cs.$space-scaled-s;
   text-align: center;
-  color: awsui.$color-text-empty;
+  color: cs.$color-text-empty;
 }
 .unreadBadge {
   position: absolute;
-  bottom: awsui.$space-scaled-s;
+  bottom: cs.$space-scaled-s;
   left: 50%;
   z-index: -1;
   pointer-events: none;
   visibility: hidden;
   opacity: 0;
-  border-radius: awsui.$border-radius-button;
+  border-radius: cs.$border-radius-button;
   overflow: hidden;
-  box-shadow: awsui.$shadow-container-active;
+  box-shadow: cs.$shadow-container-active;
   transform: translateX(-50%);
   transition: opacity 150ms ease-out;
   &.visible {

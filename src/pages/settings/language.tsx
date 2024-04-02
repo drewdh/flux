@@ -23,7 +23,7 @@ export default function Language() {
     return options.find((option) => option.value === language) ?? null;
   });
 
-  // Reselect selected option if language changes to get translated value
+  // Reselect selected option if language changes so selected option shows correct translation
   useEffect(() => {
     setSelectedOption(options.find((option) => option.value === language)!);
   }, [i18n.language, language, options]);

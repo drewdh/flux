@@ -11,12 +11,14 @@ import useNavigateWithRef from 'common/use-navigate-with-ref';
 import { useSearchCategories, useSearchChannels } from '../api/api';
 import useLocalStorage, { LocalStorageKey } from 'utilities/use-local-storage';
 import useFollow from 'common/use-follow';
+import { useTranslation } from 'react-i18next';
 
 export default function useTopNavigation(): State {
   const [searchHistory, setSearchHistory] = useLocalStorage<string[]>(
     LocalStorageKey.SearchHistory,
     []
   );
+  const { t } = useTranslation();
   const follow = useFollow();
   const [searchParams] = useSearchParams();
   const navigate = useNavigateWithRef();
@@ -123,8 +125,8 @@ export default function useTopNavigation(): State {
     {
       type: 'button',
       iconName: 'contact',
-      text: 'Feedback',
-      title: 'Feedback',
+      text: t('nav.feedback'),
+      title: t('nav.feedback'),
       onClick() {
         setIsFeedbackVisible(true);
       },

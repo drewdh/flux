@@ -4,11 +4,15 @@ export enum LocalStorageKey {
   WelcomeMessage = 'welcomeMessage',
   SearchHistory = 'searchHistory',
   Appearance = 'appearance',
+  Language = 'i18nextLng',
 }
 
 /** Helper functions for accessing local storage that safely stringify and parse values */
 export default function useLocalStorage<T>(key: LocalStorageKey, defaultValue: T): State<T> {
   const [item, setItem] = useState<T>(() => {
+    if (key === LocalStorageKey.Language) {
+      return localStorage.getItem(key) ?? defaultValue;
+    }
     try {
       const value = localStorage.getItem(key);
       return value ? JSON.parse(value) : defaultValue;
@@ -21,8 +25,12 @@ export default function useLocalStorage<T>(key: LocalStorageKey, defaultValue: T
     (updater: T | ((prevValue: T) => T)): void => {
       const newValue = typeof updater === 'function' ? (updater as Function)(item) : updater;
       try {
-        const stringifiedValue = JSON.stringify(newValue);
-        localStorage.setItem(key, stringifiedValue);
+        if (key === LocalStorageKey.Language) {
+          localStorage.setItem(key, newValue);
+        } else {
+          const stringifiedValue = JSON.stringify(newValue);
+          localStorage.setItem(key, stringifiedValue);
+        }
         setItem(newValue);
       } catch (e) {
         console.warn(`Could not save value for key ${key}:`, item, e);

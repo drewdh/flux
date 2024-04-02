@@ -5,8 +5,10 @@ import styles from './styles.module.scss';
 import { topNavId } from './constants';
 import useTopNavigation from './use-top-navigation';
 import Feedback from '../feedback/feedback';
+import { useTranslation } from 'react-i18next';
 
 export default function TopNavigation() {
+  const { t } = useTranslation();
   const {
     autosuggestOptions,
     handleFeedbackDismiss,
@@ -35,7 +37,7 @@ export default function TopNavigation() {
                 onChange={handleSearchChange}
                 onLoadItems={handleLoadItems}
                 onSelect={handleSelect}
-                placeholder="Search live channels"
+                placeholder={t('nav.search.placeholder')}
                 value={searchInputValue}
                 options={autosuggestOptions}
               />

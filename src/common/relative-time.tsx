@@ -1,8 +1,19 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { differenceInHours, differenceInMinutes, differenceInSeconds, format } from 'date-fns';
+import {
+  differenceInDays,
+  differenceInHours,
+  differenceInMinutes,
+  differenceInMonths,
+  differenceInSeconds,
+  differenceInWeeks,
+  differenceInYears,
+  format,
+} from 'date-fns';
+import { useTranslation } from 'react-i18next';
 
 export default function RelativeTime({ date: unparsedDate, inline }: Props) {
   const [relativeTime, setRelativeTime] = useState<string>('');
+  const { t } = useTranslation();
 
   const updateRelativeTime = useCallback((): void => {
     if (!unparsedDate) {
@@ -12,17 +23,31 @@ export default function RelativeTime({ date: unparsedDate, inline }: Props) {
     const date = new Date(unparsedDate);
     const diffInSeconds = differenceInSeconds(today, date);
     if (diffInSeconds < 60) {
-      return setRelativeTime('Just now');
+      return setRelativeTime(t('time.now'));
     }
     const diffInMinutes = differenceInMinutes(today, date);
     if (diffInMinutes < 60) {
-      return setRelativeTime(`${diffInMinutes} minute${diffInMinutes === 1 ? '' : 's'} ago`);
+      return setRelativeTime(t('time.minutes', { count: diffInMinutes }));
     }
     const diffInHours = differenceInHours(today, date);
     if (diffInHours < 25) {
-      return setRelativeTime(`${diffInHours} hour${diffInHours === 1 ? '' : 's'} ago`);
+      return setRelativeTime(t('time.hours', { count: diffInHours }));
     }
-  }, [unparsedDate]);
+    const diffInDays = differenceInDays(today, date);
+    if (diffInDays < 32) {
+      return setRelativeTime(t('time.days', { count: diffInDays }));
+    }
+    const diffInWeeks = differenceInWeeks(today, date);
+    if (diffInWeeks < 5) {
+      return setRelativeTime(t('time.weeks', { count: diffInWeeks }));
+    }
+    const diffInMonths = differenceInMonths(today, date);
+    if (diffInMonths < 13) {
+      return setRelativeTime(t('time.months', { count: diffInMonths }));
+    }
+    const diffInYears = differenceInYears(today, date);
+    setRelativeTime(t('time.years', { count: diffInYears }));
+  }, [t, unparsedDate]);
 
   const absoluteTimestamp = useMemo((): string => {
     if (!unparsedDate) {

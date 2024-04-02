@@ -5,4 +5,5 @@ export enum Pathname {
   PasswordReset = '/auth/reset',
   Channel = '/channel/:user',
   Results = '/results',
+  Settings = '/settings',
 }

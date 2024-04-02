@@ -4,7 +4,6 @@ import Autosuggest from '@cloudscape-design/components/autosuggest';
 import styles from './styles.module.scss';
 import { topNavId } from './constants';
 import useTopNavigation from './use-top-navigation';
-import Settings from '../settings/settings';
 import Feedback from '../feedback/feedback';
 
 export default function TopNavigation() {
@@ -14,12 +13,10 @@ export default function TopNavigation() {
     handleLoadItems,
     handleSearchChange,
     handleSelect,
-    handleSettingsDismiss,
     handleSubmit,
     i18nStrings,
     identity,
     isFeedbackVisible,
-    isSettingsVisible,
     searchInputValue,
     utilities,
   } = useTopNavigation();
@@ -46,7 +43,6 @@ export default function TopNavigation() {
           }
         />
       </div>
-      <Settings visible={isSettingsVisible} onDismiss={handleSettingsDismiss} />
       <Feedback visible={isFeedbackVisible} onDismiss={handleFeedbackDismiss} />
     </>
   );

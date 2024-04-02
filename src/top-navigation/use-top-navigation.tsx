@@ -10,17 +10,18 @@ import { Pathname } from 'utilities/routes';
 import useNavigateWithRef from 'common/use-navigate-with-ref';
 import { useSearchCategories, useSearchChannels } from '../api/api';
 import useLocalStorage, { LocalStorageKey } from 'utilities/use-local-storage';
+import useFollow from 'common/use-follow';
 
 export default function useTopNavigation(): State {
   const [searchHistory, setSearchHistory] = useLocalStorage<string[]>(
     LocalStorageKey.SearchHistory,
     []
   );
+  const follow = useFollow();
   const [searchParams] = useSearchParams();
   const navigate = useNavigateWithRef();
   const [debouncedQuery, setDebouncedQuery] = useState<string>('');
   const [query, setQuery] = useState<string>(searchParams.get('query') ?? '');
-  const [isSettingsVisible, setIsSettingsVisible] = useState<boolean>(false);
   const [isFeedbackVisible, setIsFeedbackVisible] = useState<boolean>(false);
 
   const { data: channelSearchData } = useSearchChannels({ query: debouncedQuery, pageSize: 5 });
@@ -104,10 +105,6 @@ export default function useTopNavigation(): State {
     });
   }
 
-  function handleSettingsDismiss() {
-    setIsSettingsVisible(false);
-  }
-
   const i18nStrings: TopNavigationProps.I18nStrings = {
     overflowMenuTriggerText: 'More',
     overflowMenuTitleText: 'All',
@@ -136,8 +133,9 @@ export default function useTopNavigation(): State {
       type: 'button',
       iconName: 'settings',
       title: 'Settings',
-      onClick() {
-        setIsSettingsVisible(true);
+      href: Pathname.Settings,
+      onFollow: (event) => {
+        follow({ href: event.detail.href!, event });
       },
     },
   ];
@@ -165,12 +163,10 @@ export default function useTopNavigation(): State {
     handleLoadItems,
     handleSearchChange,
     handleSelect,
-    handleSettingsDismiss,
     handleSubmit,
     i18nStrings,
     identity,
     isFeedbackVisible,
-    isSettingsVisible,
     searchInputValue: query,
     utilities,
   };
@@ -182,12 +178,10 @@ interface State {
   handleLoadItems: (event: NonCancelableCustomEvent<AutosuggestProps.LoadItemsDetail>) => void;
   handleSearchChange: (event: NonCancelableCustomEvent<AutosuggestProps.ChangeDetail>) => void;
   handleSelect: (event: NonCancelableCustomEvent<AutosuggestProps.SelectDetail>) => void;
-  handleSettingsDismiss: () => void;
   handleSubmit: (event: FormEvent<HTMLFormElement>) => void;
   i18nStrings: TopNavigationProps.I18nStrings;
   identity: TopNavigationProps.Identity;
   isFeedbackVisible: boolean;
-  isSettingsVisible: boolean;
   searchInputValue: string;
   utilities: TopNavigationProps.Utility[];
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { createBrowserRouter, Navigate } from 'react-router-dom';
+import { createBrowserRouter } from 'react-router-dom';
 import { RouterProvider } from 'react-router';
 import { I18nProvider, importMessages } from '@cloudscape-design/components/i18n';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -14,6 +14,8 @@ import TwitchPage from './pages/home/page';
 import ResultsPage from './pages/results/page';
 import ErrorBoundary from 'common/error-boundary';
 import NotFoundPage from './pages/not-found-page';
+import SettingsPage from './pages/settings/settings';
+import { SettingsProvider } from 'utilities/settings';
 
 interface GlobalFlags {
   removeHighContrastHeader?: boolean;
@@ -49,6 +51,10 @@ const router = createBrowserRouter([
         path: Pathname.Results,
         element: <ResultsPage />,
       },
+      {
+        path: Pathname.Settings,
+        element: <SettingsPage />,
+      },
     ],
   },
 ]);
@@ -60,11 +66,13 @@ const queryClient = new QueryClient();
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(
   <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <I18nProvider locale={locale} messages={messages}>
-        <RouterProvider router={router} />
-      </I18nProvider>
-    </QueryClientProvider>
+    <SettingsProvider>
+      <QueryClientProvider client={queryClient}>
+        <I18nProvider locale={locale} messages={messages}>
+          <RouterProvider router={router} />
+        </I18nProvider>
+      </QueryClientProvider>
+    </SettingsProvider>
   </React.StrictMode>
 );
 

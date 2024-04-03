@@ -5,9 +5,10 @@ import { RadioGroupProps } from '@cloudscape-design/components/radio-group';
 import { SelectProps } from '@cloudscape-design/components/select';
 import { FormikErrors, useFormik } from 'formik';
 import * as Yup from 'yup';
+import { useTranslation } from 'react-i18next';
+import { InputProps } from '@cloudscape-design/components/input';
 
 import { sendFeedback } from './feedback-api';
-import { InputProps } from '@cloudscape-design/components/input';
 
 enum Satisfied {
   Yes = 'yes',
@@ -28,15 +29,8 @@ interface Values {
   type: SelectProps.Option;
 }
 
-const validationSchema = Yup.object().shape({
-  message: Yup.string()
-    .max(1000, 'Message must be 1,000 characters or fewer.')
-    .required('Enter a message.'),
-  satisfied: Yup.string().required('Choose a satisfaction.'),
-  email: Yup.string().email('Enter a valid email.'),
-});
-
 export default function useFeedback({ onDismiss }: Props): State {
+  const { t } = useTranslation();
   const alertRef = useRef<AlertProps.Ref>(null);
   const emailRef = useRef<InputProps.Ref>(null);
   const messageRef = useRef<TextareaProps.Ref>(null);
@@ -46,19 +40,19 @@ export default function useFeedback({ onDismiss }: Props): State {
   const [isApiError, setIsApiError] = useState<boolean>(false);
   const typeOptions: SelectProps.Option[] = [
     {
-      label: 'General feedback',
+      label: t('feedback.typeGeneral'),
       value: Type.General,
     },
     {
-      label: 'Feature request',
+      label: t('feedback.typeFeatureRequest'),
       value: Type.FeatureRequest,
     },
     {
-      label: 'Report an issue',
+      label: t('feedback.typeIssue'),
       value: Type.Issue,
     },
     {
-      label: 'UI feedback',
+      label: t('feedback.typeUi'),
       value: Type.UiFeedback,
     },
   ];
@@ -72,7 +66,13 @@ export default function useFeedback({ onDismiss }: Props): State {
         type: typeOptions[0],
       },
       validateOnChange: isSubmitted,
-      validationSchema,
+      validationSchema: Yup.object().shape({
+        message: Yup.string()
+          .max(1000, t('feedback.error.maxMessage'))
+          .required(t('feedback.error.messageRequired')),
+        satisfied: Yup.string().required(t('feedback.error.satisfactionRequired')),
+        email: Yup.string().email(t('feedback.error.invalidEmail')),
+      }),
       onSubmit: async (values) => {
         setIsApiError(false);
         try {
@@ -93,11 +93,11 @@ export default function useFeedback({ onDismiss }: Props): State {
   const satisfiedItems: RadioGroupProps.RadioButtonDefinition[] = [
     {
       value: Satisfied.Yes,
-      label: 'Yes',
+      label: t('feedback.satisfied'),
     },
     {
       value: Satisfied.No,
-      label: 'No',
+      label: t('feedback.dissatisfied'),
     },
   ];
 
@@ -118,8 +118,9 @@ export default function useFeedback({ onDismiss }: Props): State {
   }
 
   const remainingCharacters = 1000 - values.message.length;
-  const characterString = remainingCharacters === 1 ? 'character' : 'characters';
-  const messageConstraintText = `${remainingCharacters.toLocaleString()} ${characterString} remaining`;
+  const messageConstraintText = t('feedback.charactersRemaining', {
+    count: remainingCharacters,
+  });
 
   async function handleSubmitClick() {
     setIsSubmitted(true);

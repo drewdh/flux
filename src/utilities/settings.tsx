@@ -63,7 +63,6 @@ export function SettingsProvider({ children }: PropsWithChildren) {
 
   const handleLanguageChange = useCallback(
     (value: string) => {
-      console.log(value);
       const detector = new LanguageDetector();
       // Use default order except exclude local storage since it hasn't been updated yet
       const detected = detector.detect([
@@ -81,7 +80,6 @@ export function SettingsProvider({ children }: PropsWithChildren) {
       } else {
         defaultLang = 'en-US';
       }
-      console.log(defaultLang);
       i18n.changeLanguage(value || defaultLang);
       setLanguage(value);
     },

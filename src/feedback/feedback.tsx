@@ -9,10 +9,12 @@ import Select from '@cloudscape-design/components/select';
 import Textarea from '@cloudscape-design/components/textarea';
 import RadioGroup from '@cloudscape-design/components/radio-group';
 import Input from '@cloudscape-design/components/input';
+import { useTranslation } from 'react-i18next';
 
 import useFeedback from './use-feedback';
 
 export default function Feedback({ visible, onDismiss }: Props) {
+  const { t } = useTranslation();
   const {
     alertRef,
     emailRef,
@@ -40,13 +42,13 @@ export default function Feedback({ visible, onDismiss }: Props) {
         <Box float="right">
           {isSuccess && (
             <Button variant="primary" onClick={handleDismiss}>
-              Close
+              {t('common.close')}
             </Button>
           )}
           {!isSuccess && (
             <SpaceBetween size="xs" direction="horizontal">
               <Button variant="link" onClick={handleDismiss}>
-                Cancel
+                {t('common.cancel')}
               </Button>
               <Button
                 loading={isSubmitting}
@@ -54,22 +56,22 @@ export default function Feedback({ visible, onDismiss }: Props) {
                 form="feedback"
                 onClick={handleSubmitClick}
               >
-                Submit
+                {t('common.submit')}
               </Button>
             </SpaceBetween>
           )}
         </Box>
       }
-      header={<Header>Feedback</Header>}
+      header={<Header>{t('feedback.title')}</Header>}
       onDismiss={handleDismiss}
       visible={Boolean(visible)}
     >
       <form id="feedback" onSubmit={(e) => e.preventDefault()}>
-        {isSuccess && <Alert type="success">Successfully submitted feedback.</Alert>}
+        {isSuccess && <Alert type="success">{t('feedback.success')}</Alert>}
         {!isSuccess && (
           <SpaceBetween size="l">
-            <span>Thank you for taking time to provide feedback.</span>
-            <FormField label="Feedback type">
+            <span>{t('feedback.description')}</span>
+            <FormField label={t('feedback.typeLabel')}>
               <Select
                 selectedOption={values.type}
                 onChange={handleTypeChange}
@@ -77,13 +79,13 @@ export default function Feedback({ visible, onDismiss }: Props) {
               />
             </FormField>
             <FormField
-              label="Message"
+              label={t('feedback.messageLabel')}
               constraintText={messageConstraintText}
               errorText={errors.message}
             >
               <Textarea ref={messageRef} value={values.message} onChange={handleMessageChange} />
             </FormField>
-            <FormField label="Are you satisfied with your experience?" errorText={errors.satisfied}>
+            <FormField label={t('feedback.satisfactionLabel')} errorText={errors.satisfied}>
               <RadioGroup
                 items={satisfiedItems}
                 onChange={handleSatisfiedChange}
@@ -95,21 +97,21 @@ export default function Feedback({ visible, onDismiss }: Props) {
               errorText={errors.email}
               label={
                 <span>
-                  Email - <i>optional</i>
+                  {t('feedback.emailLabel')} - <i>{t('common.optional')}</i>
                 </span>
               }
-              description="If you would like to be contacted about your feedback, enter your email address."
+              description={t('feedback.emailDescription')}
             >
               <Input
                 ref={emailRef}
-                placeholder="person@email.com"
+                placeholder={t('feedback.emailPlaceholder')}
                 value={values.email}
                 onChange={handleEmailChange}
               />
             </FormField>
             {isApiError && (
               <Alert ref={alertRef} type="error">
-                Failed to submit feedback. Try again later.
+                {t('feedback.error.general')}
               </Alert>
             )}
           </SpaceBetween>

@@ -19,10 +19,43 @@ i18n
     resources: {
       'en-US': {
         translation: {
+          common: {
+            close: 'Close',
+            cancel: 'Cancel',
+            submit: 'Submit',
+            optional: 'optional',
+          },
           nav: {
             feedback: 'Feedback',
             search: {
               placeholder: 'Search live channels',
+            },
+          },
+          feedback: {
+            title: 'Feedback',
+            description: 'Thank you for taking time to provide feedback.',
+            typeLabel: 'Feedback type',
+            typeGeneral: 'General feedback',
+            typeFeatureRequest: 'Feature request',
+            typeIssue: 'Report an issue',
+            typeUi: 'UI feedback',
+            messageLabel: 'Message',
+            charactersRemaining_one: '{{count}} character remaining',
+            charactersRemaining_other: '{{count}} characters remaining',
+            satisfactionLabel: 'Are you satisfied with your experience?',
+            satisfied: 'Yes',
+            dissatisfied: 'No',
+            emailLabel: 'Email',
+            emailDescription:
+              'If you would like to be contacted about your feedback, enter your email address.',
+            emailPlaceholder: 'person@email.com',
+            success: 'Successfully submitted feedback.',
+            error: {
+              general: 'Failed to submit feedback. Try again later.',
+              maxMessage: 'Message must be 1,000 characters or fewer.',
+              messageRequired: 'Enter a message.',
+              satisfactionRequired: 'Choose a satisfaction.',
+              invalidEmail: 'Enter a valid email.',
             },
           },
           time: {
@@ -57,10 +90,44 @@ i18n
       },
       de: {
         translation: {
+          common: {
+            close: 'Schliessen',
+            cancel: 'Abbrechen',
+            submit: 'Einreichen',
+            optional: 'fakultativ',
+          },
           nav: {
-            feedback: 'Rückmeldung',
+            feedback: 'Feedback',
             search: {
               placeholder: 'Suche nach Live-Kanälen',
+            },
+          },
+          feedback: {
+            title: 'Feedback',
+            description:
+              'Vielen Dank, dass Sie sich die Zeit genommen haben, uns Feedback zu geben.',
+            typeLabel: 'Typ',
+            typeGeneral: 'Allgemeines Feedback',
+            typeFeatureRequest: 'Funktionsanfrage',
+            typeIssue: 'Ein Problem melden',
+            typeUi: 'Feedback zur Benutzeroberfläche',
+            messageLabel: 'Nachricht',
+            charactersRemaining_one: '{{count}} verbleibendes Zeichen',
+            charactersRemaining_other: '{{count}} verbleibende Zeichen',
+            satisfactionLabel: 'Sind Sie mit deiner Erfahrung zufrieden?',
+            satisfied: 'Ja',
+            dissatisfied: 'Nein',
+            emailLabel: 'E-Mail',
+            emailDescription:
+              'Wenn Sie wegen Ihres Feedbacks kontaktiert werden möchten, geben Sie Ihre E-Mail-Adresse ein.',
+            emailPlaceholder: 'person@email.com',
+            success: 'Das Feedback wurde erfolgreich eingereicht.',
+            error: {
+              general: 'Feedback konnte nicht eingereicht werden. Versuchen Sie es später erneut.',
+              maxMessage: 'Die Nachricht muss 1.000 Zeichen oder weniger lang sein.',
+              messageRequired: 'Geben Sie eine Nachricht ein.',
+              satisfactionRequired: 'Wähle eine Befriedigung.',
+              invalidEmail: 'Geben Sie eine gültige E-Mail ein.',
             },
           },
           time: {

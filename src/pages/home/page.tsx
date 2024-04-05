@@ -6,7 +6,10 @@ import { useEffect, useState } from 'react';
 import ColumnLayout from '@cloudscape-design/components/column-layout';
 import Container from '@cloudscape-design/components/container';
 import Box from '@cloudscape-design/components/box';
-import { colorBackgroundInputDisabled } from '@cloudscape-design/design-tokens';
+import {
+  borderRadiusContainer,
+  colorBackgroundInputDisabled,
+} from '@cloudscape-design/design-tokens';
 import SpaceBetween from '@cloudscape-design/components/space-between';
 
 import DhAppLayout from 'common/flux-app-layout';
@@ -83,37 +86,30 @@ export default function TwitchPage() {
                     notation: 'compact',
                   });
                   return (
-                    <Container
-                      disableContentPaddings
-                      media={{
-                        position: 'top',
-                        content: (
-                          <InternalLink href={href}>
-                            <img
-                              style={{
-                                aspectRatio: '16 / 9',
-                                backgroundColor: colorBackgroundInputDisabled,
-                              }}
-                              alt={stream.title}
-                              src={`https://static-cdn.jtvnw.net/previews-ttv/live_user_${stream.user_login}-440x248.jpg`}
-                            />
-                          </InternalLink>
-                        ),
-                      }}
-                    >
-                      <div className={styles.thumbnailWrapper}>
-                        <Avatar userId={stream.user_id} />
-                        <div>
-                          <InternalLink href={href}>
+                    <div className={styles.cardWrapper} key={stream.user_id}>
+                      <InternalLink href={href}>
+                        <img
+                          style={{
+                            aspectRatio: '16 / 9',
+                            backgroundColor: colorBackgroundInputDisabled,
+                            borderRadius: borderRadiusContainer,
+                            width: '100%',
+                          }}
+                          alt={stream.title}
+                          src={`https://static-cdn.jtvnw.net/previews-ttv/live_user_${stream.user_login}-440x248.jpg`}
+                        />
+                        <div className={styles.thumbnailWrapper}>
+                          <Avatar userId={stream.user_id} />
+                          <div>
                             <div className={styles.header}>{stream.title}</div>
-                          </InternalLink>
-                          <Box color="text-status-inactive" fontSize="body-s">
-                            <div>{stream.user_name}</div>
-                            <div>{viewerCount} watching</div>
-                          </Box>
+                            <Box color="text-status-inactive" fontSize="body-s">
+                              <div>{stream.user_name}</div>
+                              <div>{viewerCount} watching</div>
+                            </Box>
+                          </div>
                         </div>
-                      </div>
-                    </Container>
+                      </InternalLink>
+                    </div>
                   );
                 })}
               </ColumnLayout>

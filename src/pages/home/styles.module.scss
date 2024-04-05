@@ -8,9 +8,13 @@
   text-overflow: ellipsis;
   font-weight: bold;
   font-size: cs.$font-size-heading-s;
+  color: cs.$color-text-body-default;
+}
+.cardWrapper a:hover {
+  text-decoration-line: none !important;
 }
 .thumbnailWrapper {
-  padding: cs.$space-scaled-s;
+  padding: cs.$space-scaled-s 0;
   display: flex;
   gap: cs.$space-scaled-s;
   flex-wrap: nowrap;

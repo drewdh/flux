@@ -13,7 +13,7 @@ export default function Language() {
     (): SelectProps.Option[] => [
       { value: '', label: t('settings.language.system') },
       { value: 'en-US', label: 'English (US)' },
-      { value: 'de', label: 'Deutsch' },
+      { value: 'de', label: 'Deutsch', description: 'Unvollständig' },
     ],
     [t]
   );

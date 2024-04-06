@@ -182,34 +182,15 @@ export default function Chat({ broadcasterUserId, height }: Props) {
       <Container
         disableHeaderPaddings
         disableContentPaddings
-        footer={
-          <SpaceBetween size="m">
-            {highlightedMessage && (
-              <ChatMessage
-                message={highlightedMessage}
-                onHide={() => setHighlightedMessage(null)}
-                variant="featured"
-              />
-            )}
-            {/*<FormField*/}
-            {/*  label={*/}
-            {/*    highlightedMessage ? `Reply to ${highlightedMessage.chatter_user_name}` : 'Chat'*/}
-            {/*  }*/}
-            {/*>*/}
-            {/*  <div style={{ display: 'flex', alignItems: 'center', gap: spaceScaledXs }}>*/}
-            {/*    <Avatar userId={user?.id ?? ''} />*/}
-            {/*    <div style={{ width: '100%' }}>*/}
-            {/*      <Input*/}
-            {/*        ariaLabel="Message"*/}
-            {/*        onChange={(e) => setChatMessage(e.detail.value)}*/}
-            {/*        value={chatMessage}*/}
-            {/*        placeholder={highlightedMessage ? 'Reply...' : 'Chat...'}*/}
-            {/*      />*/}
-            {/*    </div>*/}
-            {/*  </div>*/}
-            {/*</FormField>*/}
-          </SpaceBetween>
-        }
+        // footer={
+        //   highlightedMessage && (
+        //     <ChatMessage
+        //       message={highlightedMessage}
+        //       onHide={() => setHighlightedMessage(null)}
+        //       variant="featured"
+        //     />
+        //   )
+        // }
         header={
           <div className={styles.chatHeader}>
             <Header

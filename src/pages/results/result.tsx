@@ -46,7 +46,7 @@ export default function Result({ channel }: Props) {
         </Box>
         <Box color="text-body-secondary" fontSize="body-s" padding={{ bottom: 'm' }}>
           <SpaceBetween size="xs" alignItems="center" direction="horizontal">
-            <Avatar userId={channel.id} size="small" />
+            <Avatar userId={channel.id} size="s" />
             <SpaceBetween direction="horizontal" size="xxs" alignItems="center">
               {channel.display_name}
               {userData?.data[0].broadcaster_type === 'partner' && (

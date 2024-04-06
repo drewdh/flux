@@ -1,5 +1,7 @@
 @use '@cloudscape-design/design-tokens' as cs;
 
+$avatar-width: 24px;
+
 .username {
   color: cs.$color-text-status-inactive;
   font-size: 13px;
@@ -8,14 +10,46 @@
 .message {
   word-break: break-word;
 }
+.wrapper {
+  padding: cs.$space-scaled-xxs 0;
+}
 .messageWrapper {
   display: flex;
   flex-wrap: nowrap;
   gap: cs.$space-scaled-xs;
-  padding: cs.$space-scaled-xxs 0;
 }
-.normalMessage {
-  align-self: center;
+.replyConnector {
+  content: " ";
+  display: block;
+  position: absolute;
+  box-sizing: border-box;
+  top: 50%;
+  right: 100%;
+  bottom: 0;
+  left: calc(-1 * (#{$avatar-width}/2 + #{cs.$space-scaled-xs}));
+  margin: -1px 2px 2px -1px;
+  border-color: cs.$color-border-divider-default;
+  border-width: 2px 0 0 2px;
+  border-style: solid;
+  border-top-left-radius: 6px;
+}
+.replyWrapper {
+  display: flex;
+  position: relative;
+  flex-wrap: nowrap;
+  gap: cs.$space-scaled-xxs;
+  align-items: center;
+  // Align with start of message (width of avatar plus flex gap)
+  margin-left: calc(#{cs.$space-scaled-xs} + #{$avatar-width});
+}
+.replyTextWrapper {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: cs.$font-size-body-s;
+  color: cs.$color-text-status-inactive;
 }
 .chatContainer {
   border-top: 1px solid cs.$color-border-divider-default;

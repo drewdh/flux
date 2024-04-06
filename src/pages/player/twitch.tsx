@@ -3,7 +3,6 @@ import { useParams } from 'react-router';
 import Box from '@cloudscape-design/components/box';
 import SpaceBetween from '@cloudscape-design/components/space-between';
 import Grid from '@cloudscape-design/components/grid';
-import ContentLayout from '@cloudscape-design/components/content-layout';
 
 import styles from './styles.module.scss';
 import useTitle from 'utilities/use-title';
@@ -14,7 +13,6 @@ import Chat from './chat';
 import Icon from '@cloudscape-design/components/icon';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBadgeCheck } from '@fortawesome/pro-solid-svg-icons';
-import Header from '@cloudscape-design/components/header';
 
 export default function TwitchComponent() {
   const player = useRef<any>(null);
@@ -48,7 +46,6 @@ export default function TwitchComponent() {
       return;
     }
     const playerObserver = new ResizeObserver((entries, observer) => {
-      console.log(entries);
       const { width } = entries[0].contentRect;
       setPlayerHeight(`${(width * 9) / 16}px`);
     });

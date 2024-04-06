@@ -15,11 +15,15 @@ import { formatDate } from 'date-fns';
 import Button from '@cloudscape-design/components/button';
 import Header from '@cloudscape-design/components/header';
 import Container from '@cloudscape-design/components/container';
+import { colorTextBodySecondary, colorTextStatusInactive } from '@cloudscape-design/design-tokens';
 
 export function Message({ variant, message }: Props) {
   return (
     <span className={clsx(styles.message, variant === 'normal' && styles.normal)}>
       {message.message.fragments?.map((fragment, index) => {
+        if (fragment.type === 'mention' && message.reply) {
+          return '';
+        }
         if (fragment.type === 'emote') {
           return <Emote key={index} emote={fragment.emote} />;
         }
@@ -28,7 +32,8 @@ export function Message({ variant, message }: Props) {
             {/* TODO: Make this more readable */}
             {/* Make URLs into Links */}
             {fragment.text.split(' ').map((string) => {
-              let finalString: ReactNode = string;
+              const shouldTrimStart = message.reply && index === 1;
+              let finalString: ReactNode = shouldTrimStart ? string : string;
               if (string.startsWith('https://')) {
                 finalString = (
                   <Link rel="noreferrer" href={string} target="_blank">
@@ -46,25 +51,38 @@ export function Message({ variant, message }: Props) {
 }
 
 export default function ChatMessage({ message, onClick, variant = 'normal', onHide }: Props) {
-  const { data: userData } = useGetUsers({ ids: [message.chatter_user_id] });
+  const { data: userData } = useGetUsers({
+    ids: [message.chatter_user_id, message.reply?.parent_user_id ?? ''].filter(Boolean),
+  });
   const user = userData?.data[0];
   const { data: followerData } = useGetChannelFollowers(user?.id);
 
   if (variant === 'normal') {
     return (
-      <div onClick={onClick} className={styles.messageWrapper}>
-        <Avatar userId={message.chatter_user_id} />
-        <div className={styles.normalMessage}>
-          <span className={styles.username}>
-            {/*<b style={{ color: message.color }}>{message.chatter_user_name}</b>*/}
-            <b>{message.chatter_user_name}</b>
-            {user?.broadcaster_type === 'partner' && (
-              <Box variant="span" padding={{ left: 'xxs' }}>
-                <Icon svg={<FontAwesomeIcon icon={faBadgeCheck} color="#a970ff" />} />
-              </Box>
-            )}
-          </span>
-          <Message message={message} variant={variant} />
+      <div onClick={onClick} className={styles.wrapper}>
+        {message.reply && (
+          <div className={styles.replyWrapper}>
+            <div className={styles.replyConnector} />
+            <Avatar userId={message.reply.parent_user_id} size="xs" />
+            <div className={styles.replyTextWrapper} title={message.reply.parent_message_body}>
+              @<span>{message.reply.parent_user_name}</span> {message.reply.parent_message_body}
+            </div>
+          </div>
+        )}
+        <div className={styles.messageWrapper}>
+          <Avatar userId={message.chatter_user_id} size="s" />
+          <div>
+            <span className={styles.username}>
+              {/*<b style={{ color: message.color }}>{message.chatter_user_name}</b>*/}
+              <b>{message.chatter_user_name}</b>
+              {user?.broadcaster_type === 'partner' && (
+                <Box variant="span" padding={{ left: 'xxs' }}>
+                  <Icon svg={<FontAwesomeIcon icon={faBadgeCheck} color="#a970ff" />} />
+                </Box>
+              )}
+            </span>
+            <Message message={message} variant={variant} />
+          </div>
         </div>
       </div>
     );

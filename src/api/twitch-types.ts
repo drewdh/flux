@@ -334,7 +334,26 @@ export interface ChatEvent {
   };
   message_id: string;
   message_type: 'text';
-  reply: null;
+  reply: null | {
+    /** An ID that uniquely identifies the parent message that this message is replying to. */
+    parent_message_id: string;
+    /** The message body of the parent message. */
+    parent_message_body: string;
+    /** User ID of the sender of the parent message. */
+    parent_user_id: string;
+    /** User name of the sender of the parent message. */
+    parent_user_name: string;
+    /** User login of the sender of the parent message. */
+    parent_user_login: string;
+    /** An ID that identifies the parent message of the reply thread. */
+    thread_message_id: string;
+    /** User ID of the sender of the thread’s parent message. */
+    thread_user_id: string;
+    /** User name of the sender of the thread’s parent message. */
+    thread_user_name: string;
+    /** User login of the sender of the thread’s parent message. */
+    thread_user_login: string;
+  };
 }
 export interface ChatMessage {
   metadata: {

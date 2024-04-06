@@ -1,9 +1,16 @@
+$s: 24px;
+$xs: 16px;
+
 .spacer {
   width: 35px;
   height: 35px;
-  &.small {
-    width: 24px;
-    height: 24px;
+  &.xs {
+    width: $xs;
+    height: $xs;
+  }
+  &.s {
+    width: $s;
+    height: $s;
   }
 }
 .avatar {
@@ -13,9 +20,14 @@
   border-radius: 35px;
   width: 35px;
   height: 35px;
-  &.small {
-    border-radius: 24px;
-    width: 24px;
-    height: 24px;
+  &.xs {
+    border-radius: $xs;
+    width: $xs;
+    height: $xs;
+  }
+  &.s {
+    border-radius: $s;
+    width: $s;
+    height: $s;
   }
 }

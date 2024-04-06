@@ -4,7 +4,7 @@ import { colorBackgroundInputDisabled } from '@cloudscape-design/design-tokens';
 import styles from './styles.module.scss';
 import { useGetUsers } from '../../api/api';
 
-export default function Avatar({ userId, size, color }: Props) {
+export default function Avatar({ userId, size = 'm', color }: Props) {
   const { data } = useGetUsers({ ids: [userId] });
   const userData = data?.data[0];
 
@@ -16,9 +16,9 @@ export default function Avatar({ userId, size, color }: Props) {
         backgroundImage: `url(${userData?.profile_image_url.replace('300x300', '70x70')})`,
         backgroundColor: color ?? colorBackgroundInputDisabled,
       }}
-      className={clsx(styles.avatar, size === 'small' && styles.small)}
+      className={clsx(styles.avatar, styles[size])}
     >
-      <div className={clsx(styles.spacer, size === 'small' && styles.small)} />
+      <div className={clsx(styles.spacer, styles[size])} />
     </div>
   );
 }
@@ -26,5 +26,5 @@ export default function Avatar({ userId, size, color }: Props) {
 interface Props {
   color?: string;
   userId: string;
-  size?: 'normal' | 'small';
+  size?: 'xs' | 's' | 'm';
 }

@@ -12,6 +12,7 @@ import { useSearchCategories, useSearchChannels } from '../api/api';
 import useLocalStorage, { LocalStorageKey } from 'utilities/use-local-storage';
 import useFollow from 'common/use-follow';
 import { useTranslation } from 'react-i18next';
+import useFeedback from '../feedback/use-feedback';
 
 export default function useTopNavigation(): State {
   const [searchHistory, setSearchHistory] = useLocalStorage<string[]>(
@@ -24,7 +25,7 @@ export default function useTopNavigation(): State {
   const navigate = useNavigateWithRef();
   const [debouncedQuery, setDebouncedQuery] = useState<string>('');
   const [query, setQuery] = useState<string>(searchParams.get('query') ?? '');
-  const [isFeedbackVisible, setIsFeedbackVisible] = useState<boolean>(false);
+  const { openFeedback } = useFeedback();
 
   const { data: channelSearchData } = useSearchChannels({ query: debouncedQuery, pageSize: 5 });
   // const { data: }
@@ -89,10 +90,6 @@ export default function useTopNavigation(): State {
     return options;
   }, [searchHistory, query, channelSearchData?.pages, gameSearchData?.pages]);
 
-  function handleFeedbackDismiss() {
-    setIsFeedbackVisible(false);
-  }
-
   function submitSearch(nextQuery?: string) {
     const finalQuery = nextQuery || query;
     setSearchHistory((prev) => {
@@ -128,7 +125,7 @@ export default function useTopNavigation(): State {
       text: t('nav.feedback'),
       title: t('nav.feedback'),
       onClick() {
-        setIsFeedbackVisible(true);
+        openFeedback();
       },
     },
     {
@@ -161,14 +158,12 @@ export default function useTopNavigation(): State {
 
   return {
     autosuggestOptions,
-    handleFeedbackDismiss,
     handleLoadItems,
     handleSearchChange,
     handleSelect,
     handleSubmit,
     i18nStrings,
     identity,
-    isFeedbackVisible,
     searchInputValue: query,
     utilities,
   };
@@ -176,14 +171,12 @@ export default function useTopNavigation(): State {
 
 interface State {
   autosuggestOptions: AutosuggestProps.Options;
-  handleFeedbackDismiss: () => void;
   handleLoadItems: (event: NonCancelableCustomEvent<AutosuggestProps.LoadItemsDetail>) => void;
   handleSearchChange: (event: NonCancelableCustomEvent<AutosuggestProps.ChangeDetail>) => void;
   handleSelect: (event: NonCancelableCustomEvent<AutosuggestProps.SelectDetail>) => void;
   handleSubmit: (event: FormEvent<HTMLFormElement>) => void;
   i18nStrings: TopNavigationProps.I18nStrings;
   identity: TopNavigationProps.Identity;
-  isFeedbackVisible: boolean;
   searchInputValue: string;
   utilities: TopNavigationProps.Utility[];
 }

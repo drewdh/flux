@@ -13,7 +13,7 @@ import { useTranslation } from 'react-i18next';
 
 import useFeedback from './use-feedback';
 
-export default function Feedback({ visible, onDismiss }: Props) {
+export default function Feedback() {
   const { t } = useTranslation();
   const {
     alertRef,
@@ -34,7 +34,8 @@ export default function Feedback({ visible, onDismiss }: Props) {
     satisfiedRef,
     typeOptions,
     values,
-  } = useFeedback({ onDismiss });
+    visible,
+  } = useFeedback();
 
   return (
     <Modal
@@ -64,7 +65,7 @@ export default function Feedback({ visible, onDismiss }: Props) {
       }
       header={<Header>{t('feedback.title')}</Header>}
       onDismiss={handleDismiss}
-      visible={Boolean(visible)}
+      visible={visible}
     >
       <form id="feedback" onSubmit={(e) => e.preventDefault()}>
         {isSuccess && <Alert type="success">{t('feedback.success')}</Alert>}
@@ -119,9 +120,4 @@ export default function Feedback({ visible, onDismiss }: Props) {
       </form>
     </Modal>
   );
-}
-
-interface Props {
-  visible: boolean | undefined;
-  onDismiss: () => void;
 }

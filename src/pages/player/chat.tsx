@@ -17,7 +17,6 @@ import {
 import Link from '@cloudscape-design/components/link';
 import Button from '@cloudscape-design/components/button';
 import { connectHref } from '../home/page';
-import Feedback from '../../feedback/feedback';
 import StatusIndicator from '@cloudscape-design/components/status-indicator';
 import clsx from 'clsx';
 import ChatRestrictions from './chat-restrictions';
@@ -36,6 +35,7 @@ import Avatar from 'common/avatar/avatar';
 import FormikInput from 'common/formik/input';
 import { useFormik } from 'formik';
 import { spaceScaledXs } from '@cloudscape-design/design-tokens';
+import useFeedback from '../../feedback/use-feedback';
 
 interface SubscribeRequest {
   sessionId: string;
@@ -70,7 +70,7 @@ export default function Chat({ broadcasterUserId, height }: Props) {
   const [isRestrictionsModalVisible, setIsRestrictionsModalVisible] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isReconnectError, setIsReconnectError] = useState<boolean>(false);
-  const [isFeedbackVisible, setIsFeedbackVisible] = useState<boolean>(false);
+  const { openFeedback } = useFeedback();
   const [error, setError] = useState<object | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [messages, setMessages] = useState<ChatEvent[]>([]);
@@ -283,7 +283,7 @@ export default function Chat({ broadcasterUserId, height }: Props) {
                       href="#"
                       onFollow={(e) => {
                         e.preventDefault();
-                        setIsFeedbackVisible(true);
+                        openFeedback();
                       }}
                       variant="primary"
                       color="inverted"
@@ -312,7 +312,6 @@ export default function Chat({ broadcasterUserId, height }: Props) {
           </div>
         </div>
       </Container>
-      <Feedback visible={isFeedbackVisible} onDismiss={() => setIsFeedbackVisible(false)} />
       <ChatRestrictions
         visible={isRestrictionsModalVisible}
         onDismiss={() => setIsRestrictionsModalVisible(false)}

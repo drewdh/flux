@@ -4,21 +4,19 @@ import Autosuggest from '@cloudscape-design/components/autosuggest';
 import styles from './styles.module.scss';
 import { topNavId } from './constants';
 import useTopNavigation from './use-top-navigation';
-import Feedback from '../feedback/feedback';
+import Feedback from '../feedback/internal/feedback';
 import { useTranslation } from 'react-i18next';
 
 export default function TopNavigation() {
   const { t } = useTranslation();
   const {
     autosuggestOptions,
-    handleFeedbackDismiss,
     handleLoadItems,
     handleSearchChange,
     handleSelect,
     handleSubmit,
     i18nStrings,
     identity,
-    isFeedbackVisible,
     searchInputValue,
     utilities,
   } = useTopNavigation();
@@ -45,7 +43,7 @@ export default function TopNavigation() {
           }
         />
       </div>
-      <Feedback visible={isFeedbackVisible} onDismiss={handleFeedbackDismiss} />
+      <Feedback />
     </>
   );
 }

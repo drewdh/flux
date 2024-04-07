@@ -4,9 +4,9 @@ import SpaceBetween from '@cloudscape-design/components/space-between';
 import Link from '@cloudscape-design/components/link';
 import { ExpandableSection } from '@cloudscape-design/components';
 import Box from '@cloudscape-design/components/box';
-import Feedback from '../feedback/feedback';
-import AppLayout from '@cloudscape-design/components/app-layout';
+
 import DhAppLayout from 'common/flux-app-layout';
+import { openFeedback } from '../feedback/use-feedback';
 
 export default class ErrorBoundary extends React.Component<PropsWithChildren, State> {
   constructor(props: PropsWithChildren) {
@@ -15,7 +15,6 @@ export default class ErrorBoundary extends React.Component<PropsWithChildren, St
   }
 
   static getDerivedStateFromError(error: Error) {
-    console.log(error);
     // Update state so the next render will show the fallback UI.
     return { error };
   }
@@ -38,7 +37,7 @@ export default class ErrorBoundary extends React.Component<PropsWithChildren, St
                     href="#"
                     onFollow={(e) => {
                       e.preventDefault();
-                      this.setState((prev) => ({ ...prev, isFeedbackVisible: true }));
+                      openFeedback();
                     }}
                     variant="primary"
                     color="inverted"
@@ -52,10 +51,6 @@ export default class ErrorBoundary extends React.Component<PropsWithChildren, St
                 </ExpandableSection>
               </SpaceBetween>
             </Alert>
-            <Feedback
-              visible={this.state.isFeedbackVisible}
-              onDismiss={() => this.setState((prev) => ({ ...prev, isFeedbackVisible: false }))}
-            />
           </>
         }
       />
@@ -64,6 +59,5 @@ export default class ErrorBoundary extends React.Component<PropsWithChildren, St
 }
 
 interface State {
-  isFeedbackVisible?: boolean;
   error?: Error;
 }

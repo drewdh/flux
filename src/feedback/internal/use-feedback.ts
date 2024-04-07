@@ -1,4 +1,4 @@
-import { Ref, useRef, useState } from 'react';
+import { Ref, useCallback, useEffect, useRef, useState } from 'react';
 import { AlertProps, NonCancelableCustomEvent } from '@cloudscape-design/components';
 import { TextareaProps } from '@cloudscape-design/components/textarea';
 import { RadioGroupProps } from '@cloudscape-design/components/radio-group';
@@ -29,7 +29,7 @@ interface Values {
   type: SelectProps.Option;
 }
 
-export default function useFeedback({ onDismiss }: Props): State {
+export default function useFeedback(): State {
   const { t } = useTranslation();
   const alertRef = useRef<AlertProps.Ref>(null);
   const emailRef = useRef<InputProps.Ref>(null);
@@ -38,6 +38,7 @@ export default function useFeedback({ onDismiss }: Props): State {
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [isApiError, setIsApiError] = useState<boolean>(false);
+  const [visible, setVisible] = useState<boolean>(false);
   const typeOptions: SelectProps.Option[] = [
     {
       label: t('feedback.typeGeneral'),
@@ -101,6 +102,23 @@ export default function useFeedback({ onDismiss }: Props): State {
     },
   ];
 
+  const openFeedbackHandler = useCallback(
+    (event: CustomEvent<Values>): void => {
+      const { detail } = event;
+      Object.keys(detail).forEach((field) => {
+        // @ts-ignore
+        setFieldValue(field, detail[field]);
+      });
+      setVisible(true);
+    },
+    [setFieldValue]
+  ) as EventListener;
+
+  useEffect(() => {
+    document.addEventListener('openfeedback', openFeedbackHandler);
+    return () => document.removeEventListener('openfeedback', openFeedbackHandler);
+  }, [openFeedbackHandler]);
+
   function handleEmailChange(event: NonCancelableCustomEvent<InputProps.ChangeDetail>) {
     setFieldValue('email', event.detail.value);
   }
@@ -138,7 +156,7 @@ export default function useFeedback({ onDismiss }: Props): State {
   }
 
   function handleDismiss() {
-    onDismiss();
+    setVisible(false);
     setIsSubmitted(false);
     setIsSuccess(false);
     setIsApiError(false);
@@ -164,11 +182,8 @@ export default function useFeedback({ onDismiss }: Props): State {
     satisfiedRef,
     typeOptions,
     values,
+    visible,
   };
-}
-
-interface Props {
-  onDismiss: () => void;
 }
 
 interface State {
@@ -190,4 +205,5 @@ interface State {
   satisfiedRef: Ref<RadioGroupProps.Ref>;
   typeOptions: SelectProps.Options;
   values: Values;
+  visible: boolean;
 }

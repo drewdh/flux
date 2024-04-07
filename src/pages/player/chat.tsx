@@ -148,13 +148,18 @@ export default function Chat({ broadcasterUserId, height }: Props) {
     };
   }, [broadcasterUserId, user?.id, isScrolled]);
 
-  const handleScroll = useCallback(function (this: HTMLDivElement, event: Event) {
-    const isBottom = this.scrollTop >= 0;
-    setIsScrolled(!isBottom);
-    if (isBottom) {
-      setUnreadCount(0);
-    }
-  }, []);
+  const handleScroll = useCallback(
+    function (this: HTMLDivElement, event: Event) {
+      const isBottom = this.scrollTop >= 0;
+      setIsScrolled(!isBottom);
+      if (isBottom) {
+        setUnreadCount(0);
+        // Scroll to very end if `isBottom` because bottom can be 0.5 for some reason
+        scrollContainerRef.current?.scrollTo({ top: 0 });
+      }
+    },
+    [scrollContainerRef]
+  );
 
   useEffect(() => {
     const scrollContainer = scrollContainerRef.current;

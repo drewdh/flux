@@ -23,7 +23,8 @@ $avatar-width: 24px;
   display: block;
   position: absolute;
   box-sizing: border-box;
-  top: 50%;
+  // Half the size of the xs avatar
+  top: 8px;
   right: 100%;
   bottom: 0;
   left: calc(-1 * (#{$avatar-width}/2 + #{cs.$space-scaled-xs}));
@@ -38,18 +39,14 @@ $avatar-width: 24px;
   position: relative;
   flex-wrap: nowrap;
   gap: cs.$space-scaled-xxs;
-  align-items: center;
   // Align with start of message (width of avatar plus flex gap)
   margin-left: calc(#{cs.$space-scaled-xs} + #{$avatar-width});
 }
 .replyTextWrapper {
-  display: -webkit-box;
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
   font-size: cs.$font-size-body-s;
   color: cs.$color-text-status-inactive;
+  line-height: cs.$line-height-body-s;
+  padding-bottom: cs.$space-scaled-xxxs;
 }
 .chatContainer {
   border-top: 1px solid cs.$color-border-divider-default;

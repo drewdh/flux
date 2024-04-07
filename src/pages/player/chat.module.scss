@@ -43,6 +43,7 @@ $avatar-width: 24px;
   margin-left: calc(#{cs.$space-scaled-xs} + #{$avatar-width});
 }
 .replyTextWrapper {
+  word-break: break-word;
   font-size: cs.$font-size-body-s;
   color: cs.$color-text-status-inactive;
   line-height: cs.$line-height-body-s;

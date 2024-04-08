@@ -3,6 +3,7 @@ import { Outlet } from 'react-router';
 
 import TopNavigation from '../top-navigation';
 import ErrorBoundary from 'common/error-boundary';
+import Footer from '../footer/footer';
 
 export default function App() {
   return (
@@ -11,6 +12,7 @@ export default function App() {
       <ErrorBoundary>
         <Outlet />
       </ErrorBoundary>
+      <Footer />
     </>
   );
 }

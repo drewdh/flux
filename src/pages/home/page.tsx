@@ -15,7 +15,7 @@ import SpaceBetween from '@cloudscape-design/components/space-between';
 import DhAppLayout from 'common/flux-app-layout';
 import InternalLink from 'common/internal-link';
 import styles from './styles.module.scss';
-import { useGetFollowedStreams } from '../../api/api';
+import { useGetFollowedStreams, useValidate } from '../../api/api';
 import Avatar from 'common/avatar/avatar';
 import useLocalStorage, { LocalStorageKey } from 'utilities/use-local-storage';
 import useTitle from 'utilities/use-title';
@@ -34,7 +34,7 @@ export default function TwitchPage() {
   useTitle('Flux');
   const [hasWelcome, setHasWelcome] = useLocalStorage(LocalStorageKey.WelcomeMessage, true);
   const [isConnected, setIsConnected] = useState<boolean>(false);
-  const { hash } = useLocation();
+  const { hash, search } = useLocation();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -46,6 +46,13 @@ export default function TwitchPage() {
     }
     setIsConnected(Boolean(hashAccessToken || localStorage.getItem('access_token')));
   }, [hash, navigate]);
+
+  useEffect(() => {
+    const urlSearchParams = new URLSearchParams(search);
+    if (urlSearchParams.get('signOut') === 'true') {
+      setIsConnected(false);
+    }
+  }, [search]);
 
   const { data } = useGetFollowedStreams();
   const followedStreams = data?.pages.flatMap((page) => page.data);
@@ -64,16 +71,16 @@ export default function TwitchPage() {
               onDismiss={() => setHasWelcome(false)}
             >
               Flux is an updated take on Twitch. Flux is not associated with Twitch. All Twitch
-              functionality uses Twitch's APIs directly—none of your Twitch data is sent to Flux.
+              functionality is provided directly through Twitch.
             </Alert>
           )}
           {!isConnected && (
             <Alert
               type="info"
-              header="Connect to Twitch"
-              action={<Button href={connectHref}>Connect</Button>}
+              header="Sign in with Twitch"
+              action={<Button href={connectHref}>Sign in</Button>}
             >
-              To access Twitch data, you must authorize Flux to connect to Twitch.
+              To access your content, sign in with Twitch.
             </Alert>
           )}
           {isConnected && followedStreams?.length && (

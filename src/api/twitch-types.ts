@@ -1,5 +1,4 @@
 export interface TwitchApiClientOptions {
-  accessToken: string;
   clientId: string;
 }
 export interface User {
@@ -262,6 +261,7 @@ export interface Transport {
    * - `conduit`
    * */
   method: 'webhook' | 'websocket' | 'conduit' | string;
+  session_id: string;
 }
 export interface CreateEventSubSubscriptionRequest {
   /** The type of subscription to create. For a list of subscriptions that you can create, see [Subscription Types](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types#subscription-types). Set this field to the value in the __Name__ column of the Subscription Types table. */
@@ -455,3 +455,13 @@ export interface SearchCategoriesResponse {
   data: CategoryResult[];
   pagination: Pagination;
 }
+export interface ValidateRequest {}
+export interface ValidateResponse {
+  client_id: string;
+  login: string;
+  scopes: string[];
+  user_id: string;
+  expires_in: number;
+}
+export interface RevokeRequest {}
+export interface RevokeResponse {}

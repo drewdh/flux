@@ -8,28 +8,28 @@ import { faClockRotateLeft } from '@fortawesome/pro-solid-svg-icons';
 
 import { Pathname } from 'utilities/routes';
 import useNavigateWithRef from 'common/use-navigate-with-ref';
-import { useSearchCategories, useSearchChannels } from '../api/api';
+import { useRevoke, useSearchCategories, useSearchChannels, useValidate } from '../api/api';
 import useLocalStorage, { LocalStorageKey } from 'utilities/use-local-storage';
 import useFollow from 'common/use-follow';
 import { useTranslation } from 'react-i18next';
 import useFeedback from '../feedback/use-feedback';
+import { connectHref } from '../pages/home/page';
 
 export default function useTopNavigation(): State {
   const [searchHistory, setSearchHistory] = useLocalStorage<string[]>(
     LocalStorageKey.SearchHistory,
     []
   );
-  const { t } = useTranslation();
   const follow = useFollow();
   const [searchParams] = useSearchParams();
   const navigate = useNavigateWithRef();
   const [debouncedQuery, setDebouncedQuery] = useState<string>('');
   const [query, setQuery] = useState<string>(searchParams.get('query') ?? '');
-  const { openFeedback } = useFeedback();
 
   const { data: channelSearchData } = useSearchChannels({ query: debouncedQuery, pageSize: 5 });
-  // const { data: }
   const { data: gameSearchData } = useSearchCategories({ query: debouncedQuery, pageSize: 5 });
+  const { data: scopeData } = useValidate();
+  const { mutate: signOut } = useRevoke();
 
   const autosuggestOptions = useMemo((): AutosuggestProps.Options => {
     const options: AutosuggestProps.OptionGroup[] = [];
@@ -118,26 +118,47 @@ export default function useTopNavigation(): State {
     },
   };
 
-  const utilities: TopNavigationProps.Utility[] = [
-    {
-      type: 'button',
-      iconName: 'contact',
-      text: t('nav.feedback'),
-      title: t('nav.feedback'),
-      onClick() {
-        openFeedback();
-      },
-    },
-    {
-      type: 'button',
-      iconName: 'settings',
-      title: 'Settings',
-      href: Pathname.Settings,
-      onFollow: (event) => {
+  const utilities: TopNavigationProps.Utility[] = [];
+
+  if (scopeData?.login) {
+    utilities.push({
+      type: 'menu-dropdown',
+      iconName: 'user-profile-active',
+      text: scopeData.login,
+      onItemFollow: (event) => {
         follow({ href: event.detail.href!, event });
       },
-    },
-  ];
+      onItemClick: (event) => {
+        console.log('hey');
+        if (event.detail.id === 'sign-out') {
+          return signOut();
+        }
+      },
+      items: [
+        {
+          items: [
+            {
+              id: 'settings',
+              iconName: 'settings',
+              text: 'Settings',
+              href: Pathname.Settings,
+            },
+          ],
+        },
+        {
+          id: 'sign-out',
+          text: 'Sign out',
+        },
+      ],
+    });
+  } else {
+    utilities.push({
+      type: 'button',
+      iconName: 'user-profile',
+      href: connectHref,
+      text: 'Sign in',
+    });
+  }
 
   function handleLoadItems(event: NonCancelableCustomEvent<AutosuggestProps.LoadItemsDetail>) {
     setDebouncedQuery(event.detail.filteringText);

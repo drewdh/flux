@@ -17,6 +17,7 @@ import ErrorBoundary from 'common/error-boundary';
 import NotFoundPage from './pages/not-found-page';
 import SettingsPage from './pages/settings/settings';
 import { SettingsProvider } from 'utilities/settings';
+import { TwitchError } from './api/twitch-api-client';
 
 interface GlobalFlags {
   removeHighContrastHeader?: boolean;
@@ -62,7 +63,15 @@ const router = createBrowserRouter([
 
 const locale = document.documentElement.lang;
 const messages = await importMessages(locale);
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: (failureCount, error) => {
+        return (error as TwitchError).status !== 401;
+      },
+    },
+  },
+});
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(

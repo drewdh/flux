@@ -1,19 +1,27 @@
 import {
   InfiniteData,
   useInfiniteQuery,
+  UseInfiniteQueryOptions,
+  useMutation,
+  UseMutationOptions,
   useQuery,
+  useQueryClient,
   UseQueryOptions,
   UseQueryResult,
 } from '@tanstack/react-query';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 
 import {
+  CreateEventSubSubscriptionRequest,
+  CreateEventSubSubscriptionResponse,
+  DeleteEventSubSubscriptionRequest,
   GetFollowedStreamsResponse,
   GetStreamsResponse,
   GetUsersRequest,
   GetUsersResponse,
 } from './twitch-types';
 import { TwitchApiClient } from './twitch-api-client';
+import { Pathname } from 'utilities/routes';
 
 export enum QueryKey {
   GetFollowedStreams = 'GetFollowedStreams',
@@ -24,10 +32,15 @@ export enum QueryKey {
   GetEmoteSets = 'GetEmoteSets',
   SearchChannels = 'SearchChannels',
   SearchCategories = 'SearchCategories',
+  Validate = 'Validate',
+}
+export enum MutationKey {
+  CreateEventSubSubscription = 'CreateEventSubSubscription',
+  DeleteEventSubSubscription = 'DeleteEventSubSubscription',
+  Revoke = 'Revoke',
 }
 
 export const twitchClient = new TwitchApiClient({
-  accessToken: localStorage.getItem('access_token') ?? '',
   clientId: 'w9wdgvpv3h3m957julwgkn25hxsr38',
 });
 
@@ -43,22 +56,28 @@ export function useGetUsers(
   });
 }
 
-export function useGetFollowedStreams() {
-  const { data: users } = useGetUsers({});
-  const user = users?.data[0];
-  return useInfiniteQuery<
+type UseGetFollowedStreamsOptions = Omit<
+  UseInfiniteQueryOptions<
     GetFollowedStreamsResponse,
     Error,
     InfiniteData<GetFollowedStreamsResponse>,
+    GetFollowedStreamsResponse,
     [string],
     string | undefined
-  >({
+  >,
+  'queryFn' | 'queryKey' | 'getNextPageParam' | 'initialPageParam'
+>;
+export function useGetFollowedStreams(options: UseGetFollowedStreamsOptions = {}) {
+  const { data: users } = useGetUsers({});
+  const user = users?.data[0];
+  return useInfiniteQuery({
+    ...options,
     queryFn: ({ pageParam }) =>
       twitchClient.getFollowedStreams({ userId: user!.id, nextToken: pageParam, pageSize: 20 }),
     queryKey: [QueryKey.GetFollowedStreams],
     getNextPageParam: (lastPage) => lastPage.pagination.cursor,
     initialPageParam: undefined,
-    enabled: !!user,
+    enabled: !!user && ('enabled' in options ? options.enabled : true),
   });
 }
 
@@ -140,5 +159,50 @@ export function useSearchCategories({ query, pageSize = 10 }: UseSearchOptions) 
     refetchOnWindowFocus: false,
     refetchOnMount: false,
     refetchOnReconnect: false,
+  });
+}
+
+export function useValidate() {
+  return useQuery({
+    queryFn: () => twitchClient.validate({}),
+    queryKey: [QueryKey.Validate],
+    enabled: !!localStorage.getItem('access_token'),
+  });
+}
+
+export function useRevoke() {
+  const navigate = useNavigate();
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: () => twitchClient.revoke({}),
+    throwOnError: true,
+    mutationKey: [MutationKey.Revoke],
+    onSuccess: () => {
+      localStorage.removeItem('access_token');
+      client.removeQueries({ queryKey: [QueryKey.Validate] });
+      client.removeQueries({ queryKey: [QueryKey.GetFollowedStreams] });
+      navigate({ pathname: Pathname.Home, search: '?signOut=true' });
+    },
+  });
+}
+
+type UseCreateEventSubSubscriptionOptions = Omit<
+  UseMutationOptions<CreateEventSubSubscriptionResponse, Error, CreateEventSubSubscriptionRequest>,
+  'mutationFn' | 'mutationKey'
+>;
+export function useCreateEventSubSubscription(options: UseCreateEventSubSubscriptionOptions = {}) {
+  return useMutation({
+    mutationFn: (request: CreateEventSubSubscriptionRequest) =>
+      twitchClient.createEventSubSubscription(request),
+    mutationKey: [MutationKey.CreateEventSubSubscription],
+    ...options,
+  });
+}
+
+export function useDeleteEventSubSubscription() {
+  return useMutation({
+    mutationFn: (request: DeleteEventSubSubscriptionRequest) =>
+      twitchClient.deleteEventSubSubscription(request),
+    mutationKey: [MutationKey.DeleteEventSubSubscription],
   });
 }

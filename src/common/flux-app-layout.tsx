@@ -34,18 +34,6 @@ function PreviewPopover() {
 
 const Layout = forwardRef(function DhAppLayout(props: Props, ref: Ref<AppLayoutProps.Ref>) {
   const notifications = useContext(NotificationsContext);
-  const { pathname } = useLocation();
-  const follow = useFollow();
-
-  function handleFollow(
-    event: CustomEvent<SideNavigationProps.FollowDetail | ButtonProps.FollowDetail>
-  ) {
-    const { href } = event.detail;
-    if (!href) {
-      return;
-    }
-    follow({ href, event });
-  }
 
   return (
     <AppLayout

@@ -15,25 +15,31 @@ import {
   GetStreamsResponse,
   GetUsersRequest,
   GetUsersResponse,
+  RevokeRequest,
+  RevokeResponse,
   SearchCategoriesRequest,
   SearchCategoriesResponse,
   SearchChannelsRequest,
   SearchChannelsResponse,
   TwitchApiClientOptions,
+  ValidateRequest,
+  ValidateResponse,
 } from './twitch-types';
 
 export class TwitchApiClient {
-  private readonly accessToken: string;
   private readonly clientId: string;
 
   constructor(options: TwitchApiClientOptions) {
-    this.accessToken = options.accessToken;
     this.clientId = options.clientId;
   }
 
-  private getDefaultHeaders() {
+  private getAccessToken() {
+    return localStorage.getItem('access_token');
+  }
+
+  private getDefaultHeaders(): { Authorization: string; 'Client-Id'?: string } {
     return {
-      Authorization: `Bearer ${this.accessToken}`,
+      Authorization: `Bearer ${this.getAccessToken()}`,
       'Client-Id': this.clientId,
     };
   }
@@ -51,7 +57,7 @@ export class TwitchApiClient {
     });
     const respBody = await resp.json();
     if (!resp.ok) {
-      throw respBody;
+      throw new TwitchErrorConstructor(respBody);
     }
     return respBody;
   }
@@ -67,7 +73,8 @@ export class TwitchApiClient {
       }
     );
     if (!resp.ok) {
-      throw resp;
+      const respBody = await resp.json();
+      throw new TwitchErrorConstructor(respBody);
     }
     return {};
   }
@@ -84,7 +91,7 @@ export class TwitchApiClient {
     );
     const respBody = await resp.json();
     if (!resp.ok) {
-      throw respBody;
+      throw new TwitchErrorConstructor(respBody);
     }
     return respBody;
   }
@@ -99,7 +106,7 @@ export class TwitchApiClient {
     );
     const respBody = await resp.json();
     if (!resp.ok) {
-      throw respBody;
+      throw new TwitchErrorConstructor(respBody);
     }
     return respBody;
   }
@@ -116,7 +123,7 @@ export class TwitchApiClient {
     );
     const respBody = await resp.json();
     if (!resp.ok) {
-      throw respBody;
+      throw new TwitchErrorConstructor(respBody);
     }
     return respBody;
   }
@@ -138,7 +145,7 @@ export class TwitchApiClient {
     );
     const respBody = await resp.json();
     if (!resp.ok) {
-      throw respBody;
+      throw new TwitchErrorConstructor(respBody);
     }
     return respBody;
   }
@@ -159,7 +166,7 @@ export class TwitchApiClient {
     });
     const respBody = await resp.json();
     if (!resp.ok) {
-      throw respBody;
+      throw new TwitchErrorConstructor(respBody);
     }
     return respBody;
   }
@@ -174,7 +181,7 @@ export class TwitchApiClient {
     });
     const respBody = await resp.json();
     if (!resp.ok) {
-      throw respBody;
+      throw new TwitchErrorConstructor(respBody);
     }
     return respBody;
   }
@@ -194,14 +201,14 @@ export class TwitchApiClient {
     );
     const respBody = await resp.json();
     if (!resp.ok) {
-      throw respBody;
+      throw new TwitchErrorConstructor(respBody);
     }
     return respBody;
   }
 
   async searchCategories(request: SearchCategoriesRequest): Promise<SearchCategoriesResponse> {
     const searchParams = new URLSearchParams();
-    searchParams.set('query', request.query);
+    searchParams.set('query_foo', request.query);
     request.pageSize && searchParams.set('first', request.pageSize.toString());
     request.nextToken && searchParams.set('after', request.nextToken);
     const resp = await fetch(
@@ -213,8 +220,63 @@ export class TwitchApiClient {
     );
     const respBody = await resp.json();
     if (!resp.ok) {
-      throw respBody;
+      throw new TwitchErrorConstructor(respBody);
     }
     return respBody;
   }
+
+  async validate(request: ValidateRequest): Promise<ValidateResponse> {
+    const headers = this.getDefaultHeaders();
+    delete headers['Client-Id'];
+    const resp = await fetch('https://id.twitch.tv/oauth2/validate', {
+      method: 'GET',
+      headers: headers,
+    });
+    const respBody = await resp.json();
+    if (!resp.ok) {
+      throw new TwitchErrorConstructor(respBody);
+    }
+    return respBody;
+  }
+
+  async revoke(request: RevokeRequest): Promise<RevokeResponse> {
+    const resp = await fetch('https://id.twitch.tv/oauth2/revoke', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: `client_id=${this.clientId}&token=${this.getAccessToken()}`,
+    });
+    if (!resp.ok) {
+      const respBody = await resp.json();
+      throw new TwitchErrorConstructor(respBody);
+    }
+    return {};
+  }
+}
+
+export type TwitchError = Error & {
+  name: string;
+  code: string;
+  message: string;
+  status: number;
+};
+
+export class TwitchErrorConstructor implements TwitchError {
+  readonly name: string = 'TwitchError';
+  readonly code: string;
+  readonly message: string;
+  readonly status: number;
+
+  constructor(error: TwitchResponseError) {
+    this.code = error.error;
+    this.message = error.message;
+    this.status = error.status;
+  }
+}
+
+interface TwitchResponseError {
+  error: string;
+  message: string;
+  status: number;
 }

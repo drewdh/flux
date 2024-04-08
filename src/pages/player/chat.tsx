@@ -1,14 +1,17 @@
 import Container from '@cloudscape-design/components/container';
 import Header from '@cloudscape-design/components/header';
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { twitchClient, useGetUsers } from '../../api/api';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  useCreateEventSubSubscription,
+  useDeleteEventSubSubscription,
+  useGetUsers,
+} from '../../api/api';
 import Box from '@cloudscape-design/components/box';
 import styles from './chat.module.scss';
 import SpaceBetween from '@cloudscape-design/components/space-between';
 import ChatMessage from './chat-message';
 import Alert from '@cloudscape-design/components/alert';
 import {
-  Badge,
   ButtonDropdown,
   ButtonDropdownProps,
   ExpandableSection,
@@ -20,58 +23,25 @@ import { connectHref } from '../home/page';
 import StatusIndicator from '@cloudscape-design/components/status-indicator';
 import clsx from 'clsx';
 import ChatRestrictions from './chat-restrictions';
-import {
-  CreateEventSubSubscriptionResponse,
-  DeleteEventSubSubscriptionResponse,
-  WelcomeMessage,
-  ChatMessage as ChatMessageType,
-  Fragment,
-  ChatEvent,
-} from '../../api/twitch-types';
+import { ChatEvent, ChatMessage as ChatMessageType, WelcomeMessage } from '../../api/twitch-types';
 import Popover from '@cloudscape-design/components/popover';
-import Input from '@cloudscape-design/components/input';
-import FormField from '@cloudscape-design/components/form-field';
 import Avatar from 'common/avatar/avatar';
-import FormikInput from 'common/formik/input';
-import { useFormik } from 'formik';
-import { spaceScaledXs } from '@cloudscape-design/design-tokens';
 import useFeedback from '../../feedback/use-feedback';
-
-interface SubscribeRequest {
-  sessionId: string;
-  broadcasterUserId: string;
-  userId: string;
-}
-async function subscribe(request: SubscribeRequest): Promise<CreateEventSubSubscriptionResponse> {
-  const requestBody = {
-    type: 'channel.chat.message',
-    version: 1,
-    condition: {
-      broadcaster_user_id: request.broadcasterUserId,
-      user_id: request.userId,
-    },
-    transport: {
-      method: 'websocket',
-      session_id: request.sessionId,
-    },
-  };
-  return twitchClient.createEventSubSubscription(requestBody);
-}
-function deleteSubscription(subscriptionId: string): Promise<DeleteEventSubSubscriptionResponse> {
-  return twitchClient.deleteEventSubSubscription({ id: subscriptionId });
-}
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowUpLong } from '@fortawesome/pro-solid-svg-icons';
+import ChatBox from 'common/chat-box/chat-box';
+import { spaceScaledXs } from '@cloudscape-design/design-tokens';
 
 enum SettingsId {
   Restrictions = 'restrictions',
 }
 
 export default function Chat({ broadcasterUserId, height }: Props) {
+  const [subscriptionId, setSubscriptionId] = useState<string>('');
   const [chatMessage, setChatMessage] = useState<string>('');
   const [isRestrictionsModalVisible, setIsRestrictionsModalVisible] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isReconnectError, setIsReconnectError] = useState<boolean>(false);
   const { openFeedback } = useFeedback();
-  const [error, setError] = useState<object | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [messages, setMessages] = useState<ChatEvent[]>([]);
   const { data: userData } = useGetUsers({});
@@ -81,50 +51,46 @@ export default function Chat({ broadcasterUserId, height }: Props) {
   const [highlightedMessage, setHighlightedMessage] = useState<ChatEvent | null>(null);
   // subtract border (1px + 1px), container heading height (53px), and content padding (4px top, 8px bottom), and 84px footer
   const heightString = `${(height ?? 1) - 156}px`;
+  const {
+    mutate: createSubscription,
+    isPending: isLoading,
+    error,
+  } = useCreateEventSubSubscription({
+    onSuccess: (result) => setSubscriptionId(result.data[0].id),
+    onError: (error) => {
+      if (error.message === 'subscription missing proper authorization') {
+        setIsReconnectError(true);
+      }
+    },
+  });
+  const { mutate: deleteSubscription } = useDeleteEventSubSubscription();
 
   useEffect(() => {
     if (!broadcasterUserId || !user?.id) {
       return;
     }
-    let subscriptionId: string;
     const ws = new WebSocket('wss://eventsub.wss.twitch.tv/ws');
-    ws.onopen = function (event) {
-      console.log(event);
-    };
 
     ws.onmessage = function (event) {
       const message: WelcomeMessage | ChatMessageType = JSON.parse(event.data);
       if (message.metadata.message_type === 'session_welcome') {
-        setError(null);
         setIsReconnectError(false);
-        subscribe({
-          sessionId: (message as WelcomeMessage).payload.session.id,
-          broadcasterUserId,
-          userId: user.id,
-        })
-          .then((resp) => (subscriptionId = resp.data[0].id))
-          .catch((error) => {
-            if (error.message === 'subscription missing proper authorization') {
-              setIsReconnectError(true);
-            } else {
-              setError(error);
-            }
-          })
-          .finally(() => setIsLoading(false));
+        createSubscription({
+          type: 'channel.chat.message',
+          version: 1,
+          condition: {
+            broadcaster_user_id: broadcasterUserId,
+            user_id: user.id,
+          },
+          transport: {
+            method: 'websocket',
+            session_id: (message as WelcomeMessage).payload.session.id,
+          },
+        });
         return;
       }
       if (message.metadata.message_type === 'notification') {
         const { event: newMessage } = (message as ChatMessageType).payload;
-        // console.log(event);
-        // const newMessage: SimpleMessage = {
-        //   color: event.color,
-        //   fragments: event.message.fragments,
-        //   message_id: event.message_id,
-        //   message_text: event.message.text,
-        //   chatter_user_id: event.chatter_user_id,
-        //   chatter_user_name: event.chatter_user_name,
-        //   subscriber_month_count: event.badges.find((badge) => badge.set_id === 'subscriber')?.info,
-        // };
         setMessages((prevMessages) => {
           // Some messages can be duplicated, so don't process these again
           // https://dev.twitch.tv/docs/eventsub/#handling-duplicate-events
@@ -144,9 +110,9 @@ export default function Chat({ broadcasterUserId, height }: Props) {
 
     return () => {
       ws.close();
-      subscriptionId && deleteSubscription(subscriptionId);
+      deleteSubscription({ id: subscriptionId });
     };
-  }, [broadcasterUserId, user?.id, isScrolled]);
+  }, [broadcasterUserId, user, isScrolled, createSubscription, deleteSubscription]);
 
   const handleScroll = useCallback(
     function (this: HTMLDivElement, event: Event) {
@@ -266,15 +232,15 @@ export default function Chat({ broadcasterUserId, height }: Props) {
                     iconAlign="right"
                     target="_blank"
                   >
-                    Reconnect
+                    Sign in
                   </Button>
                 }
               >
-                Flux's Twitch permissions have changed. Reconnect to Twitch and reload the page to
-                enable chat.
+                Flux's Twitch permissions have changed. Sign in with Twitch again and reload the
+                page to enable chat.
               </Alert>
             )}
-            {error && (
+            {error && !isReconnectError && (
               <Alert type="error" header="Failed to load chat">
                 <SpaceBetween size="m">
                   <div>

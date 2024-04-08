@@ -29,7 +29,7 @@ import Avatar from 'common/avatar/avatar';
 import useFeedback from '../../feedback/use-feedback';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowUpLong } from '@fortawesome/pro-solid-svg-icons';
-import ChatBox from 'common/chat-box/chat-box';
+// import ChatBox from 'common/chat-box/chat-box';
 import { spaceScaledXs } from '@cloudscape-design/design-tokens';
 
 enum SettingsId {

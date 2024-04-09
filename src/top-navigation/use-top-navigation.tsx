@@ -20,6 +20,10 @@ export default function useTopNavigation(): State {
     LocalStorageKey.SearchHistory,
     []
   );
+  const [searchHistoryEnabled] = useLocalStorage<boolean>(
+    LocalStorageKey.SearchHistoryEnabled,
+    false
+  );
   const follow = useFollow();
   const [searchParams] = useSearchParams();
   const navigate = useNavigateWithRef();
@@ -92,12 +96,14 @@ export default function useTopNavigation(): State {
 
   function submitSearch(nextQuery?: string) {
     const finalQuery = nextQuery || query;
-    setSearchHistory((prev) => {
-      if (prev.includes(finalQuery)) {
-        return prev;
-      }
-      return [finalQuery, ...prev].slice(0, 5);
-    });
+    if (searchHistoryEnabled) {
+      setSearchHistory((prev) => {
+        if (prev.includes(finalQuery)) {
+          return prev;
+        }
+        return [finalQuery, ...prev].slice(0, 5);
+      });
+    }
     navigate({
       pathname: Pathname.Results,
       search: `?query=${finalQuery}`,

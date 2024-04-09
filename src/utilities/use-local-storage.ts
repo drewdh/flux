@@ -3,6 +3,7 @@ import { Dispatch, SetStateAction, useCallback, useState } from 'react';
 export enum LocalStorageKey {
   WelcomeMessage = 'welcomeMessage',
   SearchHistory = 'searchHistory',
+  SearchHistoryEnabled = 'searchHistoryEnabled',
   Appearance = 'appearance',
   Language = 'i18nextLng',
 }

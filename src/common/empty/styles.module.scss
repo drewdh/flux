@@ -1,0 +1,8 @@
+@use '@cloudscape-design/design-tokens' as cs;
+
+.wrapper {
+  margin-top: cs.$space-scaled-xs;
+  margin-bottom: cs.$space-scaled-xs;
+  text-align: center;
+  color: cs.$color-text-empty;
+}

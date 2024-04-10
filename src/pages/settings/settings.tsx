@@ -7,8 +7,11 @@ import Theme from './theme';
 import Language from './language';
 import { useTranslation } from 'react-i18next';
 import RecentSearches from './recent-searches';
+import Disconnect from './disconnect';
+import useTitle from 'utilities/use-title';
 
 export default function SettingsPage() {
+  useTitle('Settings - Flux');
   const { t } = useTranslation('translation', { keyPrefix: 'settings' });
 
   return (
@@ -27,6 +30,7 @@ export default function SettingsPage() {
             <Theme />
             <RecentSearches />
             <Language />
+            <Disconnect />
           </SpaceBetween>
         </ContentLayout>
       }

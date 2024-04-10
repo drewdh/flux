@@ -36,7 +36,12 @@ export function Message({ variant, message }: Props) {
               let finalString: ReactNode = shouldTrimStart ? string : string;
               if (string.startsWith('https://')) {
                 finalString = (
-                  <Link rel="noreferrer" href={string} target="_blank">
+                  <Link
+                    onFollow={(e) => e.stopPropagation()}
+                    rel="noreferrer"
+                    href={string}
+                    target="_blank"
+                  >
                     {string}
                   </Link>
                 );

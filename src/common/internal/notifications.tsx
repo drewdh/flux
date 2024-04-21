@@ -2,9 +2,10 @@ import { createContext, PropsWithChildren, useCallback, useState } from 'react';
 import { FlashbarProps } from '@cloudscape-design/components/flashbar';
 import without from 'lodash/without';
 import { ButtonProps } from '@cloudscape-design/components/button';
+import { v4 as uuidV4 } from 'uuid';
 
 interface NotificationsClient {
-  addNotification: (item: FlashbarProps.MessageDefinition & { id: string }) => void;
+  addNotification: (item: FlashbarProps.MessageDefinition) => void;
   items: FlashbarProps.MessageDefinition[];
 }
 
@@ -23,21 +24,20 @@ export function NotificationsProvider({ children }: PropsWithChildren) {
     });
   }
 
-  const addNotification = useCallback(
-    (item: FlashbarProps.MessageDefinition & { id: string }): void => {
-      const newItem: FlashbarProps.MessageDefinition = {
-        ...item,
-        onDismiss: (event: CustomEvent<ButtonProps.ClickDetail>) => {
-          item.onDismiss?.(event);
-          dismissNotification(item.id);
-        },
-      };
-      setItems((prevItems) => {
-        return [...prevItems, newItem];
-      });
-    },
-    []
-  );
+  const addNotification = useCallback((item: FlashbarProps.MessageDefinition): void => {
+    const id = item.id ?? uuidV4();
+    const newItem: FlashbarProps.MessageDefinition = {
+      ...item,
+      id,
+      onDismiss: (event: CustomEvent<ButtonProps.ClickDetail>) => {
+        item.onDismiss?.(event);
+        dismissNotification(id);
+      },
+    };
+    setItems((prevItems) => {
+      return [...prevItems, newItem];
+    });
+  }, []);
 
   return (
     <NotificationsContext.Provider value={{ items, addNotification }}>

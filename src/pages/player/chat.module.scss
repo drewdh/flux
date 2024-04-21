@@ -13,14 +13,15 @@ $avatar-width: 24px;
 .wrapper {
   padding: cs.$space-scaled-xxs 0;
 }
+.clickable {
+  cursor: pointer;
+}
 .messageWrapper {
   display: flex;
   flex-wrap: nowrap;
   gap: cs.$space-scaled-xs;
 }
 .replyConnector {
-  content: " ";
-  display: block;
   position: absolute;
   box-sizing: border-box;
   // Half the size of the xs avatar
@@ -33,6 +34,27 @@ $avatar-width: 24px;
   border-width: 2px 0 0 2px;
   border-style: solid;
   border-top-left-radius: 12px;
+}
+.collapse {
+  line-height: 0;
+}
+.newReplyConnectorWrapper {
+  position: relative;
+}
+.newReplyConnector {
+  display: block;
+  content: " ";
+  position: absolute;
+  box-sizing: border-box;
+  // Half the size of the xs avatar
+  top: 24px;
+  right: 12px;
+  bottom: -20px;
+  left: 12px;
+  margin: 2px 2px 2px -1px;
+  border-color: cs.$color-border-divider-default;
+  border-width: 0 0 0 2px;
+  border-style: solid;
 }
 .replyWrapper {
   display: flex;

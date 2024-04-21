@@ -1,0 +1,42 @@
+@use '@cloudscape-design/design-tokens' as cs;
+
+$horizontal-input-padding: cs.$space-scaled-s;
+$vertical-input-padding: cs.$space-scaled-xxs;
+$border-width: 2px;
+
+.wrapper {
+  position: relative;
+  width: 100%;
+}
+.input {
+  background-color: cs.$color-background-input-default;
+  border-width: $border-width;
+  word-break: break-word;
+  border-style: solid;
+  border-radius: cs.$border-radius-input;
+  border-color: cs.$color-border-input-default;
+  padding-inline-start: $horizontal-input-padding;
+  padding-inline-end: $horizontal-input-padding;
+  padding-block-start: $vertical-input-padding;
+  padding-block-end: $vertical-input-padding;
+  padding: $vertical-input-padding $horizontal-input-padding;
+  &::placeholder {
+    font-style: italic;
+    color: cs.$color-text-input-placeholder;
+  }
+  &:focus {
+    border-color: cs.$color-border-input-focused;
+  }
+  p {
+    margin: 0;
+  }
+  z-index: 1;
+}
+.placeholder {
+  color: cs.$color-text-input-placeholder;
+  font-style: italic;
+  position: absolute;
+  z-index: 0;
+  top: calc(#{$vertical-input-padding} + $border-width);
+  left: calc(#{$horizontal-input-padding} + $border-width);
+}

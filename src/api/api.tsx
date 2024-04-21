@@ -19,9 +19,17 @@ import {
   GetStreamsResponse,
   GetUsersRequest,
   GetUsersResponse,
+  SendChatMessageRequest,
+  SendChatMessageResponse,
 } from './twitch-types';
-import { TwitchApiClient } from './twitch-api-client';
+import { TwitchApiClient, TwitchError } from './twitch-api-client';
 import { Pathname } from 'utilities/routes';
+import useAddNotification from 'common/use-add-notification';
+import { v4 as uuidV4 } from 'uuid';
+import Button from '@cloudscape-design/components/button';
+import ButtonLink from 'common/button-link';
+import InternalLink from 'common/internal-link';
+import { connectHref } from '../pages/home/page';
 
 export enum QueryKey {
   GetFollowedStreams = 'GetFollowedStreams',
@@ -38,6 +46,7 @@ export enum MutationKey {
   CreateEventSubSubscription = 'CreateEventSubSubscription',
   DeleteEventSubSubscription = 'DeleteEventSubSubscription',
   Revoke = 'Revoke',
+  SendChatMessage = 'SendChatMessage',
 }
 
 export const twitchClient = new TwitchApiClient({
@@ -204,5 +213,40 @@ export function useDeleteEventSubSubscription() {
     mutationFn: (request: DeleteEventSubSubscriptionRequest) =>
       twitchClient.deleteEventSubSubscription(request),
     mutationKey: [MutationKey.DeleteEventSubSubscription],
+  });
+}
+
+export function useSendChatMessage(
+  options: UseMutationOptions<
+    SendChatMessageResponse,
+    TwitchError,
+    SendChatMessageRequest,
+    unknown
+  > = {}
+) {
+  const addNotification = useAddNotification();
+  return useMutation({
+    ...options,
+    mutationFn: (request: SendChatMessageRequest) => twitchClient.sendChatMessage(request),
+    mutationKey: [MutationKey.SendChatMessage],
+    onError: (error: TwitchError, variables, context) => {
+      const isScopeOutdated = error.message.startsWith('User access token requires the');
+      if (!isScopeOutdated) {
+        return;
+      }
+      addNotification({
+        action: (
+          <Button href={connectHref} target="_blank" iconAlign="right" iconName="external">
+            Sign in
+          </Button>
+        ),
+        header: 'Access denied',
+        content:
+          "Flux's Twitch permissions have changed. Sign in again on Twitch to send chat messages.",
+        dismissible: true,
+        type: 'error',
+      });
+      options.onError?.(error, variables, context);
+    },
   });
 }

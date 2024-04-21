@@ -5,6 +5,7 @@ import {
   useCreateEventSubSubscription,
   useDeleteEventSubSubscription,
   useGetUsers,
+  useSendChatMessage,
 } from '../../api/api';
 import Box from '@cloudscape-design/components/box';
 import styles from './chat.module.scss';
@@ -29,15 +30,16 @@ import Avatar from 'common/avatar/avatar';
 import useFeedback from '../../feedback/use-feedback';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowUpLong } from '@fortawesome/pro-solid-svg-icons';
-// import ChatBox from 'common/chat-box/chat-box';
+import ChatBox from 'common/chat-box/chat-box';
 import { spaceScaledXs } from '@cloudscape-design/design-tokens';
 
 enum SettingsId {
   Restrictions = 'restrictions',
 }
+let isInit: boolean = false;
+let subscriptionId: string;
 
 export default function Chat({ broadcasterUserId, height }: Props) {
-  const [subscriptionId, setSubscriptionId] = useState<string>('');
   const [chatMessage, setChatMessage] = useState<string>('');
   const [isRestrictionsModalVisible, setIsRestrictionsModalVisible] = useState<boolean>(false);
   const [isReconnectError, setIsReconnectError] = useState<boolean>(false);
@@ -56,7 +58,7 @@ export default function Chat({ broadcasterUserId, height }: Props) {
     isPending: isLoading,
     error,
   } = useCreateEventSubSubscription({
-    onSuccess: (result) => setSubscriptionId(result.data[0].id),
+    onSuccess: (result) => (subscriptionId = result.data[0].id),
     onError: (error) => {
       if (error.message === 'subscription missing proper authorization') {
         setIsReconnectError(true);
@@ -64,13 +66,16 @@ export default function Chat({ broadcasterUserId, height }: Props) {
     },
   });
   const { mutate: deleteSubscription } = useDeleteEventSubSubscription();
+  const { mutate: sendChat } = useSendChatMessage({
+    onSuccess: () => {},
+  });
 
   useEffect(() => {
-    if (!broadcasterUserId || !user?.id) {
+    if (isInit || !broadcasterUserId || !user?.id) {
       return;
     }
-    const ws = new WebSocket('wss://eventsub.wss.twitch.tv/ws');
 
+    const ws = new WebSocket('wss://eventsub.wss.twitch.tv/ws');
     ws.onmessage = function (event) {
       const message: WelcomeMessage | ChatMessageType = JSON.parse(event.data);
       if (message.metadata.message_type === 'session_welcome') {
@@ -108,6 +113,8 @@ export default function Chat({ broadcasterUserId, height }: Props) {
       }
     };
 
+    isInit = true;
+
     return () => {
       ws.close();
       deleteSubscription({ id: subscriptionId });
@@ -141,6 +148,20 @@ export default function Chat({ broadcasterUserId, height }: Props) {
     });
   }, []);
 
+  const handleSendChat = useCallback(
+    (message?: string): void => {
+      console.log(message);
+      console.log(chatMessage);
+      sendChat({
+        broadcaster_id: broadcasterUserId ?? '',
+        message: message || chatMessage,
+        sender_id: user?.id ?? '',
+        reply_parent_message_id: highlightedMessage?.message_id,
+      });
+    },
+    [chatMessage, sendChat, broadcasterUserId, user, highlightedMessage]
+  );
+
   function handleItemClick(event: NonCancelableCustomEvent<ButtonDropdownProps.ItemClickDetails>) {
     const { id } = event.detail;
     if (id === SettingsId.Restrictions) {
@@ -153,15 +174,40 @@ export default function Chat({ broadcasterUserId, height }: Props) {
       <Container
         disableHeaderPaddings
         disableContentPaddings
-        // footer={
-        //   highlightedMessage && (
-        //     <ChatMessage
-        //       message={highlightedMessage}
-        //       onHide={() => setHighlightedMessage(null)}
-        //       variant="featured"
-        //     />
-        //   )
-        // }
+        footer={
+          <SpaceBetween size="s">
+            {highlightedMessage && (
+              <div>
+                <Box float="right">
+                  <Button
+                    onClick={() => setHighlightedMessage(null)}
+                    variant="icon"
+                    iconName="close"
+                  />
+                </Box>
+                <Box variant="h5">Replying to {highlightedMessage.chatter_user_name}</Box>
+                <ChatMessage message={highlightedMessage} variant="featured" />
+              </div>
+            )}
+            <div style={{ display: 'flex', gap: spaceScaledXs, flexWrap: 'nowrap' }}>
+              <div style={{ marginTop: '4px' }}>
+                <Avatar userId={user?.id ?? ''} size="s" />
+              </div>
+              <ChatBox
+                onChange={(value) => setChatMessage(value)}
+                onSubmit={handleSendChat}
+                placeholder={highlightedMessage ? 'Reply' : 'Chat'}
+              />
+              <div style={{ alignSelf: 'end' }}>
+                <Button
+                  onClick={() => handleSendChat()}
+                  variant="link"
+                  iconSvg={<FontAwesomeIcon color="inherit" icon={faArrowUpLong} />}
+                />
+              </div>
+            </div>
+          </SpaceBetween>
+        }
         header={
           <div className={styles.chatHeader}>
             <Header

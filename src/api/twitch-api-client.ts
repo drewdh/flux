@@ -21,6 +21,8 @@ import {
   SearchCategoriesResponse,
   SearchChannelsRequest,
   SearchChannelsResponse,
+  SendChatMessageRequest,
+  SendChatMessageResponse,
   TwitchApiClientOptions,
   ValidateRequest,
   ValidateResponse,
@@ -57,7 +59,7 @@ export class TwitchApiClient {
     });
     const respBody = await resp.json();
     if (!resp.ok) {
-      throw new TwitchErrorConstructor(respBody);
+      throw new TwitchError(respBody);
     }
     return respBody;
   }
@@ -74,7 +76,7 @@ export class TwitchApiClient {
     );
     if (!resp.ok) {
       const respBody = await resp.json();
-      throw new TwitchErrorConstructor(respBody);
+      throw new TwitchError(respBody);
     }
     return {};
   }
@@ -91,7 +93,7 @@ export class TwitchApiClient {
     );
     const respBody = await resp.json();
     if (!resp.ok) {
-      throw new TwitchErrorConstructor(respBody);
+      throw new TwitchError(respBody);
     }
     return respBody;
   }
@@ -106,7 +108,7 @@ export class TwitchApiClient {
     );
     const respBody = await resp.json();
     if (!resp.ok) {
-      throw new TwitchErrorConstructor(respBody);
+      throw new TwitchError(respBody);
     }
     return respBody;
   }
@@ -123,7 +125,7 @@ export class TwitchApiClient {
     );
     const respBody = await resp.json();
     if (!resp.ok) {
-      throw new TwitchErrorConstructor(respBody);
+      throw new TwitchError(respBody);
     }
     return respBody;
   }
@@ -145,7 +147,7 @@ export class TwitchApiClient {
     );
     const respBody = await resp.json();
     if (!resp.ok) {
-      throw new TwitchErrorConstructor(respBody);
+      throw new TwitchError(respBody);
     }
     return respBody;
   }
@@ -166,7 +168,7 @@ export class TwitchApiClient {
     });
     const respBody = await resp.json();
     if (!resp.ok) {
-      throw new TwitchErrorConstructor(respBody);
+      throw new TwitchError(respBody);
     }
     return respBody;
   }
@@ -181,7 +183,7 @@ export class TwitchApiClient {
     });
     const respBody = await resp.json();
     if (!resp.ok) {
-      throw new TwitchErrorConstructor(respBody);
+      throw new TwitchError(respBody);
     }
     return respBody;
   }
@@ -201,7 +203,7 @@ export class TwitchApiClient {
     );
     const respBody = await resp.json();
     if (!resp.ok) {
-      throw new TwitchErrorConstructor(respBody);
+      throw new TwitchError(respBody);
     }
     return respBody;
   }
@@ -220,7 +222,7 @@ export class TwitchApiClient {
     );
     const respBody = await resp.json();
     if (!resp.ok) {
-      throw new TwitchErrorConstructor(respBody);
+      throw new TwitchError(respBody);
     }
     return respBody;
   }
@@ -234,7 +236,7 @@ export class TwitchApiClient {
     });
     const respBody = await resp.json();
     if (!resp.ok) {
-      throw new TwitchErrorConstructor(respBody);
+      throw new TwitchError(respBody);
     }
     return respBody;
   }
@@ -249,26 +251,38 @@ export class TwitchApiClient {
     });
     if (!resp.ok) {
       const respBody = await resp.json();
-      throw new TwitchErrorConstructor(respBody);
+      throw new TwitchError(respBody);
     }
     return {};
   }
+
+  async sendChatMessage(request: SendChatMessageRequest): Promise<SendChatMessageResponse> {
+    const params = new URLSearchParams();
+    params.set('message', request.message);
+    params.set('sender_id', request.sender_id);
+    params.set('broadcaster_id', request.broadcaster_id);
+    request.reply_parent_message_id &&
+      params.set('reply_parent_message_id', request.reply_parent_message_id);
+    const resp = await fetch(`https://api.twitch.tv/helix/chat/messages?${params.toString()}`, {
+      method: 'POST',
+      headers: this.getDefaultHeaders(),
+    });
+    const respBody = await resp.json();
+    if (!resp.ok) {
+      throw new TwitchError(respBody);
+    }
+    return respBody;
+  }
 }
 
-export type TwitchError = Error & {
-  name: string;
-  code: string;
-  message: string;
-  status: number;
-};
-
-export class TwitchErrorConstructor implements TwitchError {
+export class TwitchError extends Error {
   readonly name: string = 'TwitchError';
   readonly code: string;
   readonly message: string;
   readonly status: number;
 
   constructor(error: TwitchResponseError) {
+    super();
     this.code = error.error;
     this.message = error.message;
     this.status = error.status;

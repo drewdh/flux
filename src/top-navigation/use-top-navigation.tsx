@@ -37,6 +37,11 @@ export default function useTopNavigation(): State {
   useEffect(() => {
     function eventListener(event: KeyboardEvent) {
       if (event.key === '/') {
+        // Don't trigger shortcut if body isn't focused
+        if (document.activeElement?.tagName !== 'BODY') {
+          return;
+        }
+        event.preventDefault();
         autosuggestRef.current!.focus();
       }
     }

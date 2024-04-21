@@ -1,7 +1,7 @@
 import { TopNavigationProps } from '@cloudscape-design/components/top-navigation';
 import { AutosuggestProps } from '@cloudscape-design/components/autosuggest';
 import { NonCancelableCustomEvent } from '@cloudscape-design/components';
-import { useMemo, useState } from 'react';
+import { RefObject, useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClockRotateLeft } from '@fortawesome/pro-solid-svg-icons';
@@ -27,11 +27,24 @@ export default function useTopNavigation(): State {
   const navigate = useNavigateWithRef();
   const [debouncedQuery, setDebouncedQuery] = useState<string>('');
   const [query, setQuery] = useState<string>(searchParams.get('query') ?? '');
+  const autosuggestRef = useRef<AutosuggestProps.Ref>(null);
 
   const { data: channelSearchData } = useSearchChannels({ query: debouncedQuery, pageSize: 5 });
   const { data: gameSearchData } = useSearchCategories({ query: debouncedQuery, pageSize: 5 });
   const { data: scopeData } = useValidate();
   const { mutate: signOut } = useRevoke();
+
+  useEffect(() => {
+    function eventListener(event: KeyboardEvent) {
+      if (event.key === '/') {
+        autosuggestRef.current!.focus();
+      }
+    }
+    document.addEventListener('keydown', eventListener);
+    return () => {
+      document.removeEventListener('keydown', eventListener);
+    };
+  }, []);
 
   const autosuggestOptions = useMemo((): AutosuggestProps.Options => {
     const options: AutosuggestProps.OptionGroup[] = [];
@@ -184,6 +197,7 @@ export default function useTopNavigation(): State {
   }
 
   return {
+    autosuggestRef,
     autosuggestOptions,
     handleKeyDown,
     handleLoadItems,
@@ -197,6 +211,7 @@ export default function useTopNavigation(): State {
 }
 
 interface State {
+  autosuggestRef: RefObject<AutosuggestProps.Ref>;
   autosuggestOptions: AutosuggestProps.Options;
   handleKeyDown: (event: CustomEvent<AutosuggestProps.KeyDetail>) => void;
   handleLoadItems: (event: NonCancelableCustomEvent<AutosuggestProps.LoadItemsDetail>) => void;

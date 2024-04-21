@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next';
 export default function TopNavigation() {
   const { t } = useTranslation();
   const {
+    autosuggestRef,
     autosuggestOptions,
     handleKeyDown,
     handleLoadItems,
@@ -30,6 +31,7 @@ export default function TopNavigation() {
           utilities={utilities}
           search={
             <Autosuggest
+              ref={autosuggestRef}
               filteringType="manual"
               onChange={handleSearchChange}
               onLoadItems={handleLoadItems}

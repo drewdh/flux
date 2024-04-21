@@ -9,7 +9,9 @@ export default function Empty({ header, message, action }: Props) {
     <div className={styles.wrapper}>
       <SpaceBetween size="xxs">
         <div>
-          <b>{header}</b>
+          <Box variant="strong" color="inherit">
+            {header}
+          </Box>
           {message && (
             <Box variant="p" color="inherit">
               {message}

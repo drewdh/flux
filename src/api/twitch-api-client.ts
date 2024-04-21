@@ -210,7 +210,7 @@ export class TwitchApiClient {
 
   async searchCategories(request: SearchCategoriesRequest): Promise<SearchCategoriesResponse> {
     const searchParams = new URLSearchParams();
-    searchParams.set('query_foo', request.query);
+    searchParams.set('query', request.query);
     request.pageSize && searchParams.set('first', request.pageSize.toString());
     request.nextToken && searchParams.set('after', request.nextToken);
     const resp = await fetch(

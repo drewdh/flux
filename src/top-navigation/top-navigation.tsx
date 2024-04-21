@@ -11,10 +11,10 @@ export default function TopNavigation() {
   const { t } = useTranslation();
   const {
     autosuggestOptions,
+    handleKeyDown,
     handleLoadItems,
     handleSearchChange,
     handleSelect,
-    handleSubmit,
     i18nStrings,
     identity,
     searchInputValue,
@@ -29,17 +29,16 @@ export default function TopNavigation() {
           i18nStrings={i18nStrings}
           utilities={utilities}
           search={
-            <form onSubmit={handleSubmit}>
-              <Autosuggest
-                filteringType="manual"
-                onChange={handleSearchChange}
-                onLoadItems={handleLoadItems}
-                onSelect={handleSelect}
-                placeholder={t('nav.search.placeholder')}
-                value={searchInputValue}
-                options={autosuggestOptions}
-              />
-            </form>
+            <Autosuggest
+              filteringType="manual"
+              onChange={handleSearchChange}
+              onLoadItems={handleLoadItems}
+              onSelect={handleSelect}
+              onKeyDown={handleKeyDown}
+              placeholder={t('nav.search.placeholder')}
+              value={searchInputValue}
+              options={autosuggestOptions}
+            />
           }
         />
       </div>

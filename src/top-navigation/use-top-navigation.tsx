@@ -1,7 +1,7 @@
 import { TopNavigationProps } from '@cloudscape-design/components/top-navigation';
 import { AutosuggestProps } from '@cloudscape-design/components/autosuggest';
 import { NonCancelableCustomEvent } from '@cloudscape-design/components';
-import { FormEvent, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClockRotateLeft } from '@fortawesome/pro-solid-svg-icons';
@@ -11,8 +11,6 @@ import useNavigateWithRef from 'common/use-navigate-with-ref';
 import { useRevoke, useSearchCategories, useSearchChannels, useValidate } from '../api/api';
 import useLocalStorage, { LocalStorageKey } from 'utilities/use-local-storage';
 import useFollow from 'common/use-follow';
-import { useTranslation } from 'react-i18next';
-import useFeedback from '../feedback/use-feedback';
 import { connectHref } from '../pages/home/page';
 
 export default function useTopNavigation(): State {
@@ -178,17 +176,19 @@ export default function useTopNavigation(): State {
     submitSearch(event.detail.value);
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    submitSearch();
+  function handleKeyDown(event: CustomEvent<AutosuggestProps.KeyDetail>) {
+    // Pressing enter only selects the highlighted result
+    if (event.detail.key === 'Enter') {
+      submitSearch();
+    }
   }
 
   return {
     autosuggestOptions,
+    handleKeyDown,
     handleLoadItems,
     handleSearchChange,
     handleSelect,
-    handleSubmit,
     i18nStrings,
     identity,
     searchInputValue: query,
@@ -198,10 +198,10 @@ export default function useTopNavigation(): State {
 
 interface State {
   autosuggestOptions: AutosuggestProps.Options;
+  handleKeyDown: (event: CustomEvent<AutosuggestProps.KeyDetail>) => void;
   handleLoadItems: (event: NonCancelableCustomEvent<AutosuggestProps.LoadItemsDetail>) => void;
   handleSearchChange: (event: NonCancelableCustomEvent<AutosuggestProps.ChangeDetail>) => void;
   handleSelect: (event: NonCancelableCustomEvent<AutosuggestProps.SelectDetail>) => void;
-  handleSubmit: (event: FormEvent<HTMLFormElement>) => void;
   i18nStrings: TopNavigationProps.I18nStrings;
   identity: TopNavigationProps.Identity;
   searchInputValue: string;

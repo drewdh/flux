@@ -9,6 +9,8 @@ import {
   GetChatSettingsResponse,
   GetEmoteSetsRequest,
   GetEmoteSetsResponse,
+  GetFollowedChannelsRequest,
+  GetFollowedChannelsResponse,
   GetFollowedStreamsRequest,
   GetFollowedStreamsResponse,
   GetStreamsRequest,
@@ -84,8 +86,29 @@ export class TwitchApiClient {
   async getChannelFollowers(
     request: GetChannelFollowersRequest
   ): Promise<GetChannelFollowersResponse> {
+    const searchParams = new URLSearchParams({ broadcaster_id: request.broadcaster_id });
+    request.user_id && searchParams.set('user_id', request.user_id);
     const resp = await fetch(
-      `https://api.twitch.tv/helix/channels/followers?broadcaster_id=${request.broadcaster_id}&id=${request.user_id}`,
+      `https://api.twitch.tv/helix/channels/followers?${searchParams.toString()}`,
+      {
+        method: 'GET',
+        headers: this.getDefaultHeaders(),
+      }
+    );
+    const respBody = await resp.json();
+    if (!resp.ok) {
+      throw new TwitchError(respBody);
+    }
+    return respBody;
+  }
+
+  async getFollowedChannels(
+    request: GetFollowedChannelsRequest
+  ): Promise<GetFollowedChannelsResponse> {
+    const searchParams = new URLSearchParams({ user_id: request.user_id });
+    request.broadcaster_id && searchParams.set('broadcaster_id', request.broadcaster_id);
+    const resp = await fetch(
+      `https://api.twitch.tv/helix/channels/followed?${searchParams.toString()}`,
       {
         method: 'GET',
         headers: this.getDefaultHeaders(),
@@ -174,10 +197,10 @@ export class TwitchApiClient {
   }
 
   async getUsers(request: GetUsersRequest): Promise<GetUsersResponse> {
-    let search: string = '';
-    request.ids?.forEach((id) => (search += `id=${id}&`));
-    request.logins?.forEach((login) => (search += `login=${login}&`));
-    const resp = await fetch(`https://api.twitch.tv/helix/users?${search}`, {
+    const searchParams = new URLSearchParams();
+    request.ids?.forEach((id) => searchParams.append('id', id));
+    request.logins?.forEach((login) => searchParams.append('login', login));
+    const resp = await fetch(`https://api.twitch.tv/helix/users?${searchParams.toString()}`, {
       method: 'GET',
       headers: this.getDefaultHeaders(),
     });

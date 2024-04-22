@@ -14,9 +14,13 @@ $viewport-breakpoint-xs: 688px;
   background-color: black;
 }
 .stats {
-  white-space: nowrap;
-  padding-left: cs.$space-scaled-s;
-  text-align: right;
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: cs.$space-scaled-xs;
+}
+.tags {
+  display: flex;
+  column-gap: cs.$space-scaled-xxs;
 }
 @media screen and (max-width: $viewport-breakpoint-xs) {
   .player {

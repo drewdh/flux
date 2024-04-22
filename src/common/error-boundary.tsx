@@ -40,7 +40,6 @@ export default class ErrorBoundary extends React.Component<PropsWithChildren, St
                       openFeedback();
                     }}
                     variant="primary"
-                    color="inverted"
                   >
                     Send feedback
                   </Link>{' '}

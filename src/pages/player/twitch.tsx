@@ -13,6 +13,10 @@ import Chat from './chat';
 import Icon from '@cloudscape-design/components/icon';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBadgeCheck } from '@fortawesome/pro-solid-svg-icons';
+import Details from './details';
+import Button from '@cloudscape-design/components/button';
+import FollowButton from 'common/follow-button';
+import { spaceScaledL, spaceScaledM, spaceScaledXs } from '@cloudscape-design/design-tokens';
 
 export default function TwitchComponent() {
   const player = useRef<any>(null);
@@ -21,7 +25,7 @@ export default function TwitchComponent() {
   const { user: username } = useParams();
   const { data: userData } = useGetUsers({ logins: [username ?? ''] });
   const user = userData?.data[0];
-  const { data: followersData } = useGetChannelFollowers(user?.id);
+  const { data: followersData } = useGetChannelFollowers({ broadcasterId: user?.id });
   useTitle(`${username} - Flux`);
 
   useEffect(() => {
@@ -89,16 +93,13 @@ export default function TwitchComponent() {
             <Box fontSize="heading-m" fontWeight="bold">
               {streamData?.title}
             </Box>
-            <Box padding={{ top: 'xxs' }}>
-              Streaming <b>{streamData?.game_name}</b>
-            </Box>
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <SpaceBetween size="s" direction="horizontal" alignItems="center">
               <Avatar userId={user?.id ?? ''} />
               <div>
                 <Box variant="h3" padding="n">
-                  {streamData?.user_name}{' '}
+                  {user?.display_name}{' '}
                   {user?.broadcaster_type === 'partner' && (
                     <Icon svg={<FontAwesomeIcon icon={faBadgeCheck} color="#a970ff" />} />
                   )}
@@ -115,13 +116,9 @@ export default function TwitchComponent() {
                 </Box>
               </div>
             </SpaceBetween>
-            <div className={styles.stats}>
-              <b>{Number(streamData?.viewer_count).toLocaleString()} watching now</b>
-              <Box color="text-status-inactive" fontSize="body-s">
-                Started <RelativeTime date={streamData?.started_at} inline />
-              </Box>
-            </div>
+            <FollowButton broadcasterId={streamData?.user_id} />
           </div>
+          <Details streamLogin={username} />
         </SpaceBetween>
         <SpaceBetween size="l">
           <Chat

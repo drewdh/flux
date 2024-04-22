@@ -394,8 +394,20 @@ export interface GetChannelFollowersRequest {
    * */
   user_id?: string;
 }
+export interface Follower {
+  /** The UTC timestamp when the user started following the broadcaster. */
+  followed_at: string;
+  /** An ID that uniquely identifies the user that’s following the broadcaster. */
+  user_id: string;
+  /** The user’s login name. */
+  user_login: string;
+  /** The user’s display name. */
+  user_name: string;
+}
 export interface GetChannelFollowersResponse {
   total: number;
+  data?: Follower[];
+  pagination?: Pagination;
 }
 export interface SearchChannelsRequest {
   /** The URI-encoded search string. For example, encode search strings like angel of death as angel%20of%20death. */
@@ -490,4 +502,21 @@ export interface DropReason {
 export interface SendChatMessageResponse {
   data: [SentChatMessage];
   drop_reason: [DropReason];
+}
+export interface GetFollowedChannelsRequest {
+  /** A user’s ID. Returns the list of broadcasters that this user follows. This ID must match the user ID in the user OAuth token. */
+  user_id: string;
+  /** A broadcaster’s ID. Use this parameter to see whether the user follows this broadcaster. If specified, the response contains this broadcaster if the user follows them. If not specified, the response contains all broadcasters that the user follows. */
+  broadcaster_id?: string;
+}
+export interface Followed {
+  broadcaster_id: string;
+  broadcaster_login: string;
+  broadcaster_name: string;
+  followed_at: string;
+}
+export interface GetFollowedChannelsResponse {
+  total: number;
+  data: Followed[];
+  pagination: Pagination;
 }

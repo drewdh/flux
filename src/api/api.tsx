@@ -15,6 +15,7 @@ import {
   CreateEventSubSubscriptionRequest,
   CreateEventSubSubscriptionResponse,
   DeleteEventSubSubscriptionRequest,
+  GetFollowedChannelsRequest,
   GetFollowedStreamsResponse,
   GetStreamsResponse,
   GetUsersRequest,
@@ -41,6 +42,7 @@ export enum QueryKey {
   SearchChannels = 'SearchChannels',
   SearchCategories = 'SearchCategories',
   Validate = 'Validate',
+  GetFollowedChannels = 'GetFollowedChannels',
 }
 export enum MutationKey {
   CreateEventSubSubscription = 'CreateEventSubSubscription',
@@ -112,11 +114,26 @@ export function useGetChatSettings() {
   });
 }
 
-export function useGetChannelFollowers(broadcasterId?: string) {
+export function useGetChannelFollowers({
+  broadcasterId,
+  userId,
+}: {
+  broadcasterId?: string;
+  userId?: string;
+}) {
   return useQuery({
-    queryFn: () => twitchClient.getChannelFollowers({ broadcaster_id: broadcasterId! }),
-    queryKey: [QueryKey.GetChannelFollowers, broadcasterId],
+    queryFn: () =>
+      twitchClient.getChannelFollowers({ broadcaster_id: broadcasterId!, user_id: userId }),
+    queryKey: [QueryKey.GetChannelFollowers, broadcasterId, userId],
     enabled: Boolean(broadcasterId),
+  });
+}
+
+export function useGetFollowedChannels(request: Partial<GetFollowedChannelsRequest>) {
+  return useQuery({
+    queryFn: () => twitchClient.getFollowedChannels(request as GetFollowedChannelsRequest),
+    queryKey: [QueryKey.GetFollowedChannels, request],
+    enabled: !!request.user_id,
   });
 }
 
@@ -176,6 +193,8 @@ export function useValidate() {
     queryFn: () => twitchClient.validate({}),
     queryKey: [QueryKey.Validate],
     enabled: !!localStorage.getItem('access_token'),
+    // Twitch recommends fetching every hour
+    staleTime: 1000 * 60 * 60,
   });
 }
 

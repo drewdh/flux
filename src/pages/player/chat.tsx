@@ -66,9 +66,7 @@ export default function Chat({ broadcasterUserId, height }: Props) {
     },
   });
   const { mutate: deleteSubscription } = useDeleteEventSubSubscription();
-  const { mutate: sendChat } = useSendChatMessage({
-    onSuccess: () => {},
-  });
+  const { mutate: sendChat } = useSendChatMessage();
 
   useEffect(() => {
     if (isInit || !broadcasterUserId || !user?.id) {
@@ -150,14 +148,13 @@ export default function Chat({ broadcasterUserId, height }: Props) {
 
   const handleSendChat = useCallback(
     (message?: string): void => {
-      console.log(message);
-      console.log(chatMessage);
       sendChat({
         broadcaster_id: broadcasterUserId ?? '',
         message: message || chatMessage,
         sender_id: user?.id ?? '',
         reply_parent_message_id: highlightedMessage?.message_id,
       });
+      setChatMessage('');
     },
     [chatMessage, sendChat, broadcasterUserId, user, highlightedMessage]
   );
@@ -194,6 +191,7 @@ export default function Chat({ broadcasterUserId, height }: Props) {
                 <Avatar userId={user?.id ?? ''} size="s" />
               </div>
               <ChatBox
+                value={chatMessage}
                 onChange={(value) => setChatMessage(value)}
                 onSubmit={handleSendChat}
                 placeholder={highlightedMessage ? 'Reply' : 'Chat'}

@@ -1,35 +1,64 @@
 import { useEffect, useRef } from 'react';
 import { InitialConfigType, LexicalComposer } from '@lexical/react/LexicalComposer';
-import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
 import {
+  $createTextNode,
   $getRoot,
-  COMMAND_PRIORITY_EDITOR,
-  EditorState,
+  COMMAND_PRIORITY_CRITICAL,
   KEY_ENTER_COMMAND,
   LexicalEditor,
 } from 'lexical';
 import { PlainTextPlugin } from '@lexical/react/LexicalPlainTextPlugin';
-import ErrorBoundary from 'common/error-boundary';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import { EditorRefPlugin } from '@lexical/react/LexicalEditorRefPlugin';
 
+import ErrorBoundary from 'common/error-boundary';
 import styles from './styles.module.scss';
 
-export default function ChatBox({ placeholder, onChange, onSubmit }: Props) {
+function PlainText({ placeholder, onChange, value }: PlainTextProps) {
   const editorRef = useRef<LexicalEditor>(null);
 
-  function handleChange(editorState: EditorState, editor: LexicalEditor, tags: Set<string>) {
-    editorState.read(() => {
-      const text = $getRoot().getTextContent();
-      onChange(text);
+  useEffect(() => {
+    editorRef.current?.update(() => {
+      const root = $getRoot();
+      root.clear();
+      // TODO: Not sure why this is needed to clear value
+      if (value.length) {
+        const textNode = $createTextNode(value);
+        root.append(textNode);
+      }
     });
-  }
+  }, [value]);
 
   useEffect(() => {
-    if (!editorRef.current) {
-      return;
-    }
-    editorRef.current.registerCommand(
+    const unsubscribe = editorRef.current?.registerTextContentListener(() => {
+      editorRef.current?.getEditorState().read(() => {
+        const currentText = $getRoot().getTextContent();
+        if (currentText !== value) {
+          onChange(currentText);
+        }
+      });
+    });
+    return () => unsubscribe?.();
+  }, [value, onChange]);
+
+  return (
+    <>
+      <PlainTextPlugin
+        contentEditable={<ContentEditable className={styles.input} />}
+        placeholder={<div className={styles.placeholder}>{placeholder}</div>}
+        // @ts-ignore
+        ErrorBoundary={ErrorBoundary}
+      />
+      <EditorRefPlugin editorRef={editorRef} />
+    </>
+  );
+}
+
+export default function ChatBox({ placeholder, onSubmit, onChange, value }: ChatBoxProps) {
+  const editorRef = useRef<LexicalEditor>(null);
+
+  useEffect(() => {
+    editorRef.current?.registerCommand(
       KEY_ENTER_COMMAND,
       (event: KeyboardEvent) => {
         event.preventDefault();
@@ -37,7 +66,7 @@ export default function ChatBox({ placeholder, onChange, onSubmit }: Props) {
         // Return true to stop propagation
         return true;
       },
-      COMMAND_PRIORITY_EDITOR
+      COMMAND_PRIORITY_CRITICAL
     );
   }, [onSubmit]);
 
@@ -52,21 +81,21 @@ export default function ChatBox({ placeholder, onChange, onSubmit }: Props) {
   return (
     <div className={styles.wrapper}>
       <LexicalComposer initialConfig={lexicalConfig}>
-        <PlainTextPlugin
-          contentEditable={<ContentEditable className={styles.input} />}
-          placeholder={<div className={styles.placeholder}>{placeholder}</div>}
-          // @ts-ignore
-          ErrorBoundary={ErrorBoundary}
-        />
+        <PlainText value={value} onChange={onChange} placeholder={placeholder} />
         <EditorRefPlugin editorRef={editorRef} />
-        <OnChangePlugin onChange={handleChange} />
       </LexicalComposer>
     </div>
   );
 }
 
-interface Props {
+interface PlainTextProps {
+  onChange: (value: string) => void;
+  placeholder?: string;
+  value: string;
+}
+interface ChatBoxProps {
   onChange: (value: string) => void;
   onSubmit: (value: string) => void;
   placeholder?: string;
+  value: string;
 }

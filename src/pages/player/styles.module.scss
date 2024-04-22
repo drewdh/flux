@@ -21,6 +21,7 @@ $viewport-breakpoint-xs: 688px;
 .tags {
   display: flex;
   column-gap: cs.$space-scaled-xxs;
+  flex-wrap: wrap;
 }
 @media screen and (max-width: $viewport-breakpoint-xs) {
   .player {

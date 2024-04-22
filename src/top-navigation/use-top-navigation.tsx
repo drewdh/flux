@@ -5,6 +5,7 @@ import { RefObject, useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClockRotateLeft } from '@fortawesome/pro-solid-svg-icons';
+import { uniqBy } from 'lodash';
 
 import { Pathname } from 'utilities/routes';
 import useNavigateWithRef from 'common/use-navigate-with-ref';
@@ -52,9 +53,11 @@ export default function useTopNavigation(): State {
   }, []);
 
   const autosuggestOptions = useMemo((): AutosuggestProps.Options => {
-    const options: AutosuggestProps.OptionGroup[] = [];
+    const options: Array<AutosuggestProps.Option | AutosuggestProps.OptionGroup> = [];
     const searchHistoryOptions: AutosuggestProps.Option[] = searchHistory
-      .filter((term) => term.toLowerCase().includes(query.toLowerCase()))
+      .filter((term) => {
+        return term && term.toLowerCase().includes(query.toLowerCase());
+      })
       .map((term) => {
         return {
           iconSvg: <FontAwesomeIcon icon={faClockRotateLeft} />,
@@ -89,25 +92,10 @@ export default function useTopNavigation(): State {
             value: result.name.toLowerCase(),
           };
         }) ?? [];
-    if (searchHistoryOptions.length) {
-      options.push({
-        label: 'Recent',
-        options: searchHistoryOptions,
-      });
-    }
-    if (searchResultOptions.length) {
-      options.push({
-        label: 'Channels',
-        options: searchResultOptions,
-      });
-    }
-    if (gameResultOptions.length) {
-      options.push({
-        label: 'Categories',
-        options: gameResultOptions,
-      });
-    }
-    return options;
+    options.push(...searchHistoryOptions);
+    options.push(...searchResultOptions);
+    options.push(...gameResultOptions);
+    return uniqBy(options, 'label');
   }, [searchHistory, query, channelSearchData?.pages, gameSearchData?.pages]);
 
   function submitSearch(nextQuery?: string) {

@@ -42,7 +42,7 @@ const router = createBrowserRouter([
         element: <NotFoundPage />,
       },
       {
-        path: Pathname.Channel,
+        path: Pathname.Live,
         element: <TwitchPlayerPage />,
       },
       {

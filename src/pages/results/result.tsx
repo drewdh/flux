@@ -1,5 +1,3 @@
-import { ChannelResult } from '../../api/twitch-types';
-import { useGetStreamByUserLogin, useGetUsers } from '../../api/api';
 import SpaceBetween from '@cloudscape-design/components/space-between';
 import Box from '@cloudscape-design/components/box';
 import Avatar from 'common/avatar/avatar';
@@ -10,12 +8,16 @@ import { faBadgeCheck, faSignalStream } from '@fortawesome/pro-solid-svg-icons';
 import { spaceScaledL } from '@cloudscape-design/design-tokens';
 import { Badge } from '@cloudscape-design/components';
 
+import { ChannelResult } from '../../api/twitch-types';
+import { useGetStreamByUserLogin, useGetUsers } from '../../api/api';
+import { interpolatePathname, Pathname } from 'utilities/routes';
+
 export default function Result({ channel }: Props) {
   const { data } = useGetStreamByUserLogin(channel.broadcaster_login);
   const { data: userData } = useGetUsers({ ids: [channel.id] });
   const streamData = data?.data[0];
   const imgSrc = streamData?.thumbnail_url.replace('{width}x{height}', '720x404');
-  const href = `/channel/${channel.broadcaster_login}`;
+  const href = interpolatePathname(Pathname.Live, { user: channel.broadcaster_login });
 
   return (
     <div style={{ display: 'flex', gap: spaceScaledL }}>

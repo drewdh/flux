@@ -4,7 +4,6 @@ import Button from '@cloudscape-design/components/button';
 import { useLocation, useNavigate } from 'react-router';
 import { useEffect, useState } from 'react';
 import ColumnLayout from '@cloudscape-design/components/column-layout';
-import Container from '@cloudscape-design/components/container';
 import Box from '@cloudscape-design/components/box';
 import {
   borderRadiusContainer,
@@ -15,10 +14,11 @@ import SpaceBetween from '@cloudscape-design/components/space-between';
 import DhAppLayout from 'common/flux-app-layout';
 import InternalLink from 'common/internal-link';
 import styles from './styles.module.scss';
-import { useGetFollowedStreams, useValidate } from '../../api/api';
+import { useGetFollowedStreams } from '../../api/api';
 import Avatar from 'common/avatar/avatar';
 import useLocalStorage, { LocalStorageKey } from 'utilities/use-local-storage';
 import useTitle from 'utilities/use-title';
+import { interpolatePathname, Pathname } from 'utilities/routes';
 
 const connectSearchParams = new URLSearchParams({
   response_type: 'token',
@@ -88,7 +88,7 @@ export default function TwitchPage() {
               <Header variant="h3">Live channels you follow</Header>
               <ColumnLayout columns={6} minColumnWidth={326}>
                 {followedStreams.map((stream) => {
-                  const href = `/channel/${stream.user_login}`;
+                  const href = interpolatePathname(Pathname.Live, { user: stream.user_login });
                   const viewerCount = stream.viewer_count.toLocaleString(undefined, {
                     notation: 'compact',
                   });

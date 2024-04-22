@@ -10,6 +10,7 @@ import {
   UseQueryResult,
 } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router';
+import Button from '@cloudscape-design/components/button';
 
 import {
   CreateEventSubSubscriptionRequest,
@@ -26,10 +27,6 @@ import {
 import { TwitchApiClient, TwitchError } from './twitch-api-client';
 import { Pathname } from 'utilities/routes';
 import useAddNotification from 'common/use-add-notification';
-import { v4 as uuidV4 } from 'uuid';
-import Button from '@cloudscape-design/components/button';
-import ButtonLink from 'common/button-link';
-import InternalLink from 'common/internal-link';
 import { connectHref } from '../pages/home/page';
 
 export enum QueryKey {

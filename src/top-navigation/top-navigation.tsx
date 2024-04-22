@@ -6,6 +6,8 @@ import { topNavId } from './constants';
 import useTopNavigation from './use-top-navigation';
 import Feedback from '../feedback/internal/feedback';
 import { useTranslation } from 'react-i18next';
+import SpaceBetween from '@cloudscape-design/components/space-between';
+import Button from '@cloudscape-design/components/button';
 
 export default function TopNavigation() {
   const { t } = useTranslation();
@@ -16,6 +18,7 @@ export default function TopNavigation() {
     handleLoadItems,
     handleSearchChange,
     handleSelect,
+    handleSubmit,
     i18nStrings,
     identity,
     searchInputValue,
@@ -30,17 +33,20 @@ export default function TopNavigation() {
           i18nStrings={i18nStrings}
           utilities={utilities}
           search={
-            <Autosuggest
-              ref={autosuggestRef}
-              filteringType="manual"
-              onChange={handleSearchChange}
-              onLoadItems={handleLoadItems}
-              onSelect={handleSelect}
-              onKeyDown={handleKeyDown}
-              placeholder={t('nav.search.placeholder')}
-              value={searchInputValue}
-              options={autosuggestOptions}
-            />
+            <SpaceBetween size="xs" direction="horizontal">
+              <Autosuggest
+                ref={autosuggestRef}
+                filteringType="manual"
+                onChange={handleSearchChange}
+                onLoadItems={handleLoadItems}
+                onSelect={handleSelect}
+                onKeyDown={handleKeyDown}
+                placeholder={t('nav.search.placeholder')}
+                value={searchInputValue}
+                options={autosuggestOptions}
+              />
+              <Button onClick={handleSubmit} variant="normal" iconName="search" />
+            </SpaceBetween>
           }
         />
       </div>

@@ -189,6 +189,10 @@ export default function useTopNavigation(): State {
     }
   }
 
+  function handleSubmit() {
+    submitSearch();
+  }
+
   return {
     autosuggestRef,
     autosuggestOptions,
@@ -196,6 +200,7 @@ export default function useTopNavigation(): State {
     handleLoadItems,
     handleSearchChange,
     handleSelect,
+    handleSubmit,
     i18nStrings,
     identity,
     searchInputValue: query,
@@ -210,6 +215,7 @@ interface State {
   handleLoadItems: (event: NonCancelableCustomEvent<AutosuggestProps.LoadItemsDetail>) => void;
   handleSearchChange: (event: NonCancelableCustomEvent<AutosuggestProps.ChangeDetail>) => void;
   handleSelect: (event: NonCancelableCustomEvent<AutosuggestProps.SelectDetail>) => void;
+  handleSubmit: () => void;
   i18nStrings: TopNavigationProps.I18nStrings;
   identity: TopNavigationProps.Identity;
   searchInputValue: string;

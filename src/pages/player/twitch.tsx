@@ -3,20 +3,17 @@ import { useParams } from 'react-router';
 import Box from '@cloudscape-design/components/box';
 import SpaceBetween from '@cloudscape-design/components/space-between';
 import Grid from '@cloudscape-design/components/grid';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Icon from '@cloudscape-design/components/icon';
+import { faBadgeCheck } from '@fortawesome/pro-solid-svg-icons';
 
 import styles from './styles.module.scss';
 import useTitle from 'utilities/use-title';
 import { useGetChannelFollowers, useGetStreamByUserLogin, useGetUsers } from '../../api/api';
 import Avatar from 'common/avatar/avatar';
-import RelativeTime from 'common/relative-time';
 import Chat from './chat';
-import Icon from '@cloudscape-design/components/icon';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBadgeCheck } from '@fortawesome/pro-solid-svg-icons';
 import Details from './details';
-import Button from '@cloudscape-design/components/button';
 import FollowButton from 'common/follow-button';
-import { spaceScaledL, spaceScaledM, spaceScaledXs } from '@cloudscape-design/design-tokens';
 
 export default function TwitchComponent() {
   const player = useRef<any>(null);

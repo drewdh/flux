@@ -32,6 +32,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowUpLong } from '@fortawesome/pro-solid-svg-icons';
 import ChatBox from 'common/chat-box/chat-box';
 import { spaceScaledXs } from '@cloudscape-design/design-tokens';
+import InternalLink from 'common/internal-link';
+import { interpolatePathname, Pathname } from 'utilities/routes';
 
 enum SettingsId {
   Restrictions = 'restrictions',
@@ -182,7 +184,16 @@ export default function Chat({ broadcasterUserId, height }: Props) {
                     iconName="close"
                   />
                 </Box>
-                <Box variant="h5">Replying to {highlightedMessage.chatter_user_name}</Box>
+                <Box variant="h5">
+                  Replying to{' '}
+                  <InternalLink
+                    href={interpolatePathname(Pathname.Channel, {
+                      login: highlightedMessage.chatter_user_login,
+                    })}
+                  >
+                    {highlightedMessage.chatter_user_name}
+                  </InternalLink>
+                </Box>
                 <ChatMessage message={highlightedMessage} variant="featured" />
               </div>
             )}
@@ -303,7 +314,9 @@ export default function Chat({ broadcasterUserId, height }: Props) {
                     and share more details.
                   </div>
                   <ExpandableSection headerText="Error details">
-                    <Box variant="pre">{JSON.stringify(error, null, 2)}</Box>
+                    <div style={{ overflow: 'auto' }}>
+                      <Box variant="pre">{JSON.stringify(error, null, 2)}</Box>
+                    </div>
                   </ExpandableSection>
                 </SpaceBetween>
               </Alert>

@@ -14,6 +14,8 @@ import Avatar from 'common/avatar/avatar';
 import Chat from './chat';
 import Details from './details';
 import FollowButton from 'common/follow-button';
+import InternalLink from 'common/internal-link';
+import { interpolatePathname, Pathname } from 'utilities/routes';
 
 export default function TwitchComponent() {
   const player = useRef<any>(null);
@@ -33,6 +35,8 @@ export default function TwitchComponent() {
   // Viewer count seems to be updated every 60 seconds, so let's refetch that often
   const { data } = useGetStreamByUserLogin(username, { refetchInterval: 1000 * 60 });
   const streamData = data?.data?.[0];
+
+  const channelHref = interpolatePathname(Pathname.Channel, { login: username ?? '' });
 
   const options = {
     width: '100%',
@@ -93,14 +97,18 @@ export default function TwitchComponent() {
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <SpaceBetween size="s" direction="horizontal" alignItems="center">
-              <Avatar userId={user?.id ?? ''} />
+              <InternalLink href={channelHref}>
+                <Avatar userId={user?.id ?? ''} />
+              </InternalLink>
               <div>
-                <Box variant="h3" padding="n">
-                  {user?.display_name}{' '}
-                  {user?.broadcaster_type === 'partner' && (
-                    <Icon svg={<FontAwesomeIcon icon={faBadgeCheck} color="#a970ff" />} />
-                  )}
-                </Box>
+                <InternalLink href={channelHref}>
+                  <Box variant="h3" padding="n">
+                    {user?.display_name}{' '}
+                    {user?.broadcaster_type === 'partner' && (
+                      <Icon svg={<FontAwesomeIcon icon={faBadgeCheck} color="#a970ff" />} />
+                    )}
+                  </Box>
+                </InternalLink>
                 <Box color="text-body-secondary">
                   {followersData && (
                     <>

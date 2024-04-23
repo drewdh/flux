@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClockRotateLeft } from '@fortawesome/pro-solid-svg-icons';
 import { uniqBy } from 'lodash';
 
-import { Pathname } from 'utilities/routes';
+import { interpolatePathname, Pathname } from 'utilities/routes';
 import useNavigateWithRef from 'common/use-navigate-with-ref';
 import { useRevoke, useSearchCategories, useSearchChannels, useValidate } from '../api/api';
 import useLocalStorage, { LocalStorageKey } from 'utilities/use-local-storage';
@@ -139,7 +139,6 @@ export default function useTopNavigation(): State {
         follow({ href: event.detail.href!, event });
       },
       onItemClick: (event) => {
-        console.log('hey');
         if (event.detail.id === 'sign-out') {
           return signOut();
         }
@@ -147,6 +146,12 @@ export default function useTopNavigation(): State {
       items: [
         {
           items: [
+            {
+              id: 'foo',
+              iconName: 'user-profile',
+              text: 'Your profile',
+              href: interpolatePathname(Pathname.Channel, { login: scopeData.login }),
+            },
             {
               id: 'settings',
               iconName: 'settings',

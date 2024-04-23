@@ -46,17 +46,21 @@ export default function Result({ channel }: Props) {
           {Number(streamData?.viewer_count ?? 0).toLocaleString(undefined, { notation: 'compact' })}{' '}
           watching
         </Box>
-        <Box color="text-body-secondary" fontSize="body-s" padding={{ bottom: 'm' }}>
-          <SpaceBetween size="xs" alignItems="center" direction="horizontal">
-            <Avatar userId={channel.id} size="s" />
-            <SpaceBetween direction="horizontal" size="xxs" alignItems="center">
-              {channel.display_name}
-              {userData?.data[0].broadcaster_type === 'partner' && (
-                <Icon svg={<FontAwesomeIcon icon={faBadgeCheck} color="#a970ff" />} />
-              )}
+        <InternalLink
+          href={interpolatePathname(Pathname.Channel, { login: channel.broadcaster_login })}
+        >
+          <Box color="text-body-secondary" fontSize="body-s" padding={{ bottom: 'm' }}>
+            <SpaceBetween size="xs" alignItems="center" direction="horizontal">
+              <Avatar userId={channel.id} size="s" />
+              <SpaceBetween direction="horizontal" size="xxs" alignItems="center">
+                {channel.display_name}
+                {userData?.data[0].broadcaster_type === 'partner' && (
+                  <Icon svg={<FontAwesomeIcon icon={faBadgeCheck} color="#a970ff" />} />
+                )}
+              </SpaceBetween>
             </SpaceBetween>
-          </SpaceBetween>
-        </Box>
+          </Box>
+        </InternalLink>
         {channel.is_live && (
           <Badge color="red">
             <Icon svg={<FontAwesomeIcon icon={faSignalStream} />} /> LIVE

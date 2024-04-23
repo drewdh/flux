@@ -1,0 +1,14 @@
+@use '@cloudscape-design/design-tokens' as cs;
+
+.header {
+  display: flex;
+  gap: cs.$space-scaled-xxl;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+.banner {
+  border-radius: 12px;
+}
+.longText {
+  max-width: 700px;
+}

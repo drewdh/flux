@@ -10,6 +10,9 @@
   font-size: cs.$font-size-heading-s;
   color: cs.$color-text-body-default;
 }
+.cardWrapper {
+  cursor: pointer;
+}
 .cardWrapper a:hover {
   text-decoration-line: none !important;
 }

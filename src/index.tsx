@@ -18,6 +18,7 @@ import NotFoundPage from './pages/not-found-page';
 import SettingsPage from './pages/settings/settings';
 import { SettingsProvider } from 'utilities/settings';
 import { TwitchError } from './api/twitch-api-client';
+import ChannelPage from './pages/channel/page';
 
 interface GlobalFlags {
   removeHighContrastHeader?: boolean;
@@ -56,6 +57,10 @@ const router = createBrowserRouter([
       {
         path: Pathname.Settings,
         element: <SettingsPage />,
+      },
+      {
+        path: Pathname.Channel,
+        element: <ChannelPage />,
       },
     ],
   },

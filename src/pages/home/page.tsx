@@ -19,6 +19,8 @@ import Avatar from 'common/avatar/avatar';
 import useLocalStorage, { LocalStorageKey } from 'utilities/use-local-storage';
 import useTitle from 'utilities/use-title';
 import { interpolatePathname, Pathname } from 'utilities/routes';
+import Link from '@cloudscape-design/components/link';
+import useFollow from 'common/use-follow';
 
 const connectSearchParams = new URLSearchParams({
   response_type: 'token',
@@ -88,13 +90,20 @@ export default function TwitchPage() {
               <Header variant="h3">Live channels you follow</Header>
               <ColumnLayout columns={6} minColumnWidth={326}>
                 {followedStreams.map((stream) => {
-                  const href = interpolatePathname(Pathname.Live, { user: stream.user_login });
+                  const videoHref = interpolatePathname(Pathname.Live, { user: stream.user_login });
                   const viewerCount = stream.viewer_count.toLocaleString(undefined, {
                     notation: 'compact',
                   });
+                  const channelHref = interpolatePathname(Pathname.Channel, {
+                    login: stream.user_login,
+                  });
                   return (
-                    <div className={styles.cardWrapper} key={stream.user_id}>
-                      <InternalLink href={href}>
+                    <div
+                      onClick={() => navigate(videoHref)}
+                      className={styles.cardWrapper}
+                      key={stream.user_id}
+                    >
+                      <InternalLink href={videoHref}>
                         <img
                           style={{
                             aspectRatio: '16 / 9',
@@ -105,17 +114,30 @@ export default function TwitchPage() {
                           alt={stream.title}
                           src={`https://static-cdn.jtvnw.net/previews-ttv/live_user_${stream.user_login}-440x248.jpg`}
                         />
-                        <div className={styles.thumbnailWrapper}>
-                          <Avatar userId={stream.user_id} />
-                          <div>
-                            <div className={styles.header}>{stream.title}</div>
-                            <Box color="text-status-inactive" fontSize="body-s">
-                              <div>{stream.user_name}</div>
-                              <div>{viewerCount} watching</div>
-                            </Box>
-                          </div>
-                        </div>
                       </InternalLink>
+                      <div className={styles.thumbnailWrapper}>
+                        <InternalLink href={channelHref} onFollow={(e) => e.stopPropagation()}>
+                          <Avatar userId={stream.user_id} />
+                        </InternalLink>
+                        <div>
+                          <InternalLink href={videoHref}>
+                            <div className={styles.header}>{stream.title}</div>
+                          </InternalLink>
+                          <Box color="text-body-secondary" fontSize="body-s">
+                            <InternalLink
+                              variant="secondary"
+                              href={channelHref}
+                              onFollow={(e) => e.stopPropagation()}
+                            >
+                              {/* Display inline so anchor tag doesn't take up full width */}
+                              <Box color="text-body-secondary" fontSize="body-s" display="inline">
+                                {stream.user_name}
+                              </Box>
+                            </InternalLink>
+                            <div>{viewerCount} watching</div>
+                          </Box>
+                        </div>
+                      </div>
                     </div>
                   );
                 })}

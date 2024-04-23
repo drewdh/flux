@@ -51,7 +51,7 @@ export enum MutationKey {
   SendChatMessage = 'SendChatMessage',
 }
 
-export const twitchClient = new TwitchApiClient({
+const twitchClient = new TwitchApiClient({
   clientId: 'w9wdgvpv3h3m957julwgkn25hxsr38',
 });
 
@@ -278,5 +278,6 @@ export function useGetGames(
     ...options,
     queryKey: [QueryKey.GetGames, request],
     queryFn: () => twitchClient.getGames(request),
+    staleTime: Infinity,
   });
 }

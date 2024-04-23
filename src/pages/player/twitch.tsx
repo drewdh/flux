@@ -16,6 +16,7 @@ import Details from './details';
 import FollowButton from 'common/follow-button';
 import InternalLink from 'common/internal-link';
 import { interpolatePathname, Pathname } from 'utilities/routes';
+import GameDetails from './game-details';
 
 export default function TwitchComponent() {
   const player = useRef<any>(null);
@@ -124,6 +125,7 @@ export default function TwitchComponent() {
             <FollowButton broadcasterId={streamData?.user_id} />
           </div>
           <Details streamLogin={username} />
+          <GameDetails gameId={streamData?.game_id} />
         </SpaceBetween>
         <SpaceBetween size="l">
           <Chat

@@ -23,6 +23,16 @@ $viewport-breakpoint-xs: 688px;
   column-gap: cs.$space-scaled-xxs;
   flex-wrap: wrap;
 }
+.gameDetailsWrapper {
+  width: 50%;
+  min-width: 300px;
+}
+.gameDetailsWrapper * {
+  cursor: pointer;
+  &:hover {
+    text-decoration: none !important;
+  }
+}
 @media screen and (max-width: $viewport-breakpoint-xs) {
   .player {
     border-radius: 0;

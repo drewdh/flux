@@ -7,6 +7,7 @@ export enum Pathname {
   Channel = '/channel/:login/:tabId?',
   Results = '/results',
   Settings = '/settings',
+  Game = '/game/:gameId',
 }
 /** This does not handle for optional static segments (e.g., `/projects/project?/:id`) */
 export function interpolatePathname(pathname: Pathname, values: Record<string, string>): string {

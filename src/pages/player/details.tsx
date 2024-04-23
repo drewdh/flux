@@ -16,7 +16,7 @@ export default function Details({ streamLogin }: DetailsProps) {
 
   return (
     <Container>
-      <SpaceBetween size="l">
+      <SpaceBetween size="xs">
         <div className={styles.stats}>
           <b>{Number(streamData?.data[0]?.viewer_count ?? 0).toLocaleString()} viewers</b>
           {streamData?.data[0] && (

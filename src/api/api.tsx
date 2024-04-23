@@ -18,6 +18,8 @@ import {
   DeleteEventSubSubscriptionRequest,
   GetFollowedChannelsRequest,
   GetFollowedStreamsResponse,
+  GetGamesRequest,
+  GetGamesResponse,
   GetStreamsResponse,
   GetUsersRequest,
   GetUsersResponse,
@@ -40,6 +42,7 @@ export enum QueryKey {
   SearchCategories = 'SearchCategories',
   Validate = 'Validate',
   GetFollowedChannels = 'GetFollowedChannels',
+  GetGames = 'GetGames',
 }
 export enum MutationKey {
   CreateEventSubSubscription = 'CreateEventSubSubscription',
@@ -264,5 +267,16 @@ export function useSendChatMessage(
       });
       options.onError?.(error, variables, context);
     },
+  });
+}
+
+export function useGetGames(
+  request: GetGamesRequest,
+  options: Omit<UseQueryOptions<GetGamesResponse, TwitchError>, 'queryKey' | 'queryFn'> = {}
+) {
+  return useQuery({
+    ...options,
+    queryKey: [QueryKey.GetGames, request],
+    queryFn: () => twitchClient.getGames(request),
   });
 }

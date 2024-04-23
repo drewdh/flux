@@ -520,3 +520,24 @@ export interface GetFollowedChannelsResponse {
   data: Followed[];
   pagination: Pagination;
 }
+export interface GetGamesRequest {
+  /** The ID of the category or game to get. Include this parameter for each category or game you want to get. For example, &id=1234&id=5678. You may specify a maximum of 100 IDs. The endpoint ignores duplicate and invalid IDs or IDs that weren’t found. */
+  ids?: string[];
+  /** The name of the category or game to get. The name must exactly match the category’s or game’s title. Include this parameter for each category or game you want to get. For example, &name=foo&name=bar. You may specify a maximum of 100 names. The endpoint ignores duplicate names and names that weren’t found. */
+  names?: string[];
+  /** The [IGDB](https://www.igdb.com/) ID of the game to get. Include this parameter for each game you want to get. For example, &igdb_id=1234&igdb_id=5678. You may specify a maximum of 100 IDs. The endpoint ignores duplicate and invalid IDs or IDs that weren’t found. */
+  igdbIds?: string[];
+}
+export interface Game {
+  /** An ID that identifies the category or game. */
+  id: string;
+  /** The category’s or game’s name. */
+  name: string;
+  /** A URL to the category’s or game’s box art. You must replace the `{width}x{height}` placeholder with the size of image you want. */
+  box_art_url: string;
+  /** The ID that IGDB uses to identify this game. If the IGDB ID is not available to Twitch, this field is set to an empty string. */
+  igdb_id: string;
+}
+export interface GetGamesResponse {
+  data: Game[];
+}

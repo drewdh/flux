@@ -13,6 +13,8 @@ import {
   GetFollowedChannelsResponse,
   GetFollowedStreamsRequest,
   GetFollowedStreamsResponse,
+  GetGamesRequest,
+  GetGamesResponse,
   GetStreamsRequest,
   GetStreamsResponse,
   GetUsersRequest,
@@ -288,6 +290,22 @@ export class TwitchApiClient {
       params.set('reply_parent_message_id', request.reply_parent_message_id);
     const resp = await fetch(`https://api.twitch.tv/helix/chat/messages?${params.toString()}`, {
       method: 'POST',
+      headers: this.getDefaultHeaders(),
+    });
+    const respBody = await resp.json();
+    if (!resp.ok) {
+      throw new TwitchError(respBody);
+    }
+    return respBody;
+  }
+
+  async getGames(request: GetGamesRequest): Promise<GetGamesResponse> {
+    const params = new URLSearchParams();
+    request.names?.forEach((name) => params.append('name', name));
+    request.ids?.forEach((id) => params.append('id', id));
+    request.igdbIds?.forEach((igdb_id) => params.append('igdb_id', igdb_id));
+    const resp = await fetch(`https://api.twitch.tv/helix/games?${params.toString()}`, {
+      method: 'GET',
       headers: this.getDefaultHeaders(),
     });
     const respBody = await resp.json();

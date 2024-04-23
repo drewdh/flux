@@ -5,7 +5,7 @@ import styles from './styles.module.scss';
 import { useGetUsers } from '../../api/api';
 
 export default function Avatar({ userId, size = 'm', color }: Props) {
-  const { data } = useGetUsers({ ids: [userId] });
+  const { data } = useGetUsers({ ids: [userId!] }, { enabled: !!userId });
   const userData = data?.data[0];
 
   return (
@@ -13,7 +13,7 @@ export default function Avatar({ userId, size = 'm', color }: Props) {
       role="img"
       aria-label={userData?.display_name}
       style={{
-        backgroundImage: `url(${userData?.profile_image_url.replace('300x300', '70x70')})`,
+        backgroundImage: `url(${userData?.profile_image_url})`,
         backgroundColor: color ?? colorBackgroundInputDisabled,
       }}
       className={clsx(styles.avatar, styles[size])}
@@ -24,7 +24,10 @@ export default function Avatar({ userId, size = 'm', color }: Props) {
 }
 
 interface Props {
+  userId: string | undefined;
   color?: string;
-  userId: string;
-  size?: 'xs' | 's' | 'm';
+  size?: AvatarProps.Size;
+}
+export declare namespace AvatarProps {
+  type Size = 'xs' | 's' | 'm' | 'l';
 }

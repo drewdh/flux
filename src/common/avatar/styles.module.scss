@@ -1,5 +1,6 @@
-$s: 24px;
 $xs: 16px;
+$s: 24px;
+$l: 150px;
 
 .spacer {
   width: 35px;
@@ -11,6 +12,10 @@ $xs: 16px;
   &.s {
     width: $s;
     height: $s;
+  }
+  &.l {
+    width: $l;
+    height: $l;
   }
 }
 .avatar {
@@ -29,5 +34,10 @@ $xs: 16px;
     border-radius: $s;
     width: $s;
     height: $s;
+  }
+  &.l {
+    border-radius: $l;
+    width: $l;
+    height: $l;
   }
 }

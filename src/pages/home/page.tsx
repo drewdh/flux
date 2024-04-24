@@ -103,7 +103,7 @@ export default function TwitchPage() {
                       className={styles.cardWrapper}
                       key={stream.user_id}
                     >
-                      <InternalLink href={videoHref}>
+                      <InternalLink href={videoHref} onFollow={(e) => e.stopPropagation()}>
                         <img
                           style={{
                             aspectRatio: '16 / 9',
@@ -120,7 +120,7 @@ export default function TwitchPage() {
                           <Avatar userId={stream.user_id} />
                         </InternalLink>
                         <div>
-                          <InternalLink href={videoHref}>
+                          <InternalLink href={videoHref} onFollow={(e) => e.stopPropagation()}>
                             <div className={styles.header}>{stream.title}</div>
                           </InternalLink>
                           <Box color="text-body-secondary" fontSize="body-s">

@@ -5,13 +5,17 @@ import SpaceBetween from '@cloudscape-design/components/space-between';
 import Tabs from '@cloudscape-design/components/tabs';
 import Box from '@cloudscape-design/components/box';
 import { format } from 'date-fns';
+import Alert from '@cloudscape-design/components/alert';
+import Modal from '@cloudscape-design/components/modal';
+import { useState } from 'react';
 
 import FluxAppLayout from 'common/flux-app-layout';
 import useTitle from 'utilities/use-title';
 import { useGetGames } from '../../api/api';
 import { useGetGames as useGetIgdbGames } from '../../api/igdb-query-hooks';
 import FullHeightContent from 'common/full-height-content';
-import Alert from '@cloudscape-design/components/alert';
+import Header from '@cloudscape-design/components/header';
+import Button from '@cloudscape-design/components/button';
 
 enum TabId {
   LiveChannels = 'liveChannels',
@@ -19,6 +23,7 @@ enum TabId {
 
 export default function GameDetailPage() {
   const { gameId = '' } = useParams();
+  const [lightboxVisible, setLightboxVisible] = useState<boolean>(false);
   const { data, isLoading: isLoadingTwitch } = useGetGames({ ids: [gameId] });
   const gameData = data?.data[0];
   const { data: igdbData, isLoading: isLoadingIgdb } = useGetIgdbGames(
@@ -29,7 +34,7 @@ export default function GameDetailPage() {
   );
   useTitle(`${gameData?.name} - Flux`);
 
-  const imgSrc = gameData?.box_art_url.replace('{width}x{height}', '300x417');
+  const imgSrc = gameData?.box_art_url.replace('{width}x{height}', '300x400');
 
   const loading = isLoadingIgdb || isLoadingTwitch;
 
@@ -38,48 +43,79 @@ export default function GameDetailPage() {
       toolsHide
       maxContentWidth={1300}
       content={
-        loading ? (
-          <FullHeightContent>
-            <StatusIndicator type="loading">Loading game</StatusIndicator>
-          </FullHeightContent>
-        ) : (
-          <ContentLayout
-            header={
-              <SpaceBetween size="xxl" direction="horizontal" alignItems="center">
-                <img src={imgSrc} width="150" />
-                <SpaceBetween size="xs">
-                  <Box fontSize="display-l" fontWeight="bold">
-                    {gameData?.name}
-                  </Box>
-                  {igdbData && (
-                    <>
-                      <Box color="text-status-inactive">
-                        <SpaceBetween size="xxs" direction="horizontal">
-                          <span>{format(igdbData?.[0].first_release_date * 1000, 'yyyy')}</span>
-                          &bull;
-                          <span>{igdbData?.[0].genres[0].name}</span>
-                        </SpaceBetween>
-                      </Box>
-                      <div style={{ maxWidth: '700px' }}>
-                        <Box color="text-body-secondary">{igdbData?.[0].summary}</Box>
-                      </div>
-                    </>
-                  )}
+        <>
+          {loading ? (
+            <FullHeightContent>
+              <StatusIndicator type="loading">Loading game</StatusIndicator>
+            </FullHeightContent>
+          ) : (
+            <ContentLayout
+              header={
+                <SpaceBetween size="xxl" direction="horizontal" alignItems="center">
+                  <img
+                    style={{ borderRadius: '12px', cursor: 'pointer' }}
+                    onClick={() => setLightboxVisible(true)}
+                    src={imgSrc}
+                    width="150"
+                    height="200"
+                    alt={gameData?.name}
+                  />
+                  <SpaceBetween size="xs">
+                    <Box fontSize="display-l" fontWeight="bold">
+                      {gameData?.name}
+                    </Box>
+                    {igdbData && (
+                      <>
+                        <Box color="text-status-inactive">
+                          <SpaceBetween size="xxs" direction="horizontal">
+                            <span>{format(igdbData?.[0].first_release_date * 1000, 'yyyy')}</span>
+                            &bull;
+                            <span>{igdbData?.[0].genres[0].name}</span>
+                          </SpaceBetween>
+                        </Box>
+                        <div style={{ maxWidth: '700px' }}>
+                          <Box color="text-body-secondary">{igdbData?.[0].summary}</Box>
+                        </div>
+                      </>
+                    )}
+                  </SpaceBetween>
                 </SpaceBetween>
-              </SpaceBetween>
+              }
+            >
+              <Tabs
+                tabs={[
+                  {
+                    id: TabId.LiveChannels,
+                    label: 'Live channels',
+                    content: <Alert>Coming soon.</Alert>,
+                  },
+                ]}
+              />
+            </ContentLayout>
+          )}
+          <Modal
+            header={<Header>{gameData?.name}</Header>}
+            footer={
+              <Box float="right">
+                <Button onClick={() => setLightboxVisible(false)} variant="primary">
+                  Close
+                </Button>
+              </Box>
             }
+            visible={lightboxVisible}
+            onDismiss={() => setLightboxVisible(false)}
           >
-            <Tabs
-              tabs={[
-                {
-                  id: TabId.LiveChannels,
-                  label: 'Live channels',
-                  content: <Alert>Coming soon.</Alert>,
-                },
-              ]}
-            />
-          </ContentLayout>
-        )
+            <Box textAlign="center">
+              <img
+                style={{ borderRadius: '12px' }}
+                src={gameData?.box_art_url.replace('{width}x{height}', '1120x1494')}
+                alt={gameData?.name}
+                height="747"
+                width="560"
+              />
+            </Box>
+          </Modal>
+        </>
       }
     />
   );

@@ -38,10 +38,11 @@ import { interpolatePathname, Pathname } from 'utilities/routes';
 enum SettingsId {
   Restrictions = 'restrictions',
 }
-let isInit: boolean = false;
-let subscriptionId: string;
+let ws: WebSocket;
+let isInit: boolean;
 
 export default function Chat({ broadcasterUserId, height }: Props) {
+  const [subscriptionId, setSubscriptionId] = useState<string>();
   const [chatMessage, setChatMessage] = useState<string>('');
   const [isRestrictionsModalVisible, setIsRestrictionsModalVisible] = useState<boolean>(false);
   const [isReconnectError, setIsReconnectError] = useState<boolean>(false);
@@ -60,7 +61,7 @@ export default function Chat({ broadcasterUserId, height }: Props) {
     isPending: isLoading,
     error,
   } = useCreateEventSubSubscription({
-    onSuccess: (result) => (subscriptionId = result.data[0].id),
+    onSuccess: (result) => setSubscriptionId(result.data[0].id),
     onError: (error) => {
       if (error.message === 'subscription missing proper authorization') {
         setIsReconnectError(true);
@@ -71,12 +72,29 @@ export default function Chat({ broadcasterUserId, height }: Props) {
   const { mutate: sendChat } = useSendChatMessage();
 
   useEffect(() => {
-    if (isInit || !broadcasterUserId || !user?.id) {
+    if (isInit) {
+      return;
+    }
+    ws = new WebSocket('wss://eventsub.wss.twitch.tv/ws');
+    return () => {
+      isInit = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (subscriptionId) {
+        deleteSubscription({ id: subscriptionId });
+      }
+    };
+  }, [deleteSubscription, subscriptionId]);
+
+  useEffect(() => {
+    if (!broadcasterUserId || !user?.id) {
       return;
     }
 
-    const ws = new WebSocket('wss://eventsub.wss.twitch.tv/ws');
-    ws.onmessage = function (event) {
+    ws.onmessage = (event) => {
       const message: WelcomeMessage | ChatMessageType = JSON.parse(event.data);
       if (message.metadata.message_type === 'session_welcome') {
         setIsReconnectError(false);
@@ -97,6 +115,14 @@ export default function Chat({ broadcasterUserId, height }: Props) {
       if (message.metadata.message_type === 'notification') {
         const { event: newMessage } = (message as ChatMessageType).payload;
         setMessages((prevMessages) => {
+          // hacky way to get current value of `isScrolled` because onmessage
+          // does not get reassigned when useEffect dependencies change
+          // for some reason
+          let latestIsScrolled;
+          setIsScrolled((prev) => {
+            latestIsScrolled = prev;
+            return prev;
+          });
           // Some messages can be duplicated, so don't process these again
           // https://dev.twitch.tv/docs/eventsub/#handling-duplicate-events
           const wasProcessed = prevMessages.some(
@@ -105,22 +131,14 @@ export default function Chat({ broadcasterUserId, height }: Props) {
           if (wasProcessed) {
             return prevMessages;
           }
-          if (isScrolled) {
+          if (latestIsScrolled) {
             setUnreadCount((prev) => prev + 1);
           }
           return [newMessage, ...prevMessages].slice(0, 500);
         });
       }
     };
-
-    isInit = true;
-
-    return () => {
-      ws.close();
-      deleteSubscription({ id: subscriptionId });
-      isInit = false;
-    };
-  }, [broadcasterUserId, user, isScrolled, createSubscription, deleteSubscription]);
+  }, [broadcasterUserId, user, createSubscription, subscriptionId, deleteSubscription]);
 
   const handleScroll = useCallback(
     function (this: HTMLDivElement, event: Event) {
@@ -308,7 +326,6 @@ export default function Chat({ broadcasterUserId, height }: Props) {
                         openFeedback();
                       }}
                       variant="primary"
-                      color="inverted"
                     >
                       Send feedback
                     </Link>{' '}

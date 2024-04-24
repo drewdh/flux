@@ -118,6 +118,7 @@ export default function Chat({ broadcasterUserId, height }: Props) {
     return () => {
       ws.close();
       deleteSubscription({ id: subscriptionId });
+      isInit = false;
     };
   }, [broadcasterUserId, user, isScrolled, createSubscription, deleteSubscription]);
 

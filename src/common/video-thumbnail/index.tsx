@@ -9,8 +9,9 @@ import Avatar from 'common/avatar';
 import Box from '@cloudscape-design/components/box';
 import { useNavigate } from 'react-router';
 import { Stream } from '../../api/twitch-types';
+import clsx from 'clsx';
 
-export default function VideoThumbnail({ stream }: VideoThumbnailProps) {
+export default function VideoThumbnail({ stream, size = 'm' }: VideoThumbnailProps) {
   const navigate = useNavigate();
   const videoHref = interpolatePathname(Pathname.Live, { user: stream.user_login });
   const viewerCount = stream.viewer_count.toLocaleString(undefined, {
@@ -34,13 +35,13 @@ export default function VideoThumbnail({ stream }: VideoThumbnailProps) {
           src={`https://static-cdn.jtvnw.net/previews-ttv/live_user_${stream.user_login}-440x248.jpg`}
         />
       </InternalLink>
-      <div className={styles.thumbnailWrapper}>
+      <div className={clsx(styles.thumbnailWrapper, styles[`thumbnailWrapper-${size}`])}>
         <InternalLink href={channelHref} onFollow={(e) => e.stopPropagation()}>
           <Avatar userId={stream.user_id} />
         </InternalLink>
         <div>
           <InternalLink href={videoHref} onFollow={(e) => e.stopPropagation()}>
-            <div className={styles.header}>{stream.title}</div>
+            <div className={clsx(styles.header, styles[`header-${size}`])}>{stream.title}</div>
           </InternalLink>
           <Box color="text-body-secondary" fontSize="body-s">
             <InternalLink
@@ -63,4 +64,5 @@ export default function VideoThumbnail({ stream }: VideoThumbnailProps) {
 
 export interface VideoThumbnailProps {
   stream: Stream;
+  size?: 's' | 'm';
 }

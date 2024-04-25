@@ -7,8 +7,13 @@
   overflow: hidden;
   text-overflow: ellipsis;
   font-weight: bold;
-  font-size: cs.$font-size-heading-s;
   color: cs.$color-text-body-default;
+}
+.header-m {
+  font-size: cs.$font-size-heading-s;
+}
+.header-s {
+  font-size: cs.$font-size-heading-xs;
 }
 .cardWrapper {
   cursor: pointer;
@@ -17,8 +22,14 @@
   text-decoration-line: none !important;
 }
 .thumbnailWrapper {
-  padding: cs.$space-scaled-s 0;
   display: flex;
-  gap: cs.$space-scaled-s;
   flex-wrap: nowrap;
+}
+.thumbnailWrapper-m {
+  padding-top: cs.$space-scaled-xs;
+  gap: cs.$space-scaled-s;
+}
+.thumbnailWrapper-s {
+  padding-top: cs.$space-scaled-xxs;
+  gap: cs.$space-scaled-xs;
 }

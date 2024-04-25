@@ -30,16 +30,18 @@ function PlainText({ placeholder, onChange, value }: PlainTextProps) {
   }, [value]);
 
   useEffect(() => {
+    // Disabling editable is a workaround to prevent autofocusing
+    // https://github.com/facebook/lexical/issues/4474#issuecomment-1558485693
+    editorRef.current?.setEditable(false);
     const unsubscribe = editorRef.current?.registerTextContentListener(() => {
       editorRef.current?.getEditorState().read(() => {
         const currentText = $getRoot().getTextContent();
-        if (currentText !== value) {
-          onChange(currentText);
-        }
+        onChange(currentText);
       });
     });
+    requestAnimationFrame(() => editorRef.current?.setEditable(true));
     return () => unsubscribe?.();
-  }, [value, onChange]);
+  }, [onChange]);
 
   return (
     <>

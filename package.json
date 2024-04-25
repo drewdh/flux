@@ -5,6 +5,7 @@
   "dependencies": {
     "@cloudscape-design/board-components": "^3.0.58",
     "@cloudscape-design/collection-hooks": "^1.0.45",
+    "@cloudscape-design/component-toolkit": "^1.0.0-beta.48",
     "@cloudscape-design/components": "^3.0.615",
     "@cloudscape-design/design-tokens": "^3.0.35",
     "@cloudscape-design/global-styles": "^1.0.27",
@@ -29,6 +30,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-i18next": "^14.1.0",
+    "react-keyed-flatten-children": "^3.0.0",
     "react-router": "^6.8.1",
     "react-router-dom": "^6.8.1",
     "react-scripts": "5.0.1",

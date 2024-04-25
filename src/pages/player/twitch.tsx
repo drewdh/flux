@@ -10,7 +10,7 @@ import { faBadgeCheck } from '@fortawesome/pro-solid-svg-icons';
 import styles from './styles.module.scss';
 import useTitle from 'utilities/use-title';
 import { useGetChannelFollowers, useGetStreamByUserLogin, useGetUsers } from '../../api/api';
-import Avatar from 'common/avatar/avatar';
+import Avatar from 'common/avatar';
 import Chat from './chat';
 import Details from './details';
 import FollowButton from 'common/follow-button';

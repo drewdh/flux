@@ -1,6 +1,6 @@
 import SpaceBetween from '@cloudscape-design/components/space-between';
 import Box from '@cloudscape-design/components/box';
-import Avatar from 'common/avatar/avatar';
+import Avatar from 'common/avatar';
 import InternalLink from 'common/internal-link';
 import Icon from '@cloudscape-design/components/icon';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

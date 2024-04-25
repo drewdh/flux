@@ -1,0 +1,22 @@
+@use '@cloudscape-design/design-tokens' as cs;
+
+.css-grid {
+  display: grid;
+  gap: cs.$space-static-l;
+
+  &.grid-no-gutters {
+    gap: 0;
+  }
+
+  &.grid-variant-text-grid {
+    > .item {
+      border-inline-start: 1px solid cs.$color-border-divider-default;
+      padding-inline: cs.$space-static-l;
+
+      &.first-column {
+        border-inline-start: 0;
+        padding-inline-start: 0;
+      }
+    }
+  }
+}

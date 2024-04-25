@@ -5,7 +5,7 @@ import { faBadgeCheck } from '@fortawesome/pro-solid-svg-icons';
 import Link from '@cloudscape-design/components/link';
 
 import styles from './chat.module.scss';
-import Avatar from 'common/avatar/avatar';
+import Avatar from 'common/avatar';
 import { useGetUsers } from '../../api/api';
 import Emote from './emote';
 import { ReactNode } from 'react';

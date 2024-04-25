@@ -11,7 +11,7 @@ import ColumnLayout from '@cloudscape-design/components/column-layout';
 import FluxAppLayout from 'common/flux-app-layout';
 import { useGetChannelFollowers, useGetUsers } from '../../api/api';
 import FullHeightContent from 'common/full-height-content';
-import Avatar from 'common/avatar/avatar';
+import Avatar from 'common/avatar';
 import useTitle from 'utilities/use-title';
 import { interpolatePathname, Pathname } from 'utilities/routes';
 import styles from './styles.module.scss';

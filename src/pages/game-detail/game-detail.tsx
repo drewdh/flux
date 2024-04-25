@@ -5,17 +5,17 @@ import SpaceBetween from '@cloudscape-design/components/space-between';
 import Tabs from '@cloudscape-design/components/tabs';
 import Box from '@cloudscape-design/components/box';
 import { format } from 'date-fns';
-import Alert from '@cloudscape-design/components/alert';
 import Modal from '@cloudscape-design/components/modal';
 import { useState } from 'react';
+import Header from '@cloudscape-design/components/header';
+import Button from '@cloudscape-design/components/button';
 
 import FluxAppLayout from 'common/flux-app-layout';
 import useTitle from 'utilities/use-title';
 import { useGetGames } from '../../api/api';
 import { useGetGames as useGetIgdbGames } from '../../api/igdb-query-hooks';
 import FullHeightContent from 'common/full-height-content';
-import Header from '@cloudscape-design/components/header';
-import Button from '@cloudscape-design/components/button';
+import LiveChannels from './live-channels';
 
 enum TabId {
   LiveChannels = 'liveChannels',
@@ -87,7 +87,7 @@ export default function GameDetailPage() {
                   {
                     id: TabId.LiveChannels,
                     label: 'Live channels',
-                    content: <Alert>Coming soon.</Alert>,
+                    content: <LiveChannels gameId={gameId} />,
                   },
                 ]}
               />

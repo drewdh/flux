@@ -20,6 +20,7 @@ import {
   GetFollowedStreamsResponse,
   GetGamesRequest,
   GetGamesResponse,
+  GetStreamsRequest,
   GetStreamsResponse,
   GetUsersRequest,
   GetUsersResponse,
@@ -43,6 +44,7 @@ export enum QueryKey {
   Validate = 'Validate',
   GetFollowedChannels = 'GetFollowedChannels',
   GetGames = 'GetGames',
+  GetStreams = 'GetStreams',
 }
 export enum MutationKey {
   CreateEventSubSubscription = 'CreateEventSubSubscription',
@@ -93,6 +95,7 @@ export function useGetFollowedStreams(options: UseGetFollowedStreamsOptions = {}
 }
 
 type SafeOptions = Omit<UseQueryOptions<GetStreamsResponse>, 'queryFn' | 'queryKey' | 'enabled'>;
+/** @deprecated Prefer `useGetStreams` */
 export function useGetStreamByUserLogin(userLogin?: string, options: SafeOptions = {}) {
   return useQuery({
     queryFn: () => twitchClient.getStreams({ userLogins: [userLogin!] }),
@@ -100,6 +103,22 @@ export function useGetStreamByUserLogin(userLogin?: string, options: SafeOptions
     enabled: !!userLogin,
     refetchInterval: 10 * 1000,
     ...options,
+  });
+}
+
+// TODO: Make this an infinite (paginated) query
+export function useGetStreams(
+  request: GetStreamsRequest,
+  options: Partial<UseQueryOptions<GetStreamsResponse, TwitchError>> = {}
+) {
+  return useQuery({
+    ...options,
+    queryFn: () => twitchClient.getStreams(request),
+    queryKey: [QueryKey.GetStreams, request],
+    // Order of results can change, so don't refetch
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
   });
 }
 

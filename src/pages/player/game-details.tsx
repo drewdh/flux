@@ -48,8 +48,12 @@ export default function GameDetails({ gameId }: GameDetailsProps) {
               {igdbData && (
                 <Box color="text-body-secondary">
                   <SpaceBetween size="xxs" direction="horizontal">
-                    {format(igdbData?.[0].first_release_date * 1000, 'yyyy')}
-                    &bull;
+                    {igdbData?.[0].first_release_date && (
+                      <>
+                        {format(igdbData?.[0].first_release_date * 1000, 'yyyy')}
+                        &bull;
+                      </>
+                    )}
                     {igdbData?.[0].genres[0].name}
                   </SpaceBetween>
                 </Box>

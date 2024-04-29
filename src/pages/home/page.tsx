@@ -2,23 +2,17 @@ import Alert from '@cloudscape-design/components/alert';
 import Button from '@cloudscape-design/components/button';
 import { useLocation, useNavigate } from 'react-router';
 import { useEffect, useState } from 'react';
-import Box from '@cloudscape-design/components/box';
-import {
-  borderRadiusContainer,
-  colorBackgroundInputDisabled,
-} from '@cloudscape-design/design-tokens';
 import SpaceBetween from '@cloudscape-design/components/space-between';
 
 import DhAppLayout from 'common/flux-app-layout';
-import InternalLink from 'common/internal-link';
-import styles from './styles.module.scss';
-import { useGetFollowedStreams } from '../../api/api';
-import Avatar from 'common/avatar';
+import { useGetFollowedStreams, useGetStreams } from '../../api/api';
 import useLocalStorage, { LocalStorageKey } from 'utilities/use-local-storage';
 import useTitle from 'utilities/use-title';
-import { interpolatePathname, Pathname } from 'utilities/routes';
 import FlexibleColumnLayout from 'common/flexible-column-layout';
 import VideoThumbnail from 'common/video-thumbnail';
+import Empty from 'common/empty/empty';
+import styles from './styles.module.scss';
+import Header from '@cloudscape-design/components/header';
 
 const connectSearchParams = new URLSearchParams({
   response_type: 'token',
@@ -55,7 +49,9 @@ export default function TwitchPage() {
   }, [search]);
 
   const { data } = useGetFollowedStreams();
+  const { data: topStreamsData } = useGetStreams({ type: 'live', pageSize: 5 });
   const followedStreams = data?.pages.flatMap((page) => page.data);
+  const topStreams = topStreamsData?.data;
 
   return (
     <DhAppLayout
@@ -83,12 +79,42 @@ export default function TwitchPage() {
               To access your content, sign in with Twitch.
             </Alert>
           )}
-          {isConnected && followedStreams?.length && (
-            <FlexibleColumnLayout columns={6} minColumnWidth={326}>
-              {followedStreams.map((stream) => (
-                <VideoThumbnail showCategory stream={stream} />
-              ))}
-            </FlexibleColumnLayout>
+          {isConnected && (
+            <SpaceBetween size="l">
+              <SpaceBetween size="m">
+                <Header>Live followed channels</Header>
+                <FlexibleColumnLayout columns={6} minColumnWidth={326}>
+                  {followedStreams?.map((stream) => (
+                    <VideoThumbnail showCategory stream={stream} />
+                  ))}
+                  {followedStreams && !followedStreams.length && (
+                    <div className={styles.empty}>
+                      <Empty
+                        header="No streams"
+                        message="No channel you follow is live right now."
+                      />
+                    </div>
+                  )}
+                </FlexibleColumnLayout>
+              </SpaceBetween>
+              <SpaceBetween size="m">
+                <Header>Top 5 live streams</Header>
+                <FlexibleColumnLayout columns={6} minColumnWidth={326}>
+                  {topStreams?.map((stream, index) => (
+                    <VideoThumbnail
+                      rankText={Number(index + 1).toString()}
+                      showCategory
+                      stream={stream}
+                    />
+                  ))}
+                  {topStreams && !topStreams.length && (
+                    <div className={styles.empty}>
+                      <Empty header="No streams" message="No channel is live right now." />
+                    </div>
+                  )}
+                </FlexibleColumnLayout>
+              </SpaceBetween>
+            </SpaceBetween>
           )}
         </SpaceBetween>
       }

@@ -1,0 +1,41 @@
+@use '@cloudscape-design/design-tokens' as cs;
+
+.streamTitle {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: cs.$color-text-status-inactive;
+  font-size: cs.$font-size-body-s;
+}
+.cardWrapper {
+  cursor: pointer;
+}
+.cardWrapper a:hover {
+  text-decoration-line: none !important;
+}
+.thumbnailWrapper {
+  padding-top: cs.$space-scaled-s;
+  display: flex;
+  column-gap: cs.$space-scaled-m;
+}
+.details {
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: column;
+  gap: cs.$space-scaled-xxs;
+}
+.rank {
+  font-family: cs.$font-family-base;
+  font-size: cs.$font-size-display-l;
+  // Use the same size as font to more closely align text to start of container
+  line-height: cs.$font-size-display-l;
+  font-weight: bold;
+  color: cs.$color-text-status-inactive;
+}
+.username {
+  vertical-align: top;
+  margin-left: cs.$space-static-xs;
+  color: cs.$color-text-body-default;
+}

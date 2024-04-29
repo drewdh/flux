@@ -1,29 +1,12 @@
 @use '@cloudscape-design/design-tokens' as cs;
 
-.streamTitle {
-  display: -webkit-box;
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  color: cs.$color-text-status-inactive;
-  font-size: cs.$font-size-body-s;
-}
-.cardWrapper {
-  cursor: pointer;
-}
-.cardWrapper a:hover {
-  text-decoration-line: none !important;
-}
-.thumbnailWrapper {
+.empty {
+  border-radius: cs.$border-radius-container;
+  border-width: 1px;
+  border-style: solid;
+  border-color: cs.$color-border-divider-default;
+  aspect-ratio: 16 / 9;
   display: flex;
-  flex-wrap: nowrap;
-  flex-direction: column;
-  padding-top: cs.$space-scaled-s;
-  gap: cs.$space-scaled-xxs;
-}
-.username {
-  vertical-align: top;
-  margin-left: cs.$space-static-xs;
-  color: cs.$color-text-body-default;
+  align-items: center;
+  justify-content: center;
 }

@@ -8,10 +8,14 @@ import { useNavigate } from 'react-router';
 import { interpolatePathname, Pathname } from 'utilities/routes';
 import Avatar from 'common/avatar';
 import InternalLink from 'common/internal-link';
-import styles from '../../pages/home/styles.module.scss';
+import styles from './styles.module.scss';
 import { Stream } from '../../api/twitch-types';
 
-export default function VideoThumbnail({ stream, showCategory = false }: VideoThumbnailProps) {
+export default function VideoThumbnail({
+  stream,
+  showCategory = false,
+  rankText,
+}: VideoThumbnailProps) {
   const navigate = useNavigate();
   const videoHref = interpolatePathname(Pathname.Live, { user: stream.user_login });
   const viewerCount = stream.viewer_count.toLocaleString(undefined, {
@@ -37,49 +41,52 @@ export default function VideoThumbnail({ stream, showCategory = false }: VideoTh
         />
       </InternalLink>
       <div className={styles.thumbnailWrapper}>
-        <Box display="inline">
-          <InternalLink
-            variant="secondary"
-            href={channelHref}
-            onFollow={(e) => e.stopPropagation()}
-          >
-            <Avatar userId={stream.user_id} size="xs" />
-            <span className={styles.username}>{stream.user_name}</span>
+        {rankText && <div className={styles.rank}>{rankText}</div>}
+        <div className={styles.details}>
+          <Box display="inline">
+            <InternalLink
+              variant="secondary"
+              href={channelHref}
+              onFollow={(e) => e.stopPropagation()}
+            >
+              <Avatar userId={stream.user_id} size="xs" />
+              <span className={styles.username}>{stream.user_name}</span>
+            </InternalLink>
+          </Box>
+          <InternalLink href={videoHref} onFollow={(e) => e.stopPropagation()}>
+            <div title={stream.title} className={styles.streamTitle}>
+              {stream.title || '-'}
+            </div>
           </InternalLink>
-        </Box>
-        <InternalLink href={videoHref} onFollow={(e) => e.stopPropagation()}>
-          <div title={stream.title} className={styles.streamTitle}>
-            {stream.title || '-'}
-          </div>
-        </InternalLink>
-        <Box color="text-body-secondary" fontSize="body-s" fontWeight="heavy">
-          <span>{viewerCount} watching</span>
-          {showCategory && (
-            <>
-              <Box
-                display="inline"
-                fontSize="body-s"
-                color="text-status-inactive"
-                margin={{ horizontal: 'xxs' }}
-              >
-                &bull;
-              </Box>
-              <InternalLink
-                onFollow={(e) => e.stopPropagation()}
-                href={interpolatePathname(Pathname.Game, { gameId: stream.game_id })}
-              >
+          <Box color="text-body-secondary" fontSize="body-s" fontWeight="heavy">
+            <span>{viewerCount} watching</span>
+            {showCategory && (
+              <>
                 <Box
                   display="inline"
-                  color="text-body-secondary"
                   fontSize="body-s"
-                  fontWeight="heavy"
+                  color="text-status-inactive"
+                  margin={{ horizontal: 'xxs' }}
                 >
-                  {stream.game_name}
+                  &bull;
                 </Box>
-              </InternalLink>
-            </>
-          )}
-        </Box>
+                <InternalLink
+                  onFollow={(e) => e.stopPropagation()}
+                  href={interpolatePathname(Pathname.Game, { gameId: stream.game_id })}
+                >
+                  <Box
+                    display="inline"
+                    color="text-body-secondary"
+                    fontSize="body-s"
+                    fontWeight="heavy"
+                  >
+                    {stream.game_name}
+                  </Box>
+                </InternalLink>
+              </>
+            )}
+          </Box>
+        </div>
       </div>
     </div>
   );
@@ -87,5 +94,6 @@ export default function VideoThumbnail({ stream, showCategory = false }: VideoTh
 
 export interface VideoThumbnailProps {
   stream: Stream;
+  rankText?: string;
   showCategory?: boolean;
 }

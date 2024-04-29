@@ -1,30 +1,20 @@
-$xs: 16px;
-$s: 24px;
-$l: 150px;
+@use '@cloudscape-design/design-tokens' as cs;
 
-.spacer {
-  width: 35px;
-  height: 35px;
-  &.xs {
-    width: $xs;
-    height: $xs;
-  }
-  &.s {
-    width: $s;
-    height: $s;
-  }
-  &.l {
-    width: $l;
-    height: $l;
-  }
-}
+$xxs: 16px;
+$xs: 20px;
+$s: 24px;
+$l: 200px;
+
 .avatar {
-  display: inline-block;
-  vertical-align: center;
-  background-size: cover;
+  background-color: cs.$color-background-input-disabled;
   border-radius: 35px;
   width: 35px;
   height: 35px;
+  &.xxs {
+    border-radius: $xxs;
+    width: $xxs;
+    height: $xxs;
+  }
   &.xs {
     border-radius: $xs;
     width: $xs;
@@ -36,7 +26,7 @@ $l: 150px;
     height: $s;
   }
   &.l {
-    border-radius: 12px;
+    border-radius: $l;
     width: $l;
     height: $l;
   }

@@ -1,19 +1,13 @@
 @use '@cloudscape-design/design-tokens' as cs;
 
-.header {
+.streamTitle {
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-weight: bold;
-  color: cs.$color-text-body-default;
-}
-.header-m {
-  font-size: cs.$font-size-heading-s;
-}
-.header-s {
-  font-size: cs.$font-size-heading-xs;
+  color: cs.$color-text-status-inactive;
+  font-size: cs.$font-size-body-s;
 }
 .cardWrapper {
   cursor: pointer;
@@ -24,12 +18,12 @@
 .thumbnailWrapper {
   display: flex;
   flex-wrap: nowrap;
+  flex-direction: column;
+  padding-top: cs.$space-scaled-s;
+  gap: cs.$space-scaled-xxs;
 }
-.thumbnailWrapper-m {
-  padding-top: cs.$space-scaled-xs;
-  gap: cs.$space-scaled-s;
-}
-.thumbnailWrapper-s {
-  padding-top: cs.$space-scaled-xxs;
-  gap: cs.$space-scaled-xs;
+.username {
+  vertical-align: top;
+  margin-left: cs.$space-static-xs;
+  color: cs.$color-text-body-default;
 }

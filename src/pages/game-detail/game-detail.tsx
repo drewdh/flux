@@ -16,6 +16,7 @@ import { useGetGames } from '../../api/api';
 import { useGetGames as useGetIgdbGames } from '../../api/igdb-query-hooks';
 import FullHeightContent from 'common/full-height-content';
 import LiveChannels from './live-channels';
+import styles from './styles.module.scss';
 
 enum TabId {
   LiveChannels = 'liveChannels',
@@ -34,7 +35,7 @@ export default function GameDetailPage() {
   );
   useTitle(`${gameData?.name} - Flux`);
 
-  const imgSrc = gameData?.box_art_url.replace('{width}x{height}', '300x400');
+  const imgSrc = gameData?.box_art_url.replace('{width}x{height}', '400x534');
 
   const loading = isLoadingIgdb || isLoadingTwitch;
 
@@ -51,13 +52,13 @@ export default function GameDetailPage() {
           ) : (
             <ContentLayout
               header={
-                <SpaceBetween size="xxl" direction="horizontal" alignItems="center">
+                <div className={styles.header}>
                   <img
                     style={{ borderRadius: '12px', cursor: 'pointer' }}
                     onClick={() => setLightboxVisible(true)}
                     src={imgSrc}
-                    width="150"
-                    height="200"
+                    width="200"
+                    height="267"
                     alt={gameData?.name}
                   />
                   <SpaceBetween size="xs">
@@ -79,13 +80,13 @@ export default function GameDetailPage() {
                             <span>{igdbData?.[0].genres[0].name}</span>
                           </SpaceBetween>
                         </Box>
-                        <div style={{ maxWidth: '700px' }}>
+                        <div style={{ maxWidth: '500px' }}>
                           <Box color="text-body-secondary">{igdbData?.[0].summary}</Box>
                         </div>
                       </>
                     )}
                   </SpaceBetween>
-                </SpaceBetween>
+                </div>
               }
             >
               <Tabs

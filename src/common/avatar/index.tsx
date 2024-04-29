@@ -9,17 +9,11 @@ export default function Avatar({ userId, size = 'm', color }: Props) {
   const userData = data?.data[0];
 
   return (
-    <div
-      role="img"
-      aria-label={userData?.display_name}
-      style={{
-        backgroundImage: `url(${userData?.profile_image_url})`,
-        backgroundColor: color ?? colorBackgroundInputDisabled,
-      }}
+    <img
+      alt={userData?.display_name}
+      src={userData?.profile_image_url}
       className={clsx(styles.avatar, styles[size])}
-    >
-      <div className={clsx(styles.spacer, styles[size])} />
-    </div>
+    />
   );
 }
 
@@ -29,5 +23,5 @@ interface Props {
   size?: AvatarProps.Size;
 }
 export declare namespace AvatarProps {
-  type Size = 'xs' | 's' | 'm' | 'l';
+  type Size = 'xxs' | 'xs' | 's' | 'm' | 'l';
 }

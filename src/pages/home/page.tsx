@@ -86,7 +86,7 @@ export default function TwitchPage() {
           {isConnected && followedStreams?.length && (
             <FlexibleColumnLayout columns={6} minColumnWidth={326}>
               {followedStreams.map((stream) => (
-                <VideoThumbnail stream={stream} />
+                <VideoThumbnail showCategory stream={stream} />
               ))}
             </FlexibleColumnLayout>
           )}

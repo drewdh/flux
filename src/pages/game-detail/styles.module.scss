@@ -1,5 +1,6 @@
 @use '@cloudscape-design/design-tokens' as cs;
 
+// TODO: De-dupe this from channel detail page
 .header {
   display: flex;
   gap: cs.$space-scaled-xxl;
@@ -8,7 +9,4 @@
   flex-wrap: nowrap;
   margin-top: cs.$space-scaled-xxxl;
   margin-bottom: cs.$space-scaled-xxxl;
-}
-.longText {
-  max-width: 500px;
 }

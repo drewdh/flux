@@ -65,7 +65,7 @@ export default function ChatMessage({ message, onClick, variant = 'normal' }: Pr
       {message.reply && variant === 'normal' && (
         <div className={styles.replyWrapper}>
           <div className={styles.replyConnector} />
-          <Avatar userId={message.reply.parent_user_id} size="xs" />
+          <Avatar userId={message.reply.parent_user_id} size="xxs" />
           <div className={styles.replyTextWrapper}>
             @<span>{message.reply.parent_user_name}</span> {message.reply.parent_message_body}
           </div>

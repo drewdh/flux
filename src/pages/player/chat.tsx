@@ -187,6 +187,11 @@ export default function Chat({ broadcasterUserId, height }: Props) {
     }
   }
 
+  // Use useCallback so child components don't re-render
+  const handleChange = useCallback((value: string): void => {
+    setChatMessage(value);
+  }, []);
+
   return (
     <>
       <Container
@@ -222,7 +227,7 @@ export default function Chat({ broadcasterUserId, height }: Props) {
               </div>
               <ChatBox
                 value={chatMessage}
-                onChange={(value) => setChatMessage(value)}
+                onChange={handleChange}
                 onSubmit={handleSendChat}
                 placeholder={highlightedMessage ? 'Reply' : 'Chat'}
               />

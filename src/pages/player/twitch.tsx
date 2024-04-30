@@ -6,6 +6,7 @@ import Grid from '@cloudscape-design/components/grid';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Icon from '@cloudscape-design/components/icon';
 import { faBadgeCheck } from '@fortawesome/pro-solid-svg-icons';
+import { useContainerQuery } from '@cloudscape-design/component-toolkit';
 
 import styles from './styles.module.scss';
 import useTitle from 'utilities/use-title';
@@ -20,8 +21,8 @@ import GameDetails from './game-details';
 
 export default function TwitchComponent() {
   const player = useRef<any>(null);
-  const twitchPlayerRef = useRef<HTMLDivElement>(null);
-  const [playerHeight, setPlayerHeight] = useState<string>('10px');
+  const [playerWidth, playerRef] = useContainerQuery((rect) => rect.borderBoxWidth);
+  const [playerHeight, setPlayerHeight] = useState<number>(10);
   const { user: username } = useParams();
   const { data: userData } = useGetUsers({ logins: [username ?? ''] });
   const user = userData?.data[0];
@@ -48,16 +49,8 @@ export default function TwitchComponent() {
   };
 
   useLayoutEffect(() => {
-    if (!twitchPlayerRef.current) {
-      return;
-    }
-    const playerObserver = new ResizeObserver((entries, observer) => {
-      const { width } = entries[0].contentRect;
-      setPlayerHeight(`${(width * 9) / 16}px`);
-    });
-    playerObserver.observe(twitchPlayerRef.current);
-    return () => playerObserver.disconnect();
-  }, []);
+    setPlayerHeight(((playerWidth ?? 0) * 9) / 16);
+  }, [playerWidth]);
 
   useLayoutEffect(() => {
     if (!player.current) {
@@ -87,8 +80,8 @@ export default function TwitchComponent() {
         <SpaceBetween size="s">
           <div
             id="twitch-player"
-            ref={twitchPlayerRef}
-            style={{ height: playerHeight }}
+            ref={playerRef}
+            style={{ height: `${playerHeight}px` }}
             className={styles.player}
           />
           <div>
@@ -128,10 +121,7 @@ export default function TwitchComponent() {
           <GameDetails gameId={streamData?.game_id} />
         </SpaceBetween>
         <SpaceBetween size="l">
-          <Chat
-            broadcasterUserId={streamData?.user_id}
-            height={twitchPlayerRef.current?.offsetHeight}
-          />
+          <Chat broadcasterUserId={streamData?.user_id} height={playerHeight} />
         </SpaceBetween>
       </Grid>
     </div>

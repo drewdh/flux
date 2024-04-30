@@ -56,7 +56,7 @@ export default function Chat({ broadcasterUserId, height }: Props) {
   const [highlightedMessage, setHighlightedMessage] = useState<ChatEvent | null>(null);
   const [headerHeight, headerRef] = useContainerQuery((rect) => rect.borderBoxHeight);
   const [footerHeight, footerRef] = useContainerQuery((rect) => rect.borderBoxHeight);
-  const heightString = `${height ?? 1}px`;
+  const contentHeightString = `${(height ?? 1) - 2}px`;
   const {
     mutate: createSubscription,
     isPending: isLoading,
@@ -199,8 +199,8 @@ export default function Chat({ broadcasterUserId, height }: Props) {
           ref={scrollContainerRef}
           className={styles.container}
           style={{
-            height: heightString,
-            maxHeight: heightString,
+            height: contentHeightString,
+            maxHeight: contentHeightString,
           }}
         >
           <div className={styles.header} ref={headerRef}>

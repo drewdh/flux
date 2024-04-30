@@ -53,7 +53,6 @@ export default function Chat({ broadcasterUserId, height }: Props) {
   const { data: userData } = useGetUsers({});
   const user = userData?.data[0];
   const [isScrolled, setIsScrolled] = useState<boolean>(false);
-  const [unreadCount, setUnreadCount] = useState<number>(0);
   const [highlightedMessage, setHighlightedMessage] = useState<ChatEvent | null>(null);
   const [headerHeight, headerRef] = useContainerQuery((rect) => rect.borderBoxHeight);
   const [footerHeight, footerRef] = useContainerQuery((rect) => rect.borderBoxHeight);
@@ -141,9 +140,7 @@ export default function Chat({ broadcasterUserId, height }: Props) {
         if (isDuplicate) {
           return;
         }
-        if (latestIsScrolled) {
-          setUnreadCount((prev) => prev + 1);
-        } else {
+        if (!latestIsScrolled) {
           scrollContainerRef.current?.scrollTo({
             top: scrollContainerRef.current?.scrollHeight,
             behavior: 'auto',
@@ -156,9 +153,6 @@ export default function Chat({ broadcasterUserId, height }: Props) {
   const handleScroll = useCallback(function (this: HTMLDivElement, event: Event) {
     const isBottom = this.scrollHeight - (this.clientHeight + this.scrollTop) < 1;
     setIsScrolled(!isBottom);
-    if (isBottom) {
-      setUnreadCount(0);
-    }
   }, []);
 
   useEffect(() => {
@@ -168,10 +162,8 @@ export default function Chat({ broadcasterUserId, height }: Props) {
   }, [handleScroll]);
 
   const scrollToBottom = useCallback((): void => {
-    setUnreadCount(0);
     scrollContainerRef.current?.scrollTo({
       top: scrollContainerRef.current?.scrollHeight,
-      // behavior: 'smooth',
     });
   }, []);
 
@@ -363,18 +355,14 @@ export default function Chat({ broadcasterUserId, height }: Props) {
           </div>
         </div>
         <div
-          className={clsx(
-            styles.unreadBadgeWrapper,
-            unreadCount > 0 && isScrolled && styles.visible
-          )}
+          className={clsx(styles.unreadBadgeWrapper, isScrolled && styles.visible)}
           style={{
             bottom: `calc(${footerHeight}px + 16px)`,
+            right: `16px`,
           }}
         >
           <div className={styles.unreadBadge}>
-            <Button onClick={scrollToBottom} iconName="angle-down">
-              {unreadCount} new message{unreadCount === 1 ? '' : 's'}
-            </Button>
+            <Button onClick={scrollToBottom} iconName="angle-down" />
           </div>
         </div>
       </div>

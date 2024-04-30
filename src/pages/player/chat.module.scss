@@ -71,23 +71,41 @@ $avatar-width: 24px;
   line-height: cs.$line-height-body-s;
   padding-bottom: cs.$space-scaled-xxxs;
 }
-.chatContainer {
-  border-top: 1px solid cs.$color-border-divider-default;
-  height: 500px;
-  min-height: 600px;
-  padding: cs.$space-scaled-xs cs.$space-scaled-l;
-  overflow-y: auto;
+.body {
   display: flex;
+  padding: cs.$space-static-xs cs.$space-scaled-l;
   flex-direction: column-reverse;
-}
-.containerBody {
   position: relative;
 }
+.container {
+  position: relative;
+  border: 1px solid cs.$color-border-divider-default;
+  border-radius: cs.$border-radius-container;
+  overflow-y: auto;
+}
 .messages {
+  min-height: 100%;
   display: flex;
   flex-direction: column-reverse;
 }
-.chatHeader {
+.header {
+  position: sticky;
+  background-color: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px) saturate(1.2) brightness(0.97);
+  z-index: 1;
+  top: 0;
+  padding: cs.$space-scaled-s cs.$space-scaled-l;
+  border-bottom: 1px solid rgba(#b6bec9, 0.3);
+}
+.footer {
+  position: sticky;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px) saturate(1.2) brightness(0.97);
+  z-index: 1;
+  left: 0;
+  right: 0;
+  border-top: 1px solid rgba(#b6bec9, 0.3);
   padding: cs.$space-scaled-s cs.$space-scaled-l;
 }
 .statusContainer {
@@ -104,18 +122,16 @@ $avatar-width: 24px;
   text-align: center;
   color: cs.$color-text-empty;
 }
-.unreadBadge {
+.unreadBadgeWrapper {
   position: absolute;
-  bottom: cs.$space-scaled-s;
-  left: 50%;
+  display: flex;
+  left: 0;
+  right: 0;
+  justify-content: center;
   z-index: -1;
   pointer-events: none;
   visibility: hidden;
   opacity: 0;
-  border-radius: cs.$border-radius-button;
-  overflow: hidden;
-  box-shadow: cs.$shadow-container-active;
-  transform: translateX(-50%);
   transition: opacity 150ms ease-out;
   &.visible {
     opacity: 1;
@@ -123,4 +139,9 @@ $avatar-width: 24px;
     pointer-events: all;
     visibility: unset;
   }
+}
+.unreadBadge {
+  border-radius: cs.$border-radius-button;
+  overflow: hidden;
+  box-shadow: cs.$shadow-container-active;
 }

@@ -1,4 +1,3 @@
-import Container from '@cloudscape-design/components/container';
 import Header from '@cloudscape-design/components/header';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
@@ -34,6 +33,8 @@ import ChatBox from 'common/chat-box';
 import { spaceScaledXs } from '@cloudscape-design/design-tokens';
 import InternalLink from 'common/internal-link';
 import { interpolatePathname, Pathname } from 'utilities/routes';
+import { useContainerQuery } from '@cloudscape-design/component-toolkit';
+import { flushSync } from 'react-dom';
 
 enum SettingsId {
   Restrictions = 'restrictions',
@@ -54,8 +55,9 @@ export default function Chat({ broadcasterUserId, height }: Props) {
   const [isScrolled, setIsScrolled] = useState<boolean>(false);
   const [unreadCount, setUnreadCount] = useState<number>(0);
   const [highlightedMessage, setHighlightedMessage] = useState<ChatEvent | null>(null);
-  // subtract border (1px + 1px), container heading height (53px), and content padding (4px top, 8px bottom), and 84px footer
-  const heightString = `${(height ?? 1) - 156}px`;
+  const [headerHeight, headerRef] = useContainerQuery((rect) => rect.borderBoxHeight);
+  const [footerHeight, footerRef] = useContainerQuery((rect) => rect.borderBoxHeight);
+  const heightString = `${height ?? 1}px`;
   const {
     mutate: createSubscription,
     isPending: isLoading,
@@ -114,44 +116,50 @@ export default function Chat({ broadcasterUserId, height }: Props) {
       }
       if (message.metadata.message_type === 'notification') {
         const { event: newMessage } = (message as ChatMessageType).payload;
-        setMessages((prevMessages) => {
-          // hacky way to get current value of `isScrolled` because onmessage
-          // does not get reassigned when useEffect dependencies change
-          // for some reason
-          let latestIsScrolled;
-          setIsScrolled((prev) => {
-            latestIsScrolled = prev;
-            return prev;
+        let isDuplicate: boolean = false;
+        let latestIsScrolled = false;
+        flushSync(() => {
+          setMessages((prevMessages) => {
+            // Some messages can be duplicated, so don't process these again
+            // https://dev.twitch.tv/docs/eventsub/#handling-duplicate-events
+            isDuplicate = prevMessages.some(
+              (message) => message.message_id === newMessage.message_id
+            );
+            // hacky way to get current value of `isScrolled` because onmessage
+            // does not get reassigned when useEffect dependencies change
+            // for some reason
+            setIsScrolled((prev) => {
+              latestIsScrolled = prev;
+              return prev;
+            });
+            if (isDuplicate) {
+              return prevMessages;
+            }
+            return [newMessage, ...prevMessages].slice(0, 500);
           });
-          // Some messages can be duplicated, so don't process these again
-          // https://dev.twitch.tv/docs/eventsub/#handling-duplicate-events
-          const wasProcessed = prevMessages.some(
-            (message) => message.message_id === newMessage.message_id
-          );
-          if (wasProcessed) {
-            return prevMessages;
-          }
-          if (latestIsScrolled) {
-            setUnreadCount((prev) => prev + 1);
-          }
-          return [newMessage, ...prevMessages].slice(0, 500);
         });
+        if (isDuplicate) {
+          return;
+        }
+        if (latestIsScrolled) {
+          setUnreadCount((prev) => prev + 1);
+        } else {
+          scrollContainerRef.current?.scrollTo({
+            top: scrollContainerRef.current?.scrollHeight,
+            behavior: 'auto',
+          });
+        }
       }
     };
   }, [broadcasterUserId, user, createSubscription, subscriptionId, deleteSubscription]);
 
-  const handleScroll = useCallback(
-    function (this: HTMLDivElement, event: Event) {
-      const isBottom = this.scrollTop >= 0;
-      setIsScrolled(!isBottom);
-      if (isBottom) {
-        setUnreadCount(0);
-        // Scroll to very end if `isBottom` because bottom can be 0.5 for some reason
-        scrollContainerRef.current?.scrollTo({ top: 0 });
-      }
-    },
-    [scrollContainerRef]
-  );
+  const handleScroll = useCallback(function (this: HTMLDivElement, event: Event) {
+    const isBottom = this.scrollHeight - (this.clientHeight + this.scrollTop) < 1;
+    setIsScrolled(!isBottom);
+    if (isBottom) {
+      setUnreadCount(0);
+    }
+  }, []);
 
   useEffect(() => {
     const scrollContainer = scrollContainerRef.current;
@@ -162,8 +170,8 @@ export default function Chat({ broadcasterUserId, height }: Props) {
   const scrollToBottom = useCallback((): void => {
     setUnreadCount(0);
     scrollContainerRef.current?.scrollTo({
-      top: 0,
-      behavior: 'smooth',
+      top: scrollContainerRef.current?.scrollHeight,
+      // behavior: 'smooth',
     });
   }, []);
 
@@ -194,55 +202,16 @@ export default function Chat({ broadcasterUserId, height }: Props) {
 
   return (
     <>
-      <Container
-        disableHeaderPaddings
-        disableContentPaddings
-        footer={
-          <SpaceBetween size="s">
-            {highlightedMessage && (
-              <div>
-                <Box float="right">
-                  <Button
-                    onClick={() => setHighlightedMessage(null)}
-                    variant="icon"
-                    iconName="close"
-                  />
-                </Box>
-                <Box variant="h5">
-                  Replying to{' '}
-                  <InternalLink
-                    href={interpolatePathname(Pathname.Channel, {
-                      login: highlightedMessage.chatter_user_login,
-                    })}
-                  >
-                    {highlightedMessage.chatter_user_name}
-                  </InternalLink>
-                </Box>
-                <ChatMessage message={highlightedMessage} variant="featured" />
-              </div>
-            )}
-            <div style={{ display: 'flex', gap: spaceScaledXs, flexWrap: 'nowrap' }}>
-              <div style={{ marginTop: '4px' }}>
-                <Avatar userId={user?.id ?? ''} size="s" />
-              </div>
-              <ChatBox
-                value={chatMessage}
-                onChange={handleChange}
-                onSubmit={handleSendChat}
-                placeholder={highlightedMessage ? 'Reply' : 'Chat'}
-              />
-              <div style={{ alignSelf: 'end' }}>
-                <Button
-                  onClick={() => handleSendChat()}
-                  variant="link"
-                  iconSvg={<FontAwesomeIcon color="inherit" icon={faArrowUpLong} />}
-                />
-              </div>
-            </div>
-          </SpaceBetween>
-        }
-        header={
-          <div className={styles.chatHeader}>
+      <div style={{ position: 'relative' }}>
+        <div
+          ref={scrollContainerRef}
+          className={styles.container}
+          style={{
+            height: heightString,
+            maxHeight: heightString,
+          }}
+        >
+          <div className={styles.header} ref={headerRef}>
             <Header
               variant="h2"
               info={
@@ -272,92 +241,143 @@ export default function Chat({ broadcasterUserId, height }: Props) {
               Chat
             </Header>
           </div>
-        }
-      >
-        <div className={styles.containerBody}>
           <div
-            className={clsx(styles.unreadBadge, unreadCount > 0 && isScrolled && styles.visible)}
+            className={styles.body}
+            style={{
+              minHeight: `calc(100% - ${headerHeight}px - ${footerHeight}px - 16px)`,
+            }}
           >
+            <div style={{ display: 'flex', flexDirection: 'column-reverse' }}>
+              {isLoading && (
+                <div className={styles.statusContainer}>
+                  <StatusIndicator type="loading">Loading chat</StatusIndicator>
+                </div>
+              )}
+              {!isLoading && !error && !isReconnectError && !messages.length && (
+                <div className={clsx(styles.statusContainer, styles.empty)}>
+                  <b>No new messages</b>
+                </div>
+              )}
+              {isReconnectError && (
+                <Alert
+                  header="Chat not enabled"
+                  action={
+                    <Button
+                      onClick={() => localStorage.setItem('access_token', '')}
+                      href={connectHref}
+                      iconName="external"
+                      iconAlign="right"
+                      target="_blank"
+                    >
+                      Sign in
+                    </Button>
+                  }
+                >
+                  Flux's Twitch permissions have changed. Sign in with Twitch again and reload the
+                  page to enable chat.
+                </Alert>
+              )}
+              {error && !isReconnectError && (
+                <Alert type="error" header="Failed to load chat">
+                  <SpaceBetween size="m">
+                    <div>
+                      Reload the page or try again later.{' '}
+                      <Link
+                        href="#"
+                        onFollow={(e) => {
+                          e.preventDefault();
+                          openFeedback();
+                        }}
+                        variant="primary"
+                      >
+                        Send feedback
+                      </Link>{' '}
+                      and share more details.
+                    </div>
+                    <ExpandableSection headerText="Error details">
+                      <div style={{ overflow: 'auto' }}>
+                        <Box variant="pre">{JSON.stringify(error, null, 2)}</Box>
+                      </div>
+                    </ExpandableSection>
+                  </SpaceBetween>
+                </Alert>
+              )}
+              {
+                !error &&
+                  !isLoading &&
+                  // <div className={styles.messages}>
+                  messages.map((message) => (
+                    <ChatMessage
+                      onClick={() => setHighlightedMessage(message)}
+                      message={message}
+                      key={message.message_id}
+                    />
+                  ))
+                // </div>
+              }
+            </div>
+          </div>
+          <div ref={footerRef} className={styles.footer}>
+            <SpaceBetween size="s">
+              {highlightedMessage && (
+                <div>
+                  <Box float="right">
+                    <Button
+                      onClick={() => setHighlightedMessage(null)}
+                      variant="icon"
+                      iconName="close"
+                    />
+                  </Box>
+                  <Box variant="h5">
+                    Replying to{' '}
+                    <InternalLink
+                      href={interpolatePathname(Pathname.Channel, {
+                        login: highlightedMessage.chatter_user_login,
+                      })}
+                    >
+                      {highlightedMessage.chatter_user_name}
+                    </InternalLink>
+                  </Box>
+                  <ChatMessage message={highlightedMessage} variant="featured" />
+                </div>
+              )}
+              <div style={{ display: 'flex', gap: spaceScaledXs, flexWrap: 'nowrap' }}>
+                <div style={{ marginTop: '4px' }}>
+                  <Avatar userId={user?.id ?? ''} size="s" />
+                </div>
+                <ChatBox
+                  value={chatMessage}
+                  onChange={handleChange}
+                  onSubmit={handleSendChat}
+                  placeholder={highlightedMessage ? 'Reply' : 'Chat'}
+                />
+                <div style={{ alignSelf: 'end' }}>
+                  <Button
+                    onClick={() => handleSendChat()}
+                    variant="link"
+                    iconSvg={<FontAwesomeIcon color="inherit" icon={faArrowUpLong} />}
+                  />
+                </div>
+              </div>
+            </SpaceBetween>
+          </div>
+        </div>
+        <div
+          className={clsx(
+            styles.unreadBadgeWrapper,
+            unreadCount > 0 && isScrolled && styles.visible
+          )}
+          style={{
+            bottom: `calc(${footerHeight}px + 16px)`,
+          }}
+        >
+          <div className={styles.unreadBadge}>
             <Button onClick={scrollToBottom} iconName="angle-down">
               {unreadCount} new message{unreadCount === 1 ? '' : 's'}
             </Button>
           </div>
-          <div
-            className={styles.chatContainer}
-            ref={scrollContainerRef}
-            style={{
-              height: heightString,
-              maxHeight: heightString,
-            }}
-          >
-            {isLoading && (
-              <div className={styles.statusContainer}>
-                <StatusIndicator type="loading">Loading chat</StatusIndicator>
-              </div>
-            )}
-            {!isLoading && !error && !isReconnectError && !messages.length && (
-              <div className={clsx(styles.statusContainer, styles.empty)}>
-                <b>No new messages</b>
-              </div>
-            )}
-            {isReconnectError && (
-              <Alert
-                header="Chat not enabled"
-                action={
-                  <Button
-                    onClick={() => localStorage.setItem('access_token', '')}
-                    href={connectHref}
-                    iconName="external"
-                    iconAlign="right"
-                    target="_blank"
-                  >
-                    Sign in
-                  </Button>
-                }
-              >
-                Flux's Twitch permissions have changed. Sign in with Twitch again and reload the
-                page to enable chat.
-              </Alert>
-            )}
-            {error && !isReconnectError && (
-              <Alert type="error" header="Failed to load chat">
-                <SpaceBetween size="m">
-                  <div>
-                    Reload the page or try again later.{' '}
-                    <Link
-                      href="#"
-                      onFollow={(e) => {
-                        e.preventDefault();
-                        openFeedback();
-                      }}
-                      variant="primary"
-                    >
-                      Send feedback
-                    </Link>{' '}
-                    and share more details.
-                  </div>
-                  <ExpandableSection headerText="Error details">
-                    <div style={{ overflow: 'auto' }}>
-                      <Box variant="pre">{JSON.stringify(error, null, 2)}</Box>
-                    </div>
-                  </ExpandableSection>
-                </SpaceBetween>
-              </Alert>
-            )}
-            {!error && !isLoading && (
-              <div className={styles.messages}>
-                {messages.map((message) => (
-                  <ChatMessage
-                    onClick={() => setHighlightedMessage(message)}
-                    message={message}
-                    key={message.message_id}
-                  />
-                ))}
-              </div>
-            )}
-          </div>
         </div>
-      </Container>
+      </div>
       <ChatRestrictions
         visible={isRestrictionsModalVisible}
         onDismiss={() => setIsRestrictionsModalVisible(false)}

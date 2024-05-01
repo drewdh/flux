@@ -1,13 +1,12 @@
-import Container from '@cloudscape-design/components/container';
 import Box from '@cloudscape-design/components/box';
+import SpaceBetween from '@cloudscape-design/components/space-between';
+import { format } from 'date-fns';
 
 import { useGetGames } from '../../api/api';
 import { useGetGames as useGetIgdbGames } from '../../api/igdb-query-hooks';
 import InternalLink from 'common/internal-link';
 import styles from './styles.module.scss';
 import { interpolatePathname, Pathname } from 'utilities/routes';
-import SpaceBetween from '@cloudscape-design/components/space-between';
-import { format } from 'date-fns';
 
 export default function GameDetails({ gameId }: GameDetailsProps) {
   const { data } = useGetGames({ ids: [gameId!] }, { enabled: !!gameId });
@@ -27,40 +26,36 @@ export default function GameDetails({ gameId }: GameDetailsProps) {
 
   return (
     <div className={styles.gameDetailsWrapper}>
+      <Box variant="h3">Streaming</Box>
       <InternalLink href={href}>
-        <Container disableContentPaddings>
-          <div style={{ display: 'flex' }}>
-            <div style={{ margin: '8px 0 8px 8px', borderRadius: '8px', overflow: 'hidden' }}>
-              <img
-                style={{
-                  display: 'block',
-                }}
-                src={imgSrc}
-                height="160"
-                width="120"
-                alt={data.data[0].name}
-              />
-            </div>
-            <Box padding="l">
-              <Box fontSize="heading-s" fontWeight="bold" padding={{ bottom: 'xs' }}>
-                {data.data[0].name}
+        <SpaceBetween size="xs">
+          <img
+            style={{
+              display: 'block',
+              borderRadius: '12px',
+            }}
+            src={imgSrc}
+            height="160"
+            width="120"
+            alt={data.data[0].name}
+          />
+          <div>
+            <Box>{data.data[0].name}</Box>
+            {igdbData && (
+              <Box color="text-body-secondary" fontSize="body-s">
+                <SpaceBetween size="xxs" direction="horizontal">
+                  {igdbData?.[0].first_release_date && (
+                    <>
+                      {format(igdbData?.[0].first_release_date * 1000, 'yyyy')}
+                      &bull;
+                    </>
+                  )}
+                  {igdbData?.[0].genres[0].name}
+                </SpaceBetween>
               </Box>
-              {igdbData && (
-                <Box color="text-body-secondary">
-                  <SpaceBetween size="xxs" direction="horizontal">
-                    {igdbData?.[0].first_release_date && (
-                      <>
-                        {format(igdbData?.[0].first_release_date * 1000, 'yyyy')}
-                        &bull;
-                      </>
-                    )}
-                    {igdbData?.[0].genres[0].name}
-                  </SpaceBetween>
-                </Box>
-              )}
-            </Box>
+            )}
           </div>
-        </Container>
+        </SpaceBetween>
       </InternalLink>
     </div>
   );

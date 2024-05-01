@@ -152,7 +152,9 @@ export function useGetFollowedChannels(request: Partial<GetFollowedChannelsReque
   return useQuery({
     queryFn: () => twitchClient.getFollowedChannels(request as GetFollowedChannelsRequest),
     queryKey: [QueryKey.GetFollowedChannels, request],
-    enabled: !!request.user_id,
+    enabled:
+      ('user_id' in request ? !!request.user_id?.length : true) &&
+      ('broadcaster_id' in request ? !!request.broadcaster_id?.length : true),
   });
 }
 

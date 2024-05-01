@@ -93,7 +93,7 @@ export interface Stream {
    * */
   tag_ids: string[];
   /** The tags applied to the stream. */
-  tags: string[];
+  tags?: string[];
   /** A Boolean value that indicates whether the stream is meant for mature audiences. */
   is_mature: boolean;
 }

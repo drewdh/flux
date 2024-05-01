@@ -25,7 +25,7 @@ export default function Details({ streamLogin }: DetailsProps) {
             </b>
           )}
           <div className={styles.tags}>
-            {streamData?.data[0]?.tags.map((tag) => (
+            {streamData?.data[0]?.tags?.map((tag) => (
               <Box color="text-body-secondary" display="inline">
                 #{tag}
               </Box>

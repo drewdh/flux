@@ -1,3 +1,6 @@
+import { useEffect, useMemo, useState } from 'react';
+import Box from '@cloudscape-design/components/box';
+import Popover from '@cloudscape-design/components/popover';
 import Container from '@cloudscape-design/components/container';
 import Header from '@cloudscape-design/components/header';
 import Select, { SelectProps } from '@cloudscape-design/components/select';
@@ -5,7 +8,6 @@ import { useTranslation } from 'react-i18next';
 
 import { useSettings } from 'utilities/settings';
 import styles from './styles.module.scss';
-import { useEffect, useMemo, useState } from 'react';
 
 export default function Language() {
   const { t, i18n } = useTranslation();
@@ -13,7 +15,7 @@ export default function Language() {
     (): SelectProps.Option[] => [
       { value: '', label: t('settings.language.system') },
       { value: 'en-US', label: 'English (US)' },
-      { value: 'de', label: 'Deutsch', description: 'Unvollständig' },
+      { value: 'de', label: 'Deutsch' },
     ],
     [t]
   );
@@ -29,7 +31,27 @@ export default function Language() {
   }, [i18n.language, language, options]);
 
   return (
-    <Container header={<Header>{t('settings.language.title')}</Header>}>
+    <Container
+      header={
+        <Header
+          description="Set your preferred language for the Flux interface."
+          info={
+            <Box display="inline" color="text-status-info">
+              <Popover
+                header="Beta feature"
+                content="Setting your preferred language is in beta. Not all text has translations, and not all languages are supported."
+              >
+                <Box color="inherit" fontSize="body-s" fontWeight="bold">
+                  Beta
+                </Box>
+              </Popover>
+            </Box>
+          }
+        >
+          {t('settings.language.title')}
+        </Header>
+      }
+    >
       <div className={styles.dropdownWrapper}>
         <Select
           onChange={(event) => {

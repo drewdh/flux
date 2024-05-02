@@ -45,7 +45,12 @@ export default function TopNavigation() {
                 value={searchInputValue}
                 options={autosuggestOptions}
               />
-              <Button onClick={handleSubmit} variant="normal" iconName="search" />
+              <Button
+                ariaLabel="Search"
+                onClick={handleSubmit}
+                variant="normal"
+                iconName="search"
+              />
             </SpaceBetween>
           }
         />

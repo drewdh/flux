@@ -83,6 +83,8 @@ const queryClient = new QueryClient({
   },
 });
 
+console.log('test, delete me');
+
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(
   <React.StrictMode>

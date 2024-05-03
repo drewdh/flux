@@ -98,29 +98,11 @@ export default function StreamDetails({ broadcasterUserId }: StreamDetailsProps)
   }
 
   const gameHref = interpolatePathname(Pathname.Game, { gameId: streamData?.game_id ?? '' });
-  const userHref = interpolatePathname(Pathname.Channel, { login: streamData?.user_login ?? '' });
 
   return (
-    <Container header={<Header headingTagOverride="h3">{streamData?.title}</Header>}>
+    <Container header={<Header variant="h2">Information</Header>}>
       <ColumnLayout columns={2} variant="text-grid">
         <SpaceBetween size="l">
-          <Box variant="h3" padding="n">
-            Information
-          </Box>
-          <div>
-            <Box variant="awsui-key-label">Streamer</Box>
-            {streamData?.user_name ? (
-              <InternalLink variant="primary" href={userHref}>
-                {streamData.user_name}
-              </InternalLink>
-            ) : (
-              '-'
-            )}
-          </div>
-          <div>
-            <Box variant="awsui-key-label">Viewers</Box>
-            <div>{streamData?.viewer_count.toLocaleString() ?? '-'}</div>
-          </div>
           <div>
             <Box variant="awsui-key-label">Category</Box>
             {streamData?.game_id && streamData.game_name ? (
@@ -136,23 +118,24 @@ export default function StreamDetails({ broadcasterUserId }: StreamDetailsProps)
             {streamData?.started_at ? <RelativeTime date={streamData.started_at} /> : '-'}
           </div>
           <div>
+            <Box variant="awsui-key-label">Viewers</Box>
+            <div>{streamData?.viewer_count.toLocaleString() ?? '-'}</div>
+          </div>
+        </SpaceBetween>
+        <SpaceBetween size="l">
+          <div>
+            <Box variant="awsui-key-label">Followed</Box>
+            <div>
+              {followData?.followed_at ? <RelativeTime date={followData.followed_at} /> : '-'}
+            </div>
+          </div>
+          <div>
             <Box variant="awsui-key-label">Tags</Box>
             <div>{streamData?.tags?.join(', ') ?? '-'}</div>
           </div>
           <div>
             <Box variant="awsui-key-label">Language</Box>
             <div>{languageLabelMap[streamData?.language ?? ''] ?? streamData?.language ?? '-'}</div>
-          </div>
-        </SpaceBetween>
-        <SpaceBetween size="l">
-          <Box variant="h3" padding="n">
-            Connection
-          </Box>
-          <div>
-            <Box variant="awsui-key-label">Followed</Box>
-            <div>
-              {followData?.followed_at ? <RelativeTime date={followData.followed_at} /> : '-'}
-            </div>
           </div>
         </SpaceBetween>
       </ColumnLayout>

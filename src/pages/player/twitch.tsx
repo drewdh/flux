@@ -3,12 +3,17 @@ import { useParams } from 'react-router';
 import SpaceBetween from '@cloudscape-design/components/space-between';
 import Grid from '@cloudscape-design/components/grid';
 import { useContainerQuery } from '@cloudscape-design/component-toolkit';
+import Header from '@cloudscape-design/components/header';
 
 import styles from './styles.module.scss';
 import useTitle from 'utilities/use-title';
 import { useGetStreamByUserLogin } from '../../api/api';
 import Chat from './chat';
 import StreamDetails from './stream-details';
+import InternalLink from 'common/internal-link';
+import Box from '@cloudscape-design/components/box';
+import { interpolatePathname, Pathname } from 'utilities/routes';
+import Avatar from 'common/avatar';
 
 export default function TwitchComponent() {
   const player = useRef<any>(null);
@@ -55,6 +60,8 @@ export default function TwitchComponent() {
     // return () => (player = undefined);
   }, []);
 
+  const userHref = interpolatePathname(Pathname.Channel, { login: streamData?.user_login ?? '' });
+
   return (
     <div className={styles.pageWrapper}>
       <Grid
@@ -63,13 +70,26 @@ export default function TwitchComponent() {
           { colspan: { default: 12, l: 3, m: 4, s: 5 } },
         ]}
       >
-        <SpaceBetween size="l">
+        <SpaceBetween size="m">
           <div
             id="twitch-player"
             ref={playerRef}
             style={{ height: `${playerHeight}px` }}
             className={styles.player}
           />
+          <SpaceBetween size="s">
+            <Header>{streamData?.title}</Header>
+            <SpaceBetween size="xs" direction="horizontal">
+              <InternalLink href={userHref}>
+                <Avatar userId={streamData?.user_id} size="m" />
+              </InternalLink>
+              <Box fontWeight="bold">
+                <InternalLink href={userHref} variant="primary" fontSize="heading-m">
+                  {streamData?.user_name}
+                </InternalLink>
+              </Box>
+            </SpaceBetween>
+          </SpaceBetween>
           <StreamDetails broadcasterUserId={streamData?.user_id} />
         </SpaceBetween>
         <SpaceBetween size="l">

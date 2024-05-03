@@ -11,7 +11,7 @@ $viewport-breakpoint-xs: 688px;
 .player {
   border-radius: 16px;
   overflow: hidden;
-  background-color: black;
+  background-color: cs.$color-background-input-disabled;
 }
 .stats {
   display: flex;
@@ -39,8 +39,6 @@ $viewport-breakpoint-xs: 688px;
     // TODO: Not working
     position: sticky;
     top: 0;
-    right: 0;
-    left: 0;
     z-index: 500;
     margin: 0 -24px;
   }

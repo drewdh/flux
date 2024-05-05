@@ -21,18 +21,6 @@ import { TwitchError } from './api/twitch-api-client';
 import ChannelPage from './pages/channel/page';
 import GameDetailPage from './pages/game-detail/game-detail';
 
-interface GlobalFlags {
-  removeHighContrastHeader?: boolean;
-}
-const symbol = Symbol.for('awsui-global-flags');
-interface FlagsHolder {
-  [symbol]?: GlobalFlags;
-}
-if (!(window as FlagsHolder)[symbol]) {
-  (window as FlagsHolder)[symbol] = {};
-}
-(window as FlagsHolder)[symbol]!.removeHighContrastHeader = true;
-
 const router = createBrowserRouter([
   {
     element: <App />,

@@ -51,6 +51,7 @@ export default function GameDetailPage() {
             </FullHeightContent>
           ) : (
             <ContentLayout
+              disableOverlap
               header={
                 <div className={styles.header}>
                   <img

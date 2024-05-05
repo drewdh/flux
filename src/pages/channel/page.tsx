@@ -64,6 +64,7 @@ export default function ChannelPage() {
           </FullHeightContent>
         ) : (
           <ContentLayout
+            disableOverlap
             header={
               <div className={styles.header}>
                 <Avatar userId={userData?.data[0].id ?? ''} size="l" />

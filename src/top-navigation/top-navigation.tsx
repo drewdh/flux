@@ -8,6 +8,7 @@ import Feedback from '../feedback/internal/feedback';
 import { useTranslation } from 'react-i18next';
 import SpaceBetween from '@cloudscape-design/components/space-between';
 import Button from '@cloudscape-design/components/button';
+import clsx from 'clsx';
 
 export default function TopNavigation() {
   const { t } = useTranslation();
@@ -27,7 +28,7 @@ export default function TopNavigation() {
 
   return (
     <>
-      <div className={styles.topNavigation} id={topNavId}>
+      <div className={clsx(styles.topNavigation, 'awsui-context-top-navigation')} id={topNavId}>
         <CloudscapeTopNavigation
           identity={identity}
           i18nStrings={i18nStrings}

@@ -4,120 +4,115 @@ import Header from '@cloudscape-design/components/header';
 import SpaceBetween from '@cloudscape-design/components/space-between';
 import Box from '@cloudscape-design/components/box';
 import Button from '@cloudscape-design/components/button';
-import FormField from '@cloudscape-design/components/form-field';
-import Select from '@cloudscape-design/components/select';
-import Textarea from '@cloudscape-design/components/textarea';
-import RadioGroup from '@cloudscape-design/components/radio-group';
-import Input from '@cloudscape-design/components/input';
 import { useTranslation } from 'react-i18next';
+import { Formik, Form } from 'formik';
+import * as Yup from 'yup';
 
-import useFeedback from './use-feedback';
+import useFeedback, { Values } from './use-feedback';
+import FormikInput from 'common/formik/input';
+import FormikFormField from 'common/formik/form-field';
+import FormikTextArea from 'common/formik/textarea';
+import FormikSelect from 'common/formik/select';
+import FormikRadioGroup from 'common/formik/radio-group';
 
 export default function Feedback() {
   const { t } = useTranslation();
   const {
     alertRef,
     emailRef,
-    errors,
+    getMessageConstraintText,
     handleDismiss,
-    handleEmailChange,
-    handleMessageChange,
-    handleSatisfiedChange,
-    handleSubmitClick,
-    handleTypeChange,
+    handleSubmit,
+    initialValues,
     isApiError,
-    isSubmitting,
     isSuccess,
-    messageConstraintText,
     messageRef,
     satisfiedItems,
     satisfiedRef,
     typeOptions,
-    values,
     visible,
   } = useFeedback();
 
   return (
-    <Modal
-      footer={
-        <Box float="right">
-          {isSuccess && (
-            <Button variant="primary" onClick={handleDismiss}>
-              {t('common.close')}
-            </Button>
-          )}
-          {!isSuccess && (
-            <SpaceBetween size="xs" direction="horizontal">
-              <Button variant="link" onClick={handleDismiss}>
-                {t('common.cancel')}
-              </Button>
-              <Button
-                loading={isSubmitting}
-                variant="primary"
-                form="feedback"
-                onClick={handleSubmitClick}
-              >
-                {t('common.submit')}
-              </Button>
-            </SpaceBetween>
-          )}
-        </Box>
-      }
-      header={<Header>{t('feedback.title')}</Header>}
-      onDismiss={handleDismiss}
-      visible={visible}
+    <Formik<Values>
+      initialValues={initialValues}
+      validationSchema={Yup.object().shape({
+        message: Yup.string()
+          .max(1000, t('feedback.error.maxMessage'))
+          .required(t('feedback.error.messageRequired')),
+        satisfied: Yup.string().required(t('feedback.error.satisfactionRequired')),
+        email: Yup.string().email(t('feedback.error.invalidEmail')),
+      })}
+      onSubmit={handleSubmit}
     >
-      <form id="feedback" onSubmit={(e) => e.preventDefault()}>
-        {isSuccess && <Alert type="success">{t('feedback.success')}</Alert>}
-        {!isSuccess && (
-          <SpaceBetween size="l">
-            <span>{t('feedback.description')}</span>
-            <FormField label={t('feedback.typeLabel')}>
-              <Select
-                selectedOption={values.type}
-                onChange={handleTypeChange}
-                options={typeOptions}
-              />
-            </FormField>
-            <FormField
-              label={t('feedback.messageLabel')}
-              constraintText={messageConstraintText}
-              errorText={errors.message}
-            >
-              <Textarea ref={messageRef} value={values.message} onChange={handleMessageChange} />
-            </FormField>
-            <FormField label={t('feedback.satisfactionLabel')} errorText={errors.satisfied}>
-              <RadioGroup
-                items={satisfiedItems}
-                onChange={handleSatisfiedChange}
-                value={values.satisfied}
-                ref={satisfiedRef}
-              />
-            </FormField>
-            <FormField
-              errorText={errors.email}
-              label={
-                <span>
-                  {t('feedback.emailLabel')} - <i>{t('common.optional')}</i>
-                </span>
-              }
-              description={t('feedback.emailDescription')}
-            >
-              <Input
-                ref={emailRef}
-                placeholder={t('feedback.emailPlaceholder')}
-                value={values.email}
-                onChange={handleEmailChange}
-              />
-            </FormField>
-            {isApiError && (
-              <Alert ref={alertRef} type="error">
-                {t('feedback.error.general')}
-              </Alert>
+      {({ resetForm, isSubmitting, values }) => (
+        <Modal
+          footer={
+            <Box float="right">
+              {isSuccess && (
+                <Button variant="primary" onClick={() => handleDismiss(resetForm)}>
+                  {t('common.close')}
+                </Button>
+              )}
+              {!isSuccess && (
+                <SpaceBetween size="xs" direction="horizontal">
+                  <Button variant="link" onClick={() => handleDismiss(resetForm)}>
+                    {t('common.cancel')}
+                  </Button>
+                  <Button loading={isSubmitting} variant="primary" form="feedback">
+                    {t('common.submit')}
+                  </Button>
+                </SpaceBetween>
+              )}
+            </Box>
+          }
+          header={<Header>{t('feedback.title')}</Header>}
+          onDismiss={() => handleDismiss(resetForm)}
+          visible={visible}
+        >
+          <Form id="feedback">
+            {isSuccess && <Alert type="success">{t('feedback.success')}</Alert>}
+            {!isSuccess && (
+              <SpaceBetween size="l">
+                <span>{t('feedback.description')}</span>
+                <FormikFormField name="type" label={t('feedback.typeLabel')}>
+                  <FormikSelect options={typeOptions} name="type" />
+                </FormikFormField>
+                <FormikFormField
+                  name="message"
+                  label={t('feedback.messageLabel')}
+                  constraintText={getMessageConstraintText(values.message)}
+                >
+                  <FormikTextArea ref={messageRef} name="message" />
+                </FormikFormField>
+                <FormikFormField name="satisfied" label={t('feedback.satisfactionLabel')}>
+                  <FormikRadioGroup name="satisfied" items={satisfiedItems} ref={satisfiedRef} />
+                </FormikFormField>
+                <FormikFormField
+                  name="email"
+                  label={
+                    <span>
+                      {t('feedback.emailLabel')} - <i>{t('common.optional')}</i>
+                    </span>
+                  }
+                  description={t('feedback.emailDescription')}
+                >
+                  <FormikInput
+                    name="email"
+                    ref={emailRef}
+                    placeholder={t('feedback.emailPlaceholder')}
+                  />
+                </FormikFormField>
+                {isApiError && (
+                  <Alert ref={alertRef} type="error">
+                    {t('feedback.error.general')}
+                  </Alert>
+                )}
+              </SpaceBetween>
             )}
-          </SpaceBetween>
-        )}
-      </form>
-    </Modal>
+          </Form>
+        </Modal>
+      )}
+    </Formik>
   );
 }

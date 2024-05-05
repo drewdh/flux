@@ -1,12 +1,12 @@
 import { forwardRef } from 'react';
 import { useFormikContext } from 'formik';
-import CloudscapeInput, { InputProps } from '@cloudscape-design/components/input';
+import Textarea, { TextareaProps } from '@cloudscape-design/components/textarea';
 
-const FormikInput = forwardRef<InputProps.Ref, Props>(
+const FormikTextArea = forwardRef<TextareaProps.Ref, Props>(
   ({ name, onChange, onBlur, ...props }, ref) => {
     const { values, setFieldValue, setFieldTouched } = useFormikContext<any>();
     return (
-      <CloudscapeInput
+      <Textarea
         {...props}
         ref={ref}
         value={values[name]}
@@ -23,8 +23,8 @@ const FormikInput = forwardRef<InputProps.Ref, Props>(
   }
 );
 
-interface Props extends Omit<InputProps, 'value'> {
+interface Props extends Omit<TextareaProps, 'value'> {
   name: string;
 }
 
-export default FormikInput;
+export default FormikTextArea;

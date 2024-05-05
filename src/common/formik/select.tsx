@@ -1,17 +1,18 @@
 import { forwardRef } from 'react';
 import { useFormikContext } from 'formik';
-import CloudscapeInput, { InputProps } from '@cloudscape-design/components/input';
+import Select, { SelectProps } from '@cloudscape-design/components/select';
 
-const FormikInput = forwardRef<InputProps.Ref, Props>(
+const FormikSelect = forwardRef<SelectProps.Ref, Props>(
   ({ name, onChange, onBlur, ...props }, ref) => {
     const { values, setFieldValue, setFieldTouched } = useFormikContext<any>();
+
     return (
-      <CloudscapeInput
+      <Select
         {...props}
         ref={ref}
-        value={values[name]}
+        selectedOption={values[name]}
         onChange={(e) => {
-          setFieldValue(name, e.detail.value);
+          setFieldValue(name, e.detail.selectedOption);
           onChange?.(e);
         }}
         onBlur={(e) => {
@@ -23,8 +24,8 @@ const FormikInput = forwardRef<InputProps.Ref, Props>(
   }
 );
 
-interface Props extends Omit<InputProps, 'value'> {
+interface Props extends Omit<SelectProps, 'selectedOption'> {
   name: string;
 }
 
-export default FormikInput;
+export default FormikSelect;

@@ -1,10 +1,8 @@
 import { Ref, useCallback, useEffect, useRef, useState } from 'react';
-import { AlertProps, NonCancelableCustomEvent } from '@cloudscape-design/components';
+import { AlertProps } from '@cloudscape-design/components';
 import { TextareaProps } from '@cloudscape-design/components/textarea';
 import { RadioGroupProps } from '@cloudscape-design/components/radio-group';
 import { SelectProps } from '@cloudscape-design/components/select';
-import { FormikErrors, useFormik } from 'formik';
-import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { InputProps } from '@cloudscape-design/components/input';
 
@@ -22,7 +20,7 @@ enum Type {
   UiFeedback = 'uiFeedback',
 }
 
-interface Values {
+export interface Values {
   email: string;
   message: string;
   satisfied: Satisfied | null;
@@ -36,7 +34,6 @@ export default function useFeedback(): State {
   const messageRef = useRef<TextareaProps.Ref>(null);
   const satisfiedRef = useRef<RadioGroupProps.Ref>(null);
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
-  const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [isApiError, setIsApiError] = useState<boolean>(false);
   const [visible, setVisible] = useState<boolean>(false);
   const typeOptions: SelectProps.Option[] = [
@@ -58,38 +55,28 @@ export default function useFeedback(): State {
     },
   ];
 
-  const { errors, handleSubmit, isSubmitting, resetForm, setFieldValue, validateForm, values } =
-    useFormik<Values>({
-      initialValues: {
-        email: '',
-        message: '',
-        satisfied: null,
-        type: typeOptions[0],
-      },
-      validateOnChange: isSubmitted,
-      validationSchema: Yup.object().shape({
-        message: Yup.string()
-          .max(1000, t('feedback.error.maxMessage'))
-          .required(t('feedback.error.messageRequired')),
-        satisfied: Yup.string().required(t('feedback.error.satisfactionRequired')),
-        email: Yup.string().email(t('feedback.error.invalidEmail')),
-      }),
-      onSubmit: async (values) => {
-        setIsApiError(false);
-        try {
-          await sendFeedback({
-            message: values.message,
-            type: values.type.value!,
-            satisfied: values.satisfied!,
-            email: values.email,
-          });
-          setIsSuccess(true);
-        } catch {
-          setIsApiError(true);
-          alertRef.current?.focus();
-        }
-      },
-    });
+  const initialValues: Values = {
+    email: '',
+    message: '',
+    satisfied: null,
+    type: typeOptions[0],
+  };
+
+  async function handleSubmit(values: Values) {
+    setIsApiError(false);
+    try {
+      await sendFeedback({
+        message: values.message,
+        type: values.type.value!,
+        satisfied: values.satisfied!,
+        email: values.email,
+      });
+      setIsSuccess(true);
+    } catch {
+      setIsApiError(true);
+      alertRef.current?.focus();
+    }
+  }
 
   const satisfiedItems: RadioGroupProps.RadioButtonDefinition[] = [
     {
@@ -102,86 +89,42 @@ export default function useFeedback(): State {
     },
   ];
 
-  const openFeedbackHandler = useCallback(
-    (event: CustomEvent<Values>): void => {
-      const { detail } = event;
-      Object.keys(detail).forEach((field) => {
-        // @ts-ignore
-        setFieldValue(field, detail[field]);
-      });
-      setVisible(true);
-    },
-    [setFieldValue]
-  ) as EventListener;
+  const openFeedbackHandler = useCallback((): void => {
+    setVisible(true);
+  }, []) as EventListener;
 
   useEffect(() => {
     document.addEventListener('openfeedback', openFeedbackHandler);
     return () => document.removeEventListener('openfeedback', openFeedbackHandler);
   }, [openFeedbackHandler]);
 
-  function handleEmailChange(event: NonCancelableCustomEvent<InputProps.ChangeDetail>) {
-    setFieldValue('email', event.detail.value);
+  function getMessageConstraintText(messageValue: string) {
+    const remainingCharacters = 1000 - messageValue.length;
+    return t('feedback.charactersRemaining', {
+      count: remainingCharacters,
+    });
   }
 
-  function handleTypeChange(event: NonCancelableCustomEvent<SelectProps.ChangeDetail>) {
-    setFieldValue('type', event.detail.selectedOption);
-  }
-
-  function handleMessageChange(event: NonCancelableCustomEvent<TextareaProps.ChangeDetail>) {
-    setFieldValue('message', event.detail.value);
-  }
-
-  function handleSatisfiedChange(event: NonCancelableCustomEvent<RadioGroupProps.ChangeDetail>) {
-    setFieldValue('satisfied', event.detail.value as Satisfied);
-  }
-
-  const remainingCharacters = 1000 - values.message.length;
-  const messageConstraintText = t('feedback.charactersRemaining', {
-    count: remainingCharacters,
-  });
-
-  async function handleSubmitClick() {
-    setIsSubmitted(true);
-    const errors = await validateForm();
-    handleSubmit();
-    if ('message' in errors) {
-      return messageRef.current?.focus();
-    }
-    if ('satisfied' in errors) {
-      return satisfiedRef.current?.focus();
-    }
-    if ('email' in errors) {
-      return emailRef.current?.focus();
-    }
-  }
-
-  function handleDismiss() {
+  function handleDismiss(resetFormFn: () => void) {
     setVisible(false);
-    setIsSubmitted(false);
     setIsSuccess(false);
     setIsApiError(false);
-    resetForm();
+    resetFormFn();
   }
 
   return {
     alertRef,
     emailRef,
-    errors,
+    getMessageConstraintText,
     handleDismiss,
-    handleEmailChange,
-    handleMessageChange,
-    handleSatisfiedChange,
-    handleSubmitClick,
-    handleTypeChange,
+    handleSubmit,
+    initialValues,
     isApiError,
-    isSubmitting,
     isSuccess,
-    messageConstraintText,
     messageRef,
     satisfiedItems,
     satisfiedRef,
     typeOptions,
-    values,
     visible,
   };
 }
@@ -189,21 +132,15 @@ export default function useFeedback(): State {
 interface State {
   alertRef: Ref<AlertProps.Ref>;
   emailRef: Ref<InputProps.Ref>;
-  errors: FormikErrors<Values>;
-  handleDismiss: () => void;
-  handleEmailChange: (event: NonCancelableCustomEvent<InputProps.ChangeDetail>) => void;
-  handleMessageChange: (event: NonCancelableCustomEvent<TextareaProps.ChangeDetail>) => void;
-  handleSatisfiedChange: (event: NonCancelableCustomEvent<RadioGroupProps.ChangeDetail>) => void;
-  handleSubmitClick: () => void;
-  handleTypeChange: (event: NonCancelableCustomEvent<SelectProps.ChangeDetail>) => void;
+  getMessageConstraintText: (messageValue: string) => string;
+  handleDismiss: (resetFormFn: () => void) => void;
+  handleSubmit: (values: Values) => Promise<void>;
+  initialValues: Values;
   isApiError: boolean;
-  isSubmitting: boolean;
   isSuccess: boolean;
-  messageConstraintText: string | undefined;
   messageRef: Ref<TextareaProps.Ref>;
   satisfiedItems: RadioGroupProps.RadioButtonDefinition[];
   satisfiedRef: Ref<RadioGroupProps.Ref>;
   typeOptions: SelectProps.Options;
-  values: Values;
   visible: boolean;
 }

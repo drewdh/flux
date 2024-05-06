@@ -15,6 +15,7 @@ export default class ErrorBoundary extends React.Component<PropsWithChildren, St
   }
 
   static getDerivedStateFromError(error: Error) {
+    cwr('recordError', error);
     // Update state so the next render will show the fallback UI.
     return { error };
   }

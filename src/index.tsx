@@ -8,6 +8,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Pathname } from 'utilities/routes';
 import './index.scss';
 import './i18n';
+import './utilities/rum-init';
 import App from './app/app';
 import reportWebVitals from './reportWebVitals';
 import TwitchPlayerPage from './pages/player/twitch-page';

@@ -15,6 +15,7 @@ import Avatar from 'common/avatar';
 import useTitle from 'utilities/use-title';
 import { interpolatePathname, Pathname } from 'utilities/routes';
 import styles from './styles.module.scss';
+import Link from '@cloudscape-design/components/link';
 
 enum TabId {
   Details = 'details',
@@ -35,11 +36,10 @@ export default function ChannelPage() {
   const { login = '', tabId } = useParams();
   const navigate = useNavigate();
   const [activeTabId, setActiveTabId] = useState<TabId>((tabId as TabId) ?? defaultTabId);
-  const {
-    data: userData,
-    isLoading: isLoadingUser,
-    isError,
-  } = useGetUsers({ logins: [login!] }, { enabled: !!login });
+  const { data: userData, isLoading: isLoadingUser } = useGetUsers(
+    { logins: [login!] },
+    { enabled: !!login }
+  );
   const { data: followerData, isLoading: isLoadingFollowers } = useGetChannelFollowers({
     broadcasterId: userData?.data[0].id,
   });
@@ -83,7 +83,17 @@ export default function ChannelPage() {
                     </SpaceBetween>
                   </Box>
                   <div className={styles.longText}>
-                    <Box color="text-body-secondary">{userData?.data[0].description}</Box>
+                    <Box color="text-body-secondary">
+                      {userData?.data[0].description}{' '}
+                      <Link
+                        variant="primary"
+                        external
+                        href={`https://www.twitch.tv/${userData?.data[0].login}/about`}
+                        target="_blank"
+                      >
+                        Learn more
+                      </Link>
+                    </Box>
                   </div>
                 </SpaceBetween>
               </div>

@@ -31,6 +31,7 @@ import { TwitchApiClient, TwitchError } from './twitch-api-client';
 import { Pathname } from 'utilities/routes';
 import useAddNotification from 'common/use-add-notification';
 import { connectHref } from '../pages/home/page';
+import { awsRum } from 'utilities/rum-init';
 
 export enum QueryKey {
   GetFollowedStreams = 'GetFollowedStreams',
@@ -211,7 +212,14 @@ export function useSearchCategories({ query, pageSize = 10 }: UseSearchOptions) 
 
 export function useValidate() {
   return useQuery({
-    queryFn: () => twitchClient.validate({}),
+    queryFn: async () => {
+      const resp = await twitchClient.validate({});
+      awsRum.addSessionAttributes({
+        userId: resp.user_id,
+        login: resp.login,
+      });
+      return resp;
+    },
     queryKey: [QueryKey.Validate],
     enabled: !!localStorage.getItem('access_token'),
     // Twitch recommends fetching every hour

@@ -4,6 +4,8 @@ declare global {
   function cwr(operation: string, payload: any): void;
 }
 
+export let awsRum: AwsRum;
+
 try {
   const config: AwsRumConfig = {
     sessionSampleRate: 1,
@@ -18,7 +20,7 @@ try {
   const APPLICATION_VERSION: string = '1.0.0';
   const APPLICATION_REGION: string = 'us-west-2';
 
-  const awsRum: AwsRum = new AwsRum(
+  awsRum = new AwsRum(
     APPLICATION_ID,
     APPLICATION_VERSION,
     APPLICATION_REGION,

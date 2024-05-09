@@ -1,4 +1,4 @@
-import { Ref, useCallback, useEffect, useRef, useState } from 'react';
+import { Ref, useRef, useState } from 'react';
 import { AlertProps } from '@cloudscape-design/components';
 import { TextareaProps } from '@cloudscape-design/components/textarea';
 import { RadioGroupProps } from '@cloudscape-design/components/radio-group';
@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { InputProps } from '@cloudscape-design/components/input';
 
 import { sendFeedback } from './feedback-api';
+import { useFeedback as useFeedbackContext } from '../feedback-context';
 
 enum Satisfied {
   Yes = 'yes',
@@ -35,7 +36,7 @@ export default function useFeedback(): State {
   const satisfiedRef = useRef<RadioGroupProps.Ref>(null);
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const [isApiError, setIsApiError] = useState<boolean>(false);
-  const [visible, setVisible] = useState<boolean>(false);
+  const { isFeedbackVisible: visible, setIsFeedbackVisible: setVisible } = useFeedbackContext();
   const typeOptions: SelectProps.Option[] = [
     {
       label: t('feedback.typeGeneral'),
@@ -88,15 +89,6 @@ export default function useFeedback(): State {
       label: t('feedback.dissatisfied'),
     },
   ];
-
-  const openFeedbackHandler = useCallback((): void => {
-    setVisible(true);
-  }, []) as EventListener;
-
-  useEffect(() => {
-    document.addEventListener('openfeedback', openFeedbackHandler);
-    return () => document.removeEventListener('openfeedback', openFeedbackHandler);
-  }, [openFeedbackHandler]);
 
   function getMessageConstraintText(messageValue: string) {
     const remainingCharacters = 1000 - messageValue.length;

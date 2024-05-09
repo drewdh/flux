@@ -13,7 +13,7 @@ import InternalLink from 'common/internal-link';
 import { interpolatePathname, Pathname } from 'utilities/routes';
 import RelativeTime from 'common/relative-time';
 import Empty from 'common/empty/empty';
-import useFeedback from '../../feedback/use-feedback';
+import { useFeedback } from '../../feedback/feedback-context';
 
 const languageLabelMap: Record<string, string> = {
   en: 'English',
@@ -36,7 +36,7 @@ export default function StreamDetails({ broadcasterUserId }: StreamDetailsProps)
     error,
   } = useGetStreams({ userIds: [broadcasterUserId!] }, { enabled: !!broadcasterUserId });
   const streamData = _streamData?.data[0];
-  const { openFeedback } = useFeedback();
+  const { setIsFeedbackVisible } = useFeedback();
   const { data: _followData } = useGetFollowedChannels({
     user_id: userData?.user_id,
     broadcaster_id: broadcasterUserId,
@@ -78,7 +78,7 @@ export default function StreamDetails({ broadcasterUserId }: StreamDetailsProps)
                 href="#"
                 onFollow={(e) => {
                   e.preventDefault();
-                  openFeedback();
+                  setIsFeedbackVisible(true);
                 }}
                 variant="primary"
               >

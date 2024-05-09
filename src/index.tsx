@@ -21,6 +21,7 @@ import { SettingsProvider } from 'utilities/settings';
 import { TwitchError } from './api/twitch-api-client';
 import ChannelPage from './pages/channel/page';
 import GameDetailPage from './pages/game-detail/game-detail';
+import { FeedbackProvider } from './feedback/feedback-context';
 
 const router = createBrowserRouter([
   {
@@ -75,13 +76,15 @@ const queryClient = new QueryClient({
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(
   <React.StrictMode>
-    <SettingsProvider>
-      <QueryClientProvider client={queryClient}>
-        <I18nProvider locale={locale} messages={messages}>
-          <RouterProvider router={router} />
-        </I18nProvider>
-      </QueryClientProvider>
-    </SettingsProvider>
+    <FeedbackProvider>
+      <SettingsProvider>
+        <QueryClientProvider client={queryClient}>
+          <I18nProvider locale={locale} messages={messages}>
+            <RouterProvider router={router} />
+          </I18nProvider>
+        </QueryClientProvider>
+      </SettingsProvider>
+    </FeedbackProvider>
   </React.StrictMode>
 );
 

@@ -26,7 +26,7 @@ import ChatRestrictions from './chat-restrictions';
 import { ChatEvent, ChatMessage as ChatMessageType, WelcomeMessage } from '../../api/twitch-types';
 import Popover from '@cloudscape-design/components/popover';
 import Avatar from 'common/avatar';
-import useFeedback from '../../feedback/use-feedback';
+import { useFeedback } from '../../feedback/feedback-context';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowUpLong } from '@fortawesome/pro-solid-svg-icons';
 import ChatBox from 'common/chat-box';
@@ -47,7 +47,7 @@ export default function Chat({ broadcasterUserId, height }: Props) {
   const [chatMessage, setChatMessage] = useState<string>('');
   const [isRestrictionsModalVisible, setIsRestrictionsModalVisible] = useState<boolean>(false);
   const [isReconnectError, setIsReconnectError] = useState<boolean>(false);
-  const { openFeedback } = useFeedback();
+  const { setIsFeedbackVisible } = useFeedback();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [messages, setMessages] = useState<ChatEvent[]>([]);
   const { data: userData } = useGetUsers({});
@@ -278,7 +278,7 @@ export default function Chat({ broadcasterUserId, height }: Props) {
                         href="#"
                         onFollow={(e) => {
                           e.preventDefault();
-                          openFeedback();
+                          setIsFeedbackVisible(true);
                         }}
                         variant="primary"
                       >

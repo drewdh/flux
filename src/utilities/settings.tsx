@@ -8,18 +8,13 @@ import {
 } from 'react';
 import { useTranslation } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
+import { applyMode, Mode } from '@cloudscape-design/global-styles';
 
 import useLocalStorage, { LocalStorageKey } from 'utilities/use-local-storage';
 
-function setDarkMode(isEnabled: boolean) {
-  if (isEnabled) {
-    document.body.classList.add('awsui-dark-mode');
-  } else {
-    document.body.classList.remove('awsui-dark-mode');
-  }
-}
 function handleMatchChange(event: MediaQueryListEvent) {
-  setDarkMode(event.matches);
+  const mode = event.matches ? Mode.Dark : Mode.Light;
+  applyMode(mode);
 }
 
 export enum Appearance {
@@ -52,10 +47,10 @@ export function SettingsProvider({ children }: PropsWithChildren) {
       setAppearance(value);
       if (value === Appearance.System) {
         match.addEventListener('change', handleMatchChange);
-        setDarkMode(match.matches);
+        applyMode(match.matches ? Mode.Dark : Mode.Light);
       } else {
         match.removeEventListener('change', handleMatchChange);
-        setDarkMode(value === Appearance.Dark);
+        applyMode(value === Appearance.Dark ? Mode.Dark : Mode.Light);
       }
     },
     [setAppearance, match]

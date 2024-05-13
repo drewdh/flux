@@ -32,6 +32,7 @@ export default function VideoThumbnail({
 
   return (
     <Container
+      fitHeight
       key={stream.user_id}
       media={{
         content: (

@@ -7,7 +7,6 @@
   line-height: cs.$line-height-heading-m;
   overflow: hidden;
   text-overflow: ellipsis;
-  min-height: calc(#{cs.$line-height-heading-m} * 2);
 }
 .cardWrapper {
   cursor: pointer;

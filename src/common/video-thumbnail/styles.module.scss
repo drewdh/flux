@@ -2,15 +2,17 @@
 
 .streamTitle {
   display: -webkit-box;
-  -webkit-line-clamp: 1;
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
+  line-height: cs.$line-height-heading-m;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: cs.$color-text-status-inactive;
-  font-size: cs.$font-size-body-s;
+  min-height: calc(#{cs.$line-height-heading-m} * 2);
 }
 .cardWrapper {
   cursor: pointer;
+  border-radius: cs.$border-radius-container;
+  border: 1px solid cs.$color-border-divider-default;
 }
 .cardWrapper a:hover {
   text-decoration-line: none !important;

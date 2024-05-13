@@ -2,8 +2,7 @@
 
 .css-grid {
   display: grid;
-  column-gap: cs.$space-static-m;
-  row-gap: cs.$space-static-xxl;
+  gap: cs.$space-scaled-s;
 
   &.grid-no-gutters {
     gap: 0;

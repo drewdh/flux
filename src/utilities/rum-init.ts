@@ -1,10 +1,6 @@
 import { AwsRum, AwsRumConfig } from 'aws-rum-web';
 
-declare global {
-  function cwr(operation: string, payload: any): void;
-}
-
-export let awsRum: AwsRum;
+export let awsRum: AwsRum | undefined;
 
 try {
   const config: AwsRumConfig = {
@@ -20,12 +16,7 @@ try {
   const APPLICATION_VERSION: string = '1.0.0';
   const APPLICATION_REGION: string = 'us-west-2';
 
-  awsRum = new AwsRum(
-    APPLICATION_ID,
-    APPLICATION_VERSION,
-    APPLICATION_REGION,
-    config
-  );
+  awsRum = new AwsRum(APPLICATION_ID, APPLICATION_VERSION, APPLICATION_REGION, config);
 } catch (error) {
   // Ignore errors thrown during CloudWatch RUM web client initialization
 }

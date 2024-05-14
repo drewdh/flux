@@ -7,6 +7,7 @@ import Box from '@cloudscape-design/components/box';
 
 import DhAppLayout from 'common/flux-app-layout';
 import { FeedbackContext } from '../feedback/feedback-context';
+import { awsRum } from 'utilities/rum-init';
 
 export default class ErrorBoundary extends React.Component<PropsWithChildren, State> {
   constructor(props: PropsWithChildren) {
@@ -15,7 +16,7 @@ export default class ErrorBoundary extends React.Component<PropsWithChildren, St
   }
 
   static getDerivedStateFromError(error: Error) {
-    cwr('recordError', error);
+    awsRum?.recordError(error);
     // Update state so the next render will show the fallback UI.
     return { error };
   }

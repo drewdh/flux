@@ -214,7 +214,7 @@ export function useValidate() {
   return useQuery({
     queryFn: async () => {
       const resp = await twitchClient.validate({});
-      awsRum.addSessionAttributes({
+      awsRum?.addSessionAttributes({
         userId: resp.user_id,
         login: resp.login,
       });

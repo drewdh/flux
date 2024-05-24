@@ -15,7 +15,7 @@ import Avatar from 'common/avatar';
 import useTitle from 'utilities/use-title';
 import { interpolatePathname, Pathname } from 'utilities/routes';
 import styles from './styles.module.scss';
-import Link from '@cloudscape-design/components/link';
+import Button from '@cloudscape-design/components/button';
 
 enum TabId {
   Details = 'details',
@@ -83,18 +83,19 @@ export default function ChannelPage() {
                     </SpaceBetween>
                   </Box>
                   <div className={styles.longText}>
-                    <Box color="text-body-secondary">
-                      {userData?.data[0].description}{' '}
-                      <Link
-                        variant="primary"
-                        external
-                        href={`https://www.twitch.tv/${userData?.data[0].login}/about`}
-                        target="_blank"
-                      >
-                        Learn more
-                      </Link>
-                    </Box>
+                    <Box color="text-body-secondary">{userData?.data[0].description}</Box>
                   </div>
+                  <Box margin={{ top: 's' }}>
+                    <Button
+                      variant="normal"
+                      href={`https://www.twitch.tv/${userData?.data[0].login}/about`}
+                      target="_blank"
+                      iconName="external"
+                      iconAlign="right"
+                    >
+                      Learn more
+                    </Button>
+                  </Box>
                 </SpaceBetween>
               </div>
             }

@@ -10,6 +10,12 @@ export enum Pathname {
   Game = '/category/:gameId',
 }
 /** This does not handle for optional static segments (e.g., `/projects/project?/:id`) */
+export function interpolatePathname(pathname: Pathname.Live, values: { user: string }): string;
+export function interpolatePathname(
+  pathname: Pathname.Channel,
+  values: { login: string; tabId?: string }
+): string;
+export function interpolatePathname(pathname: Pathname.Game, values: { gameId: string }): string;
 export function interpolatePathname(pathname: Pathname, values: Record<string, string>): string {
   return pathname
     .split('/')

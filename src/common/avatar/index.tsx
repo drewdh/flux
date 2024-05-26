@@ -26,7 +26,7 @@ export default function Avatar({ userId, size = 'm', color }: Props) {
 
   return (
     <div
-      style={{ display: 'inline' }}
+      className={styles.imageWrapper}
       dangerouslySetInnerHTML={{ __html: imgRef.current.outerHTML }}
     />
   );

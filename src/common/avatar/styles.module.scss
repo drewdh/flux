@@ -5,6 +5,10 @@ $xs: 20px;
 $s: 24px;
 $l: 200px;
 
+.imageWrapper > img {
+  display: block;
+}
+
 .avatar {
   background-color: cs.$color-background-input-disabled;
   border-radius: 35px;

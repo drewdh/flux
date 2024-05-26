@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction, useCallback, useState } from 'react';
 
 export enum LocalStorageKey {
+  /** @deprecated No longer used */
   WelcomeMessage = 'welcomeMessage',
   SearchHistory = 'searchHistory',
   SearchHistoryEnabled = 'searchHistoryEnabled',

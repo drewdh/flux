@@ -1,18 +1,19 @@
-import Alert from '@cloudscape-design/components/alert';
-import Button from '@cloudscape-design/components/button';
-import { useLocation, useNavigate } from 'react-router';
 import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router';
+import Button from '@cloudscape-design/components/button';
 import SpaceBetween from '@cloudscape-design/components/space-between';
+import Header from '@cloudscape-design/components/header';
+import StatusIndicator from '@cloudscape-design/components/status-indicator';
+import Container from '@cloudscape-design/components/container';
 
 import DhAppLayout from 'common/flux-app-layout';
 import { useGetFollowedStreams, useGetStreams } from '../../api/api';
-import useLocalStorage, { LocalStorageKey } from 'utilities/use-local-storage';
 import useTitle from 'utilities/use-title';
 import FlexibleColumnLayout from 'common/flexible-column-layout';
 import VideoThumbnail from 'common/video-thumbnail';
 import Empty from 'common/empty/empty';
 import styles from './styles.module.scss';
-import Header from '@cloudscape-design/components/header';
+import FullHeightContent from 'common/full-height-content';
 
 const connectSearchParams = new URLSearchParams({
   response_type: 'token',
@@ -26,7 +27,6 @@ export const connectHref = `https://id.twitch.tv/oauth2/authorize?${connectSearc
 
 export default function TwitchPage() {
   useTitle('Flux');
-  const [hasWelcome, setHasWelcome] = useLocalStorage(LocalStorageKey.WelcomeMessage, true);
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const { hash, search } = useLocation();
   const navigate = useNavigate();
@@ -48,76 +48,76 @@ export default function TwitchPage() {
     }
   }, [search]);
 
-  const { data } = useGetFollowedStreams();
-  const { data: topStreamsData } = useGetStreams({ type: 'live', pageSize: 5 });
+  const { data, isLoading: isLoadingFollowed } = useGetFollowedStreams();
+  const { data: topStreamsData, isLoading: isLoadingTop } = useGetStreams({
+    type: 'live',
+    pageSize: 5,
+  });
   const followedStreams = data?.pages.flatMap((page) => page.data);
   const topStreams = topStreamsData?.data;
+  const isLoading = isLoadingFollowed || isLoadingTop;
 
-  return (
-    <DhAppLayout
-      maxContentWidth={3100}
-      toolsHide
-      content={
-        <SpaceBetween size="l">
-          {isConnected && hasWelcome && (
-            <Alert
-              dismissible
-              type="info"
-              header="Welcome to Flux"
-              onDismiss={() => setHasWelcome(false)}
+  function renderContent() {
+    if (!isConnected) {
+      return (
+        <Container
+          header={
+            <Header
+              actions={
+                <Button href={connectHref} variant="primary">
+                  Sign in with Twitch
+                </Button>
+              }
             >
-              Flux is an updated take on Twitch. Flux is not associated with Twitch. All Twitch
-              functionality is provided directly through Twitch.
-            </Alert>
-          )}
-          {!isConnected && (
-            <Alert
-              type="info"
-              header="Sign in with Twitch"
-              action={<Button href={connectHref}>Sign in</Button>}
-            >
-              To access your content, sign in with Twitch.
-            </Alert>
-          )}
-          {isConnected && (
-            <SpaceBetween size="l">
-              <SpaceBetween size="m">
-                <Header>Live followed channels</Header>
-                <FlexibleColumnLayout columns={6} minColumnWidth={326}>
-                  {followedStreams?.map((stream) => (
-                    <VideoThumbnail showCategory stream={stream} />
-                  ))}
-                  {followedStreams && !followedStreams.length && (
-                    <div className={styles.empty}>
-                      <Empty
-                        header="No streams"
-                        message="No channel you follow is live right now."
-                      />
-                    </div>
-                  )}
-                </FlexibleColumnLayout>
-              </SpaceBetween>
-              <SpaceBetween size="m">
-                <Header>Top 5 live streams</Header>
-                <FlexibleColumnLayout columns={6} minColumnWidth={326}>
-                  {topStreams?.map((stream, index) => (
-                    <VideoThumbnail
-                      rankText={Number(index + 1).toString()}
-                      showCategory
-                      stream={stream}
-                    />
-                  ))}
-                  {topStreams && !topStreams.length && (
-                    <div className={styles.empty}>
-                      <Empty header="No streams" message="No channel is live right now." />
-                    </div>
-                  )}
-                </FlexibleColumnLayout>
-              </SpaceBetween>
-            </SpaceBetween>
-          )}
+              Welcome to Flux
+            </Header>
+          }
+        >
+          Flux is an updated take on Twitch created by a single developer, powered by Twitch's
+          public APIs. To use Flux, you must first authorize the connection in Twitch.
+        </Container>
+      );
+    }
+    if (isLoading) {
+      return (
+        <FullHeightContent>
+          <StatusIndicator type="loading">Loading</StatusIndicator>
+        </FullHeightContent>
+      );
+    }
+    return (
+      <SpaceBetween size="l">
+        <SpaceBetween size="m">
+          <Header>Live followed channels</Header>
+          <FlexibleColumnLayout columns={6} minColumnWidth={326}>
+            {followedStreams?.map((stream) => <VideoThumbnail showCategory stream={stream} />)}
+            {followedStreams && !followedStreams.length && (
+              <div className={styles.empty}>
+                <Empty header="No streams" message="No channel you follow is live right now." />
+              </div>
+            )}
+          </FlexibleColumnLayout>
         </SpaceBetween>
-      }
-    />
-  );
+        <SpaceBetween size="m">
+          <Header>Top 5 live streams</Header>
+          <FlexibleColumnLayout columns={6} minColumnWidth={326}>
+            {topStreams?.map((stream, index) => (
+              <VideoThumbnail
+                rankText={Number(index + 1).toString()}
+                showCategory
+                stream={stream}
+              />
+            ))}
+            {topStreams && !topStreams.length && (
+              <div className={styles.empty}>
+                <Empty header="No streams" message="No channel is live right now." />
+              </div>
+            )}
+          </FlexibleColumnLayout>
+        </SpaceBetween>
+      </SpaceBetween>
+    );
+  }
+
+  return <DhAppLayout maxContentWidth={3100} toolsHide content={renderContent()} />;
 }

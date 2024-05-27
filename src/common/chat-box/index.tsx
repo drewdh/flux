@@ -60,7 +60,7 @@ export default function ChatBox({ placeholder, onSubmit, onChange, value }: Chat
   const editorRef = useRef<LexicalEditor>(null);
 
   useEffect(() => {
-    editorRef.current?.registerCommand(
+    const unregister = editorRef.current?.registerCommand(
       KEY_ENTER_COMMAND,
       (event: KeyboardEvent) => {
         event.preventDefault();
@@ -70,6 +70,7 @@ export default function ChatBox({ placeholder, onSubmit, onChange, value }: Chat
       },
       COMMAND_PRIORITY_CRITICAL
     );
+    return () => unregister?.();
   }, [onSubmit]);
 
   const lexicalConfig: InitialConfigType = {

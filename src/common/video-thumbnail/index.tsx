@@ -18,6 +18,7 @@ import { Stream } from '../../api/twitch-types';
 import FluxImage from 'common/flux-image';
 
 export default function VideoThumbnail({
+  isLive,
   stream,
   showCategory = false,
   rankText,
@@ -39,6 +40,7 @@ export default function VideoThumbnail({
         content: (
           <InternalLink href={videoHref}>
             <FluxImage
+              isLive={isLive}
               style={{
                 aspectRatio: '16 / 9',
                 backgroundColor: colorBackgroundInputDisabled,
@@ -60,21 +62,41 @@ export default function VideoThumbnail({
               columnGap: spaceScaledXs,
             }}
           >
-            <Avatar userId={stream.user_id} size="m" />
+            <InternalLink
+              href={interpolatePathname(Pathname.Channel, { login: stream.user_login })}
+            >
+              <Avatar userId={stream.user_id} size="m" />
+            </InternalLink>
             <div>
-              <Box fontWeight="bold" color="text-body-secondary">
-                {stream.user_name}
-              </Box>
-              <Box variant="small" display="block">
-                {stream.game_name}
-              </Box>
+              <InternalLink
+                href={interpolatePathname(Pathname.Channel, { login: stream.user_login })}
+              >
+                <Box fontWeight="bold" color="text-body-secondary">
+                  {stream.user_name}
+                </Box>
+              </InternalLink>
+              <InternalLink href={interpolatePathname(Pathname.Game, { gameId: stream.game_id })}>
+                <Box variant="small" display="block">
+                  {stream.game_name}
+                </Box>
+              </InternalLink>
             </div>
-            <div style={{ marginLeft: 'auto' }}>
-              <Box variant="small">
+            <div
+              style={{
+                marginLeft: 'auto',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'end',
+              }}
+            >
+              <Box variant="small" display="block" textAlign="right">
                 <div style={{ display: 'flex', alignItems: 'center', columnGap: spaceScaledXxs }}>
                   <Icon svg={<FontAwesomeIcon icon={faUserGroup} />} variant="subtle" />
                   {viewerCount}
                 </div>
+              </Box>
+              <Box variant="small" textAlign="right">
+                {''}
               </Box>
             </div>
           </div>
@@ -91,6 +113,7 @@ export default function VideoThumbnail({
 
 export interface VideoThumbnailProps {
   stream: Stream;
+  isLive?: boolean;
   rankText?: string;
   showCategory?: boolean;
 }

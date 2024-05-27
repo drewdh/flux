@@ -144,10 +144,6 @@ export default function ChannelPage() {
                         <Box variant="awsui-key-label">User ID</Box>
                         <div>{userData?.data[0].id}</div>
                       </div>
-                      <div>
-                        <Box variant="awsui-key-label">Twitch staff mod role</Box>
-                        <div>{userTypeLabel[userData?.data[0].type ?? ''] ?? '-'}</div>
-                      </div>
                     </ColumnLayout>
                   ),
                 },

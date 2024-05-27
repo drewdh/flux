@@ -1,46 +1,42 @@
 import Header from '@cloudscape-design/components/header';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import Box from '@cloudscape-design/components/box';
+import { flushSync } from 'react-dom';
+import Alert from '@cloudscape-design/components/alert';
+import ExpandableSection from '@cloudscape-design/components/expandable-section';
+import ButtonDropdown, { ButtonDropdownProps } from '@cloudscape-design/components/button-dropdown';
+import { NonCancelableCustomEvent } from '@cloudscape-design/components';
+import SpaceBetween from '@cloudscape-design/components/space-between';
+import Link from '@cloudscape-design/components/link';
+import Button from '@cloudscape-design/components/button';
+import StatusIndicator from '@cloudscape-design/components/status-indicator';
+import clsx from 'clsx';
+import Popover from '@cloudscape-design/components/popover';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowUpLong } from '@fortawesome/pro-solid-svg-icons';
+import { spaceScaledXs } from '@cloudscape-design/design-tokens';
+import { useContainerQuery } from '@cloudscape-design/component-toolkit';
+
+import styles from './chat.module.scss';
+import ChatMessage from './chat-message';
+import { connectHref } from '../home/page';
+import ChatRestrictions from './chat-restrictions';
+import { ChatEvent, ChatMessage as ChatMessageType, WelcomeMessage } from '../../api/twitch-types';
+import Avatar from 'common/avatar';
+import { useFeedback } from '../../feedback/feedback-context';
+import ChatBox from 'common/chat-box';
+import InternalLink from 'common/internal-link';
+import { interpolatePathname, Pathname } from 'utilities/routes';
 import {
   useCreateEventSubSubscription,
   useDeleteEventSubSubscription,
   useGetUsers,
   useSendChatMessage,
 } from '../../api/api';
-import Box from '@cloudscape-design/components/box';
-import styles from './chat.module.scss';
-import SpaceBetween from '@cloudscape-design/components/space-between';
-import ChatMessage from './chat-message';
-import Alert from '@cloudscape-design/components/alert';
-import {
-  ButtonDropdown,
-  ButtonDropdownProps,
-  ExpandableSection,
-  NonCancelableCustomEvent,
-} from '@cloudscape-design/components';
-import Link from '@cloudscape-design/components/link';
-import Button from '@cloudscape-design/components/button';
-import { connectHref } from '../home/page';
-import StatusIndicator from '@cloudscape-design/components/status-indicator';
-import clsx from 'clsx';
-import ChatRestrictions from './chat-restrictions';
-import { ChatEvent, ChatMessage as ChatMessageType, WelcomeMessage } from '../../api/twitch-types';
-import Popover from '@cloudscape-design/components/popover';
-import Avatar from 'common/avatar';
-import { useFeedback } from '../../feedback/feedback-context';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowUpLong } from '@fortawesome/pro-solid-svg-icons';
-import ChatBox from 'common/chat-box';
-import { spaceScaledXs } from '@cloudscape-design/design-tokens';
-import InternalLink from 'common/internal-link';
-import { interpolatePathname, Pathname } from 'utilities/routes';
-import { useContainerQuery } from '@cloudscape-design/component-toolkit';
-import { flushSync } from 'react-dom';
 
 enum SettingsId {
   Restrictions = 'restrictions',
 }
-let ws: WebSocket;
-let isInit: boolean;
 
 export default function Chat({ broadcasterUserId, height }: Props) {
   const [subscriptionId, setSubscriptionId] = useState<string>();
@@ -73,16 +69,6 @@ export default function Chat({ broadcasterUserId, height }: Props) {
   const { mutate: sendChat } = useSendChatMessage();
 
   useEffect(() => {
-    if (isInit) {
-      return;
-    }
-    ws = new WebSocket('wss://eventsub.wss.twitch.tv/ws');
-    return () => {
-      isInit = false;
-    };
-  }, []);
-
-  useEffect(() => {
     return () => {
       if (subscriptionId) {
         deleteSubscription({ id: subscriptionId });
@@ -94,7 +80,11 @@ export default function Chat({ broadcasterUserId, height }: Props) {
     if (!broadcasterUserId || !user?.id) {
       return;
     }
+    const ws = new WebSocket('wss://eventsub.wss.twitch.tv/ws');
 
+    ws.onclose = (event) => {
+      console.warn(event);
+    };
     ws.onmessage = (event) => {
       const message: WelcomeMessage | ChatMessageType = JSON.parse(event.data);
       if (message.metadata.message_type === 'session_welcome') {
@@ -148,7 +138,8 @@ export default function Chat({ broadcasterUserId, height }: Props) {
         }
       }
     };
-  }, [broadcasterUserId, user, createSubscription, subscriptionId, deleteSubscription]);
+    return () => ws.close();
+  }, [broadcasterUserId, user, createSubscription]);
 
   const handleScroll = useCallback(function (this: HTMLDivElement, event: Event) {
     const isBottom = this.scrollHeight - (this.clientHeight + this.scrollTop) < 1;

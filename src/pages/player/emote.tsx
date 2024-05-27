@@ -1,7 +1,9 @@
+import { useMemo } from 'react';
+
 import { EmoteFragment } from '../../api/twitch-types';
 import { useGetEmoteSets } from '../../api/api';
 import interpolate from 'utilities/interpolate';
-import { useMemo } from 'react';
+import FluxImage from 'common/flux-image';
 
 export default function Emote({ emote }: Props) {
   const { data } = useGetEmoteSets([emote?.emote_set_id ?? '']);
@@ -17,7 +19,7 @@ export default function Emote({ emote }: Props) {
   }, [data, emote, emoteData]);
 
   return (
-    <img
+    <FluxImage
       width="24"
       title={emoteData?.name}
       style={{ verticalAlign: 'middle' }}

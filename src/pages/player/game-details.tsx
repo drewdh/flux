@@ -7,6 +7,7 @@ import { useGetGames as useGetIgdbGames } from '../../api/igdb-query-hooks';
 import InternalLink from 'common/internal-link';
 import styles from './styles.module.scss';
 import { interpolatePathname, Pathname } from 'utilities/routes';
+import FluxImage from 'common/flux-image';
 
 export default function GameDetails({ gameId }: GameDetailsProps) {
   const { data } = useGetGames({ ids: [gameId!] }, { enabled: !!gameId });
@@ -29,7 +30,7 @@ export default function GameDetails({ gameId }: GameDetailsProps) {
       <Box variant="h3">Streaming</Box>
       <InternalLink href={href}>
         <SpaceBetween size="xs">
-          <img
+          <FluxImage
             style={{
               display: 'block',
               borderRadius: '12px',

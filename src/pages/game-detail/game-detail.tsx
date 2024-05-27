@@ -17,6 +17,7 @@ import { useGetGames as useGetIgdbGames } from '../../api/igdb-query-hooks';
 import FullHeightContent from 'common/full-height-content';
 import LiveChannels from './live-channels';
 import styles from './styles.module.scss';
+import FluxImage from 'common/flux-image';
 
 enum TabId {
   LiveChannels = 'liveChannels',
@@ -54,7 +55,7 @@ export default function GameDetailPage() {
               disableOverlap
               header={
                 <div className={styles.header}>
-                  <img
+                  <FluxImage
                     style={{ borderRadius: '12px', cursor: 'pointer' }}
                     onClick={() => setLightboxVisible(true)}
                     src={imgSrc}
@@ -114,7 +115,7 @@ export default function GameDetailPage() {
             onDismiss={() => setLightboxVisible(false)}
           >
             <Box textAlign="center">
-              <img
+              <FluxImage
                 style={{ borderRadius: '12px' }}
                 src={gameData?.box_art_url.replace('{width}x{height}', '1120x1494')}
                 alt={gameData?.name}

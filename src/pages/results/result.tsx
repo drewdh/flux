@@ -11,6 +11,7 @@ import { Badge } from '@cloudscape-design/components';
 import { ChannelResult } from '../../api/twitch-types';
 import { useGetStreamByUserLogin, useGetUsers } from '../../api/api';
 import { interpolatePathname, Pathname } from 'utilities/routes';
+import FluxImage from 'common/flux-image';
 
 export default function Result({ channel }: Props) {
   const { data } = useGetStreamByUserLogin(channel.broadcaster_login);
@@ -22,7 +23,7 @@ export default function Result({ channel }: Props) {
   return (
     <div style={{ display: 'flex', gap: spaceScaledL }}>
       <InternalLink href={href}>
-        <img
+        <FluxImage
           width={360}
           src={imgSrc}
           alt={streamData?.user_name}

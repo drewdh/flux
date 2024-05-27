@@ -15,6 +15,7 @@ import Avatar from 'common/avatar';
 import InternalLink from 'common/internal-link';
 import styles from './styles.module.scss';
 import { Stream } from '../../api/twitch-types';
+import FluxImage from 'common/flux-image';
 
 export default function VideoThumbnail({
   stream,
@@ -37,7 +38,7 @@ export default function VideoThumbnail({
       media={{
         content: (
           <InternalLink href={videoHref}>
-            <img
+            <FluxImage
               style={{
                 aspectRatio: '16 / 9',
                 backgroundColor: colorBackgroundInputDisabled,

@@ -22,7 +22,7 @@ export default function Emote({ emote }: Props) {
     <FluxImage
       width="24"
       title={emoteData?.name}
-      style={{ verticalAlign: 'middle' }}
+      style={{ verticalAlign: 'middle', display: 'inline-block' }}
       alt={emoteData?.name}
       src={src}
     />

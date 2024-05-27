@@ -32,7 +32,11 @@ export default function FluxImage({ src, isLive, ...rest }: Props) {
         <img
           src={src}
           {...rest}
-          style={{ ...rest.style, visibility: isLoaded ? 'visible' : 'hidden' }}
+          style={{
+            ...rest.style,
+            opacity: isLoaded ? '1' : '0',
+            transition: 'opacity 200ms ease-in-out',
+          }}
         />
         {isLive && (
           <div style={{ position: 'absolute', bottom: spaceScaledXs, right: spaceScaledXs }}>

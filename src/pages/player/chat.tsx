@@ -167,6 +167,7 @@ export default function Chat({ broadcasterUserId, height }: Props) {
         reply_parent_message_id: highlightedMessage?.message_id,
       });
       setChatMessage('');
+      setHighlightedMessage(null);
     },
     [chatMessage, sendChat, broadcasterUserId, user, highlightedMessage]
   );

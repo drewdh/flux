@@ -1,4 +1,3 @@
-import ContentLayout from '@cloudscape-design/components/content-layout';
 import Header from '@cloudscape-design/components/header';
 import SpaceBetween from '@cloudscape-design/components/space-between';
 
@@ -19,20 +18,17 @@ export default function SettingsPage() {
       toolsHide
       maxContentWidth={700}
       content={
-        <ContentLayout
-          header={
-            <Header variant="h1" description="Edit Flux settings for this browser.">
-              {t('title')}
-            </Header>
-          }
-        >
+        <SpaceBetween size="m">
+          <Header variant="h1" description="Edit Flux settings for this browser.">
+            {t('title')}
+          </Header>
           <SpaceBetween size="l">
             <Theme />
             <RecentSearches />
             <Language />
             <Disconnect />
           </SpaceBetween>
-        </ContentLayout>
+        </SpaceBetween>
       }
     />
   );

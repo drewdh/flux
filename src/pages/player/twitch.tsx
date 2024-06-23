@@ -54,6 +54,7 @@ export default function TwitchComponent() {
     });
     // @ts-ignore
     player.current?.addEventListener(Twitch.Player.READY, () => {
+      (document.querySelector('#twitch-player iframe') as HTMLIFrameElement)?.focus();
       player.current?.play();
       player.current?.setMuted(false);
     });

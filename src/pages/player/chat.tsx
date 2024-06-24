@@ -7,15 +7,12 @@ import Link from '@cloudscape-design/components/link';
 import Button from '@cloudscape-design/components/button';
 import StatusIndicator from '@cloudscape-design/components/status-indicator';
 import clsx from 'clsx';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowUpLong } from '@fortawesome/pro-solid-svg-icons';
 import { spaceScaledXs } from '@cloudscape-design/design-tokens';
 import { useContainerQuery } from '@cloudscape-design/component-toolkit';
 
 import styles from './chat.module.scss';
 import ChatMessage from './chat-message';
 import { connectHref } from '../home/page';
-import ChatRestrictions from './chat-restrictions';
 import { ChatEvent } from '../../api/twitch-types';
 import Avatar from 'common/avatar';
 import { useFeedback } from '../../feedback/feedback-context';
@@ -187,11 +184,7 @@ export default function Chat({
                   placeholder={highlightedMessage ? 'Reply' : 'Chat'}
                 />
                 <div style={{ alignSelf: 'end' }}>
-                  <Button
-                    onClick={() => handleSendChat()}
-                    variant="link"
-                    iconSvg={<FontAwesomeIcon color="inherit" icon={faArrowUpLong} />}
-                  />
+                  <Button onClick={() => handleSendChat()} variant="icon" iconName="send" />
                 </div>
               </div>
             </SpaceBetween>

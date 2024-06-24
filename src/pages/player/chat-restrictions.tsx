@@ -1,15 +1,15 @@
-import Modal from '@cloudscape-design/components/modal';
-import Header from '@cloudscape-design/components/header';
-import { useGetChatSettings } from '../../api/api';
-import StatusIndicator from '@cloudscape-design/components/status-indicator';
-import ColumnLayout from '@cloudscape-design/components/column-layout';
-import { ReactNode } from 'react';
-import Box from '@cloudscape-design/components/box';
-import SpaceBetween from '@cloudscape-design/components/space-between';
 import Alert from '@cloudscape-design/components/alert';
+import Box from '@cloudscape-design/components/box';
+import Button from '@cloudscape-design/components/button';
+import Header from '@cloudscape-design/components/header';
+import Modal from '@cloudscape-design/components/modal';
+import SpaceBetween from '@cloudscape-design/components/space-between';
+import StatusIndicator from '@cloudscape-design/components/status-indicator';
+
+import { useGetChatSettings } from '../../api/api';
 
 export default function ChatRestrictions({ visible, onDismiss }: Props) {
-  const { isLoading, data } = useGetChatSettings();
+  const { isLoading, data } = useGetChatSettings({ enabled: visible });
   const settings = data?.data?.[0];
   const hasNoRestrictions =
     !settings?.emote_mode &&
@@ -19,6 +19,13 @@ export default function ChatRestrictions({ visible, onDismiss }: Props) {
 
   return (
     <Modal
+      footer={
+        <Box float="right">
+          <Button variant="primary" onClick={onDismiss}>
+            Close
+          </Button>
+        </Box>
+      }
       header={
         <Header description="These restrictions are set by the broadcaster.">
           Chat restrictions

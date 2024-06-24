@@ -123,14 +123,18 @@ export function useGetStreams(
   });
 }
 
-export function useGetChatSettings() {
+interface UseGetChatSettingsOptions {
+  enabled?: boolean;
+}
+export function useGetChatSettings(options: UseGetChatSettingsOptions = {}) {
+  const enabled = options.enabled === undefined ? true : options.enabled;
   const { user } = useParams();
   const { data: usersData } = useGetUsers({ logins: [user!] }, { enabled: !!user });
   const broadcasterId = usersData?.data[0].id;
   return useQuery({
     queryFn: () => twitchClient.getChatSettings({ broadcasterId: broadcasterId! }),
     queryKey: [QueryKey.GetChatSettings, broadcasterId],
-    enabled: !!broadcasterId,
+    enabled: !!broadcasterId && enabled,
   });
 }
 

@@ -20,7 +20,7 @@ import Button from '@cloudscape-design/components/button';
 enum TabId {
   Details = 'details',
 }
-const broadcasterTypeLabel: Record<string, string> = {
+export const broadcasterTypeLabel: Record<string, string> = {
   affiliate: 'Affiliate',
   partner: 'Partner',
 };

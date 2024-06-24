@@ -4,18 +4,17 @@ import SpaceBetween from '@cloudscape-design/components/space-between';
 import Grid from '@cloudscape-design/components/grid';
 import { useContainerQuery } from '@cloudscape-design/component-toolkit';
 import Header from '@cloudscape-design/components/header';
+import Link from '@cloudscape-design/components/link';
 
 import styles from './styles.module.scss';
 import useTitle from 'utilities/use-title';
 import { useGetStreamByUserLogin } from '../../api/api';
 import Chat from './chat';
 import StreamDetails from './stream-details';
-import InternalLink from 'common/internal-link';
 import Box from '@cloudscape-design/components/box';
-import { interpolatePathname, Pathname } from 'utilities/routes';
 import Avatar from 'common/avatar';
 
-export default function TwitchComponent() {
+export default function TwitchComponent({ onUserIdChange }: Props) {
   const player = useRef<any>(null);
   const [playerWidth, playerRef] = useContainerQuery((rect) => rect.borderBoxWidth);
   const [playerHeight, setPlayerHeight] = useState<number>(10);
@@ -61,8 +60,6 @@ export default function TwitchComponent() {
     // return () => (player = undefined);
   }, []);
 
-  const userHref = interpolatePathname(Pathname.Channel, { login: streamData?.user_login ?? '' });
-
   return (
     <div className={styles.pageWrapper}>
       <Grid
@@ -81,22 +78,33 @@ export default function TwitchComponent() {
           <SpaceBetween size="s">
             <Header>{streamData?.title}</Header>
             <SpaceBetween size="xs" direction="horizontal">
-              <InternalLink href={userHref}>
+              <Link onClick={() => onUserIdChange(streamData?.user_id ?? null)}>
                 <Avatar userId={streamData?.user_id} size="m" />
-              </InternalLink>
+              </Link>
               <Box fontWeight="bold">
-                <InternalLink href={userHref} variant="primary" fontSize="heading-m">
+                <Link
+                  onClick={() => onUserIdChange(streamData?.user_id ?? null)}
+                  fontSize="heading-m"
+                >
                   {streamData?.user_name}
-                </InternalLink>
+                </Link>
               </Box>
             </SpaceBetween>
           </SpaceBetween>
           <StreamDetails broadcasterUserId={streamData?.user_id} />
         </SpaceBetween>
         <SpaceBetween size="l">
-          <Chat broadcasterUserId={streamData?.user_id} height={playerHeight} />
+          <Chat
+            onUserIdChange={onUserIdChange}
+            broadcasterUserId={streamData?.user_id}
+            height={playerHeight}
+          />
         </SpaceBetween>
       </Grid>
     </div>
   );
+}
+
+interface Props {
+  onUserIdChange: (userId: string | null) => void;
 }

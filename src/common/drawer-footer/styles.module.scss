@@ -1,0 +1,7 @@
+@use '@cloudscape-design/design-tokens' as cs;
+
+.footer {
+  margin-block-start: cs.$space-scaled-xl;
+  border-top: 1px solid cs.$color-border-divider-default;
+  padding-block-start: cs.$space-scaled-xl;
+}

@@ -25,8 +25,6 @@ import { ChatEvent, ChatMessage as ChatMessageType, WelcomeMessage } from '../..
 import Avatar from 'common/avatar';
 import { useFeedback } from '../../feedback/feedback-context';
 import ChatBox from 'common/chat-box';
-import InternalLink from 'common/internal-link';
-import { interpolatePathname, Pathname } from 'utilities/routes';
 import {
   useCreateEventSubSubscription,
   useDeleteEventSubSubscription,
@@ -38,7 +36,7 @@ enum SettingsId {
   Restrictions = 'restrictions',
 }
 
-export default function Chat({ broadcasterUserId, height }: Props) {
+export default function Chat({ broadcasterUserId, onUserIdChange, height }: Props) {
   const [subscriptionId, setSubscriptionId] = useState<string>();
   const [chatMessage, setChatMessage] = useState<string>('');
   const [isRestrictionsModalVisible, setIsRestrictionsModalVisible] = useState<boolean>(false);
@@ -314,13 +312,9 @@ export default function Chat({ broadcasterUserId, height }: Props) {
                   </Box>
                   <Box variant="h5">
                     Replying to{' '}
-                    <InternalLink
-                      href={interpolatePathname(Pathname.Channel, {
-                        login: highlightedMessage.chatter_user_login,
-                      })}
-                    >
+                    <Link onClick={() => onUserIdChange(highlightedMessage?.chatter_user_id)}>
                       {highlightedMessage.chatter_user_name}
-                    </InternalLink>
+                    </Link>
                   </Box>
                   <ChatMessage message={highlightedMessage} variant="featured" />
                 </div>
@@ -367,6 +361,7 @@ export default function Chat({ broadcasterUserId, height }: Props) {
 }
 
 interface Props {
+  onUserIdChange: (userId: string | null) => void;
   broadcasterUserId: string | undefined;
   height: number | undefined;
 }

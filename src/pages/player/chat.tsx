@@ -1,17 +1,12 @@
-import Header from '@cloudscape-design/components/header';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Box from '@cloudscape-design/components/box';
-import { flushSync } from 'react-dom';
 import Alert from '@cloudscape-design/components/alert';
 import ExpandableSection from '@cloudscape-design/components/expandable-section';
-import ButtonDropdown, { ButtonDropdownProps } from '@cloudscape-design/components/button-dropdown';
-import { NonCancelableCustomEvent } from '@cloudscape-design/components';
 import SpaceBetween from '@cloudscape-design/components/space-between';
 import Link from '@cloudscape-design/components/link';
 import Button from '@cloudscape-design/components/button';
 import StatusIndicator from '@cloudscape-design/components/status-indicator';
 import clsx from 'clsx';
-import Popover from '@cloudscape-design/components/popover';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowUpLong } from '@fortawesome/pro-solid-svg-icons';
 import { spaceScaledXs } from '@cloudscape-design/design-tokens';
@@ -21,123 +16,29 @@ import styles from './chat.module.scss';
 import ChatMessage from './chat-message';
 import { connectHref } from '../home/page';
 import ChatRestrictions from './chat-restrictions';
-import { ChatEvent, ChatMessage as ChatMessageType, WelcomeMessage } from '../../api/twitch-types';
+import { ChatEvent } from '../../api/twitch-types';
 import Avatar from 'common/avatar';
 import { useFeedback } from '../../feedback/feedback-context';
 import ChatBox from 'common/chat-box';
-import {
-  useCreateEventSubSubscription,
-  useDeleteEventSubSubscription,
-  useGetUsers,
-  useSendChatMessage,
-} from '../../api/api';
+import { useGetUsers, useSendChatMessage } from '../../api/api';
 
-enum SettingsId {
-  Restrictions = 'restrictions',
-}
-
-export default function Chat({ broadcasterUserId, onUserIdChange, height }: Props) {
-  const [subscriptionId, setSubscriptionId] = useState<string>();
+export default function Chat({
+  broadcasterUserId,
+  onUserIdChange,
+  isReconnectError,
+  messages,
+  error,
+  isLoading,
+}: Props) {
   const [chatMessage, setChatMessage] = useState<string>('');
-  const [isRestrictionsModalVisible, setIsRestrictionsModalVisible] = useState<boolean>(false);
-  const [isReconnectError, setIsReconnectError] = useState<boolean>(false);
   const { setIsFeedbackVisible } = useFeedback();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const [messages, setMessages] = useState<ChatEvent[]>([]);
   const { data: userData } = useGetUsers({});
   const user = userData?.data[0];
   const [isScrolled, setIsScrolled] = useState<boolean>(false);
   const [highlightedMessage, setHighlightedMessage] = useState<ChatEvent | null>(null);
-  const [headerHeight, headerRef] = useContainerQuery((rect) => rect.borderBoxHeight);
   const [footerHeight, footerRef] = useContainerQuery((rect) => rect.borderBoxHeight);
-  const contentHeightString = `${(height ?? 1) - 2}px`;
-  const {
-    mutate: createSubscription,
-    isPending: isLoading,
-    error,
-  } = useCreateEventSubSubscription({
-    onSuccess: (result) => setSubscriptionId(result.data[0].id),
-    onError: (error) => {
-      if (error.message === 'subscription missing proper authorization') {
-        setIsReconnectError(true);
-      }
-    },
-  });
-  const { mutate: deleteSubscription } = useDeleteEventSubSubscription();
   const { mutate: sendChat } = useSendChatMessage();
-
-  useEffect(() => {
-    return () => {
-      if (subscriptionId) {
-        deleteSubscription({ id: subscriptionId });
-      }
-    };
-  }, [deleteSubscription, subscriptionId]);
-
-  useEffect(() => {
-    if (!broadcasterUserId || !user?.id) {
-      return;
-    }
-    const ws = new WebSocket('wss://eventsub.wss.twitch.tv/ws');
-
-    ws.onclose = (event) => {
-      console.warn(event);
-    };
-    ws.onmessage = (event) => {
-      const message: WelcomeMessage | ChatMessageType = JSON.parse(event.data);
-      if (message.metadata.message_type === 'session_welcome') {
-        setIsReconnectError(false);
-        createSubscription({
-          type: 'channel.chat.message',
-          version: 1,
-          condition: {
-            broadcaster_user_id: broadcasterUserId,
-            user_id: user.id,
-          },
-          transport: {
-            method: 'websocket',
-            session_id: (message as WelcomeMessage).payload.session.id,
-          },
-        });
-        return;
-      }
-      if (message.metadata.message_type === 'notification') {
-        const { event: newMessage } = (message as ChatMessageType).payload;
-        let isDuplicate: boolean = false;
-        let latestIsScrolled = false;
-        flushSync(() => {
-          setMessages((prevMessages) => {
-            // Some messages can be duplicated, so don't process these again
-            // https://dev.twitch.tv/docs/eventsub/#handling-duplicate-events
-            isDuplicate = prevMessages.some(
-              (message) => message.message_id === newMessage.message_id
-            );
-            // hacky way to get current value of `isScrolled` because onmessage
-            // does not get reassigned when useEffect dependencies change
-            // for some reason
-            setIsScrolled((prev) => {
-              latestIsScrolled = prev;
-              return prev;
-            });
-            if (isDuplicate) {
-              return prevMessages;
-            }
-            return [newMessage, ...prevMessages].slice(0, 500);
-          });
-        });
-        if (isDuplicate) {
-          return;
-        }
-        if (!latestIsScrolled) {
-          scrollContainerRef.current?.scrollTo({
-            top: scrollContainerRef.current?.scrollHeight,
-            behavior: 'auto',
-          });
-        }
-      }
-    };
-    return () => ws.close();
-  }, [broadcasterUserId, user, createSubscription]);
 
   const handleScroll = useCallback(function (this: HTMLDivElement, event: Event) {
     const isBottom = this.scrollHeight - (this.clientHeight + this.scrollTop) < 1;
@@ -170,13 +71,6 @@ export default function Chat({ broadcasterUserId, onUserIdChange, height }: Prop
     [chatMessage, sendChat, broadcasterUserId, user, highlightedMessage]
   );
 
-  function handleItemClick(event: NonCancelableCustomEvent<ButtonDropdownProps.ItemClickDetails>) {
-    const { id } = event.detail;
-    if (id === SettingsId.Restrictions) {
-      setIsRestrictionsModalVisible(true);
-    }
-  }
-
   // Use useCallback so child components don't re-render
   const handleChange = useCallback((value: string): void => {
     setChatMessage(value);
@@ -185,49 +79,12 @@ export default function Chat({ broadcasterUserId, onUserIdChange, height }: Prop
   return (
     <>
       <div style={{ position: 'relative' }}>
-        <div
-          ref={scrollContainerRef}
-          className={styles.container}
-          style={{
-            height: contentHeightString,
-            maxHeight: contentHeightString,
-          }}
-        >
-          <div className={styles.header} ref={headerRef}>
-            <Header
-              variant="h2"
-              info={
-                <Box color="text-status-info" display="inline">
-                  <Popover
-                    header="Beta feature"
-                    size="medium"
-                    triggerType="text"
-                    content="Chat is in beta. Some functionality may not work as expected."
-                    renderWithPortal
-                  >
-                    <Box color="text-status-info" fontSize="body-s" fontWeight="bold">
-                      Beta
-                    </Box>
-                  </Popover>
-                </Box>
-              }
-              actions={
-                <ButtonDropdown
-                  onItemClick={handleItemClick}
-                  expandableGroups
-                  items={[{ text: 'View restrictions', id: SettingsId.Restrictions }]}
-                  variant="icon"
-                />
-              }
-            >
-              Chat
-            </Header>
-          </div>
+        <div ref={scrollContainerRef} className={styles.container}>
           <div
             className={styles.body}
-            style={{
-              minHeight: `calc(100% - ${headerHeight}px - ${footerHeight}px - 16px)`,
-            }}
+            // style={{
+            //   minHeight: `calc(100% - ${headerHeight}px - ${footerHeight}px - 16px)`,
+            // }}
           >
             <div style={{ display: 'flex', flexDirection: 'column-reverse' }}>
               {isLoading && (
@@ -352,10 +209,6 @@ export default function Chat({ broadcasterUserId, onUserIdChange, height }: Prop
           </div>
         </div>
       </div>
-      <ChatRestrictions
-        visible={isRestrictionsModalVisible}
-        onDismiss={() => setIsRestrictionsModalVisible(false)}
-      />
     </>
   );
 }
@@ -363,5 +216,8 @@ export default function Chat({ broadcasterUserId, onUserIdChange, height }: Prop
 interface Props {
   onUserIdChange: (userId: string | null) => void;
   broadcasterUserId: string | undefined;
-  height: number | undefined;
+  error: Error | null;
+  isLoading: boolean;
+  isReconnectError: boolean;
+  messages: ChatEvent[];
 }

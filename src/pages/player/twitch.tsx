@@ -9,7 +9,6 @@ import Link from '@cloudscape-design/components/link';
 import styles from './styles.module.scss';
 import useTitle from 'utilities/use-title';
 import { useGetStreamByUserLogin } from '../../api/api';
-import Chat from './chat';
 import StreamDetails from './stream-details';
 import Box from '@cloudscape-design/components/box';
 import Avatar from 'common/avatar';
@@ -62,45 +61,31 @@ export default function TwitchComponent({ onUserIdChange }: Props) {
 
   return (
     <div className={styles.pageWrapper}>
-      <Grid
-        gridDefinition={[
-          { colspan: { default: 12, l: 9, m: 8, s: 7 } },
-          { colspan: { default: 12, l: 3, m: 4, s: 5 } },
-        ]}
-      >
-        <SpaceBetween size="m">
-          <div
-            id="twitch-player"
-            ref={playerRef}
-            style={{ height: `${playerHeight}px` }}
-            className={styles.player}
-          />
-          <SpaceBetween size="s">
-            <Header>{streamData?.title}</Header>
-            <SpaceBetween size="xs" direction="horizontal">
-              <Link onClick={() => onUserIdChange(streamData?.user_id ?? null)}>
-                <Avatar userId={streamData?.user_id} size="m" />
+      <SpaceBetween size="m">
+        <div
+          id="twitch-player"
+          ref={playerRef}
+          style={{ height: `${playerHeight}px` }}
+          className={styles.player}
+        />
+        <SpaceBetween size="s">
+          <Header>{streamData?.title}</Header>
+          <SpaceBetween size="xs" direction="horizontal">
+            <Link onClick={() => onUserIdChange(streamData?.user_id ?? null)}>
+              <Avatar userId={streamData?.user_id} size="m" />
+            </Link>
+            <Box fontWeight="bold">
+              <Link
+                onClick={() => onUserIdChange(streamData?.user_id ?? null)}
+                fontSize="heading-m"
+              >
+                {streamData?.user_name}
               </Link>
-              <Box fontWeight="bold">
-                <Link
-                  onClick={() => onUserIdChange(streamData?.user_id ?? null)}
-                  fontSize="heading-m"
-                >
-                  {streamData?.user_name}
-                </Link>
-              </Box>
-            </SpaceBetween>
+            </Box>
           </SpaceBetween>
-          <StreamDetails broadcasterUserId={streamData?.user_id} />
         </SpaceBetween>
-        <SpaceBetween size="l">
-          <Chat
-            onUserIdChange={onUserIdChange}
-            broadcasterUserId={streamData?.user_id}
-            height={playerHeight}
-          />
-        </SpaceBetween>
-      </Grid>
+        <StreamDetails broadcasterUserId={streamData?.user_id} />
+      </SpaceBetween>
     </div>
   );
 }

@@ -74,14 +74,11 @@ $avatar-width: 24px;
 }
 .body {
   display: flex;
-  padding: cs.$space-static-xs cs.$space-scaled-l;
   flex-direction: column-reverse;
   position: relative;
 }
 .container {
   position: relative;
-  border: 1px solid cs.$color-border-divider-default;
-  border-radius: cs.$border-radius-container;
   overflow-y: auto;
 }
 .messages {
@@ -101,8 +98,6 @@ $avatar-width: 24px;
 .footer {
   position: sticky;
   bottom: 0;
-  background-color: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(20px) saturate(1.2) brightness(0.97);
   z-index: 1;
   left: 0;
   right: 0;

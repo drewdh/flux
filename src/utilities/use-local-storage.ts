@@ -7,6 +7,7 @@ export enum LocalStorageKey {
   SearchHistoryEnabled = 'searchHistoryEnabled',
   Appearance = 'appearance',
   Language = 'i18nextLng',
+  ChatDrawerSize = 'chatDrawerSize',
 }
 
 /** Helper functions for accessing local storage that safely stringify and parse values */

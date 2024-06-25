@@ -34,25 +34,28 @@ export default function TopNavigation() {
           i18nStrings={i18nStrings}
           utilities={utilities}
           search={
-            <SpaceBetween size="xs" direction="horizontal">
-              <Autosuggest
-                ref={autosuggestRef}
-                filteringType="manual"
-                onChange={handleSearchChange}
-                onLoadItems={handleLoadItems}
-                onSelect={handleSelect}
-                onKeyDown={handleKeyDown}
-                placeholder={t('nav.search.placeholder')}
-                value={searchInputValue}
-                options={autosuggestOptions}
-              />
-              <Button
-                ariaLabel="Search"
-                onClick={handleSubmit}
-                variant="normal"
-                iconName="search"
-              />
-            </SpaceBetween>
+            <form
+              onSubmit={(e) => {
+                console.log('form onSubmit');
+                e.preventDefault();
+                handleSubmit();
+              }}
+            >
+              <SpaceBetween size="xs" direction="horizontal">
+                <Autosuggest
+                  enteredTextLabel={(value) => `Search for "${value}"`}
+                  ref={autosuggestRef}
+                  filteringType="manual"
+                  onChange={handleSearchChange}
+                  onLoadItems={handleLoadItems}
+                  onSelect={handleSelect}
+                  onKeyDown={handleKeyDown}
+                  placeholder={t('nav.search.placeholder')}
+                  value={searchInputValue}
+                  options={autosuggestOptions}
+                />
+              </SpaceBetween>
+            </form>
           }
         />
       </div>

@@ -28,7 +28,7 @@ i18n
           nav: {
             feedback: 'Feedback',
             search: {
-              placeholder: 'Search live channels',
+              placeholder: 'Search live streams',
             },
           },
           feedback: {

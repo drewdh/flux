@@ -76,10 +76,17 @@ $avatar-width: 24px;
   display: flex;
   flex-direction: column-reverse;
   position: relative;
+  //max-height: 500px;
+  overflow-y: auto;
+  padding-right: 24px;
 }
 .container {
+  // This offsets the margin from the drawer header
+  margin-top: -20px;
+  margin-right: -24px;
+  margin-bottom: -40px;
   position: relative;
-  overflow-y: auto;
+  overflow-y: scroll;
 }
 .messages {
   min-height: 100%;
@@ -98,11 +105,10 @@ $avatar-width: 24px;
 .footer {
   position: sticky;
   bottom: 0;
-  z-index: 1;
   left: 0;
   right: 0;
   border-top: 1px solid rgba(#b6bec9, 0.3);
-  padding: cs.$space-scaled-s 0;
+  padding: cs.$space-scaled-s cs.$space-scaled-xs cs.$space-scaled-s 0;
 }
 .statusContainer {
   display: flex;

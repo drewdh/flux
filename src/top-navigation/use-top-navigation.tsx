@@ -3,27 +3,18 @@ import { AutosuggestProps } from '@cloudscape-design/components/autosuggest';
 import { NonCancelableCustomEvent } from '@cloudscape-design/components';
 import { RefObject, useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faClockRotateLeft } from '@fortawesome/pro-solid-svg-icons';
-import { uniqBy } from 'lodash';
+import { useLocation } from 'react-router';
 
 import { interpolatePathname, Pathname } from 'utilities/routes';
 import useNavigateWithRef from 'common/use-navigate-with-ref';
-import { useRevoke, useSearchCategories, useSearchChannels, useValidate } from '../api/api';
-import useLocalStorage, { LocalStorageKey } from 'utilities/use-local-storage';
+import { useGetStreams, useRevoke, useSearchChannels, useValidate } from '../api/api';
 import useFollow from 'common/use-follow';
 import { connectHref } from '../pages/home/page';
 
 export default function useTopNavigation(): State {
-  const [searchHistory, setSearchHistory] = useLocalStorage<string[]>(
-    LocalStorageKey.SearchHistory,
-    []
-  );
-  const [searchHistoryEnabled] = useLocalStorage<boolean>(
-    LocalStorageKey.SearchHistoryEnabled,
-    false
-  );
+  const isNavigating = useRef<boolean>(false);
   const follow = useFollow();
+  const location = useLocation();
   const [searchParams] = useSearchParams();
   const navigate = useNavigateWithRef();
   const [debouncedQuery, setDebouncedQuery] = useState<string>('');
@@ -31,9 +22,16 @@ export default function useTopNavigation(): State {
   const autosuggestRef = useRef<AutosuggestProps.Ref>(null);
 
   const { data: channelSearchData } = useSearchChannels({ query: debouncedQuery, pageSize: 5 });
-  const { data: gameSearchData } = useSearchCategories({ query: debouncedQuery, pageSize: 5 });
+  const { data: streamData } = useGetStreams(
+    { userIds: channelSearchData?.pages.flatMap((page) => page.data).map((stream) => stream.id) },
+    { enabled: !!channelSearchData }
+  );
   const { data: scopeData } = useValidate();
   const { mutate: signOut } = useRevoke();
+
+  useEffect(() => {
+    isNavigating.current = false;
+  }, [location]);
 
   useEffect(() => {
     function eventListener(event: KeyboardEvent) {
@@ -53,61 +51,28 @@ export default function useTopNavigation(): State {
   }, []);
 
   const autosuggestOptions = useMemo((): AutosuggestProps.Options => {
-    const options: Array<AutosuggestProps.Option | AutosuggestProps.OptionGroup> = [];
-    const searchHistoryOptions: AutosuggestProps.Option[] = searchHistory
-      .filter((term) => {
-        return term && term.toLowerCase().includes(query.toLowerCase());
-      })
-      .map((term) => {
-        return {
-          iconSvg: <FontAwesomeIcon icon={faClockRotateLeft} />,
-          label: term.toLowerCase(),
-          value: term.toLowerCase(),
-        };
-      });
     if (!query) {
-      return searchHistoryOptions;
+      return [];
     }
-    const searchResultOptions: AutosuggestProps.Option[] =
+    const formatter = new Intl.NumberFormat(undefined, { notation: 'compact' });
+    return (
       channelSearchData?.pages
         .flatMap((page) => page.data)
-        .filter((result) => {
-          return result.is_live && result.display_name.toLowerCase().includes(query.toLowerCase());
-        })
+        .filter((result) => result.is_live)
         .map((result) => {
+          const thisStreamData = streamData?.data.find((stream) => stream.user_id === result.id);
+          const viewerCount = thisStreamData?.viewer_count ?? 0;
           return {
-            iconName: 'search',
-            label: result.display_name.toLowerCase(),
+            label: result.display_name,
+            tags: [`${formatter.format(viewerCount)} watching`, result.game_name],
             value: result.display_name.toLowerCase(),
           };
-        }) ?? [];
-    const gameResultOptions: AutosuggestProps.Option[] =
-      gameSearchData?.pages
-        .flatMap((page) => page.data)
-        .filter((result) => result.name.toLowerCase().includes(query.toLowerCase()))
-        .map((result) => {
-          return {
-            iconName: 'search',
-            label: result.name.toLowerCase(),
-            value: result.name.toLowerCase(),
-          };
-        }) ?? [];
-    options.push(...searchHistoryOptions);
-    options.push(...searchResultOptions);
-    options.push(...gameResultOptions);
-    return uniqBy(options, 'label');
-  }, [searchHistory, query, channelSearchData?.pages, gameSearchData?.pages]);
+        }) ?? []
+    );
+  }, [query, channelSearchData?.pages, streamData?.data]);
 
   function submitSearch(nextQuery?: string) {
     const finalQuery = nextQuery || query;
-    if (searchHistoryEnabled) {
-      setSearchHistory((prev) => {
-        if (prev.includes(finalQuery)) {
-          return prev;
-        }
-        return [finalQuery, ...prev].slice(0, 5);
-      });
-    }
     navigate({
       pathname: Pathname.Results,
       search: `?query=${finalQuery}`,
@@ -184,12 +149,19 @@ export default function useTopNavigation(): State {
   }
 
   function handleSelect(event: NonCancelableCustomEvent<AutosuggestProps.SelectDetail>) {
-    submitSearch(event.detail.value);
+    const { value, selectedOption } = event.detail;
+    if (selectedOption) {
+      navigate(interpolatePathname(Pathname.Live, { user: value }));
+      setQuery('');
+      isNavigating.current = true;
+    } else {
+      submitSearch(value);
+    }
   }
 
   function handleKeyDown(event: CustomEvent<AutosuggestProps.KeyDetail>) {
-    // Pressing enter only selects the highlighted result
-    if (event.detail.key === 'Enter') {
+    // Prevent submitting if already navigating (e.g., when selecting by pressing Enter)
+    if (event.detail.key === 'Enter' && !isNavigating.current) {
       submitSearch();
     }
   }

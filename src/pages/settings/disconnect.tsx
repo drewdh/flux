@@ -2,6 +2,9 @@ import Container from '@cloudscape-design/components/container';
 import Header from '@cloudscape-design/components/header';
 import Box from '@cloudscape-design/components/box';
 import Link from '@cloudscape-design/components/link';
+import Alert from '@cloudscape-design/components/alert';
+import SpaceBetween from '@cloudscape-design/components/space-between';
+import Button from '@cloudscape-design/components/button';
 
 export default function Disconnect() {
   return (
@@ -11,18 +14,19 @@ export default function Disconnect() {
           Disconnect Twitch
         </Header>
       }
-      footer={
-        <Box textAlign="center">
-          <Link variant="primary" href="https://twitch.tv/settings/connections">
+    >
+      <SpaceBetween size="l" direction="vertical">
+        <Alert type="warning">
+          Disconnecting Twitch will end all active sessions on your devices.
+        </Alert>
+        <span>
+          From Twitch settings, select Connections, scroll to Flux.watch in Other Connections, and
+          select Disconnect.{' '}
+          <Link href="https://twitch.tv/settings/connections" external variant="primary">
             Twitch settings
           </Link>
-        </Box>
-      }
-    >
-      <span>
-        From Twitch settings, select <b>Connections</b>, scroll to Flux.watch in{' '}
-        <b>Other Connections</b>, and select <b>Disconnect</b>.
-      </span>
+        </span>
+      </SpaceBetween>
     </Container>
   );
 }

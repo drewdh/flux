@@ -5,7 +5,6 @@ import FluxAppLayout from 'common/flux-app-layout';
 import Theme from './theme';
 import Language from './language';
 import { useTranslation } from 'react-i18next';
-import RecentSearches from './recent-searches';
 import Disconnect from './disconnect';
 import useTitle from 'utilities/use-title';
 
@@ -24,7 +23,6 @@ export default function SettingsPage() {
           </Header>
           <SpaceBetween size="l">
             <Theme />
-            <RecentSearches />
             <Language />
             <Disconnect />
           </SpaceBetween>

@@ -6,10 +6,11 @@ import styles from './chat.module.scss';
 import Avatar from 'common/avatar';
 import Emote from './emote';
 import { ChatEvent } from '../../api/twitch-types';
+import { spaceScaledXs } from '@cloudscape-design/design-tokens';
 
 export function Message({ message }: Props) {
   return (
-    <span className={styles.message}>
+    <div className={clsx(styles.message, styles.clickable)}>
       {message.message.fragments?.map((fragment, index) => {
         if (fragment.type === 'mention' && message.reply) {
           return '';
@@ -42,41 +43,49 @@ export function Message({ message }: Props) {
           </span>
         );
       })}
-    </span>
+    </div>
   );
 }
 
 export default function ChatMessage({ message, onClick, variant = 'normal' }: Props) {
   return (
-    <div
-      onClick={onClick}
-      className={clsx(styles.wrapper, variant === 'normal' && styles.clickable)}
-    >
+    <div onClick={onClick} className={styles.wrapper}>
       {message.reply && variant === 'normal' && (
         <div className={styles.replyWrapper}>
-          <div className={styles.replyConnector} />
+          <div className={styles.replyAvatar}>
+            <Avatar userId={message.reply.parent_user_id} size="xs" />
+          </div>
+          {/*<div className={styles.replyConnector} />*/}
           <div className={styles.replyTextWrapper}>
-            @<span>{message.reply.parent_user_name}</span> {message.reply.parent_message_body}
+            {/*@<span>{message.reply.parent_user_name}</span>*/}
+            {message.reply.parent_message_body}
           </div>
         </div>
       )}
       <div className={styles.messageWrapper}>
-        <div className={variant === 'featured' ? styles.newReplyConnectorWrapper : styles.collapse}>
-          <div className={variant === 'featured' ? styles.newReplyConnector : styles.collapse} />
+        <div className={message.reply ? styles.newReplyConnectorWrapper : styles.collapse}>
+          <div className={message.reply ? styles.newReplyConnector : styles.collapse} />
           {variant === 'featured' && <Avatar userId={message.chatter_user_id} size="s" />}
         </div>
-        <div>
-          {variant === 'normal' && (
-            <span className={styles.username}>
-              <b style={{ color: message.color }}>{message.chatter_user_name}</b>
-              {/*{user?.broadcaster_type === 'partner' && (*/}
-              {/*  <Box variant="span" padding={{ left: 'xxs' }}>*/}
-              {/*    <Icon svg={<FontAwesomeIcon icon={faBadgeCheck} color="#a970ff" />} />*/}
-              {/*  </Box>*/}
-              {/*)}*/}
-            </span>
-          )}
-          <Message message={message} variant={variant} />
+        <div
+          style={{
+            display: 'flex',
+            columnGap: spaceScaledXs,
+            flexWrap: 'nowrap',
+            alignItems: 'end',
+          }}
+        >
+          {variant === 'normal' && <Avatar userId={message.chatter_user_id} size="s" />}
+          {/*<b style={{ color: message.color }}>{message.chatter_user_name}</b>*/}
+          {/*{user?.broadcaster_type === 'partner' && (*/}
+          {/*  <Box variant="span" padding={{ left: 'xxs' }}>*/}
+          {/*    <Icon svg={<FontAwesomeIcon icon={faBadgeCheck} color="#a970ff" />} />*/}
+          {/*  </Box>*/}
+          {/*)}*/}
+          <div>
+            <div className={styles.chatterName}>{message.chatter_user_name}</div>
+            <Message message={message} variant={variant} />
+          </div>
         </div>
       </div>
     </div>

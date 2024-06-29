@@ -3,7 +3,7 @@ import { Badge } from '@cloudscape-design/components';
 import Icon from '@cloudscape-design/components/icon';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignalStream } from '@fortawesome/pro-solid-svg-icons';
-import { spaceScaledL, spaceScaledXs } from '@cloudscape-design/design-tokens';
+import { spaceScaledXs } from '@cloudscape-design/design-tokens';
 
 function preloadImage(src: string) {
   return new Promise((resolve, reject) => {
@@ -35,7 +35,7 @@ export default function FluxImage({ src, isLive, ...rest }: Props) {
           style={{
             ...rest.style,
             opacity: isLoaded ? '1' : '0',
-            transition: 'opacity 200ms ease-in-out',
+            // transition: 'opacity 200ms ease-in-out',
           }}
         />
         {isLive && (

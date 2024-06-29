@@ -1,17 +1,27 @@
 @use '@cloudscape-design/design-tokens' as cs;
 
-$avatar-width: 24px;
+$flux-avatar-width: 24px;
+$cs-avatar-width: 28px;
+$bubble-horizontal-padding: 10px;
 
 .username {
-  color: cs.$color-text-status-inactive;
-  font-size: 13px;
+  //color: cs.$color-text-status-inactive;
+  //font-size: 13px;
   padding-right: cs.$space-scaled-xxs;
 }
+.replyAvatar {
+  padding: 0 5px;
+  opacity: 0.56;
+}
 .message {
+  max-width: fit-content;
   word-break: break-word;
+  padding: cs.$space-scaled-xxs $bubble-horizontal-padding;
+  border-radius: cs.$border-radius-alert;
+  background-color: cs.$color-background-input-disabled;
 }
 .wrapper {
-  padding: cs.$space-scaled-xxs 0;
+  padding: 5px 0;
 }
 .clickable {
   cursor: pointer;
@@ -19,7 +29,7 @@ $avatar-width: 24px;
 .messageWrapper {
   display: flex;
   flex-wrap: nowrap;
-  gap: cs.$space-scaled-xs;
+  //gap: cs.$space-scaled-xs;
 }
 .replyConnector {
   position: absolute;
@@ -28,7 +38,7 @@ $avatar-width: 24px;
   top: 8px;
   right: 100%;
   bottom: 0;
-  left: calc(-1 * (#{$avatar-width}/2 + #{cs.$space-scaled-xs}));
+  left: calc(-1 * (#{$cs-avatar-width}/2 + #{cs.$space-scaled-xs}));
   margin: -1px 2px 2px -1px;
   border-color: cs.$color-border-divider-default;
   border-width: 2px 0 0 2px;
@@ -47,13 +57,13 @@ $avatar-width: 24px;
   content: " ";
   position: absolute;
   box-sizing: border-box;
-  // Half the size of the xs avatar
-  top: 24px;
-  right: 12px;
-  bottom: -20px;
-  left: 12px;
+  top: -10px;
+  right: 14px;
+  // Height of s avatar plus 2 more pixels
+  bottom: 30px;
+  left: 14px;
   margin: 2px 2px 2px -1px;
-  border-color: cs.$color-border-divider-default;
+  border-color: cs.$color-background-input-disabled;
   border-width: 0 0 0 2px;
   border-style: solid;
 }
@@ -61,16 +71,28 @@ $avatar-width: 24px;
   display: flex;
   position: relative;
   flex-wrap: nowrap;
-  gap: cs.$space-scaled-xxs;
+  align-items: end;
+  margin-top: cs.$space-scaled-m;
+  margin-bottom: cs.$space-scaled-s;
+  gap: cs.$space-scaled-xs;
   // Align with start of message (width of avatar plus flex gap)
-  margin-left: calc(#{cs.$space-scaled-xs} + #{$avatar-width});
+  //margin-left: calc(#{cs.$space-scaled-xs} + #{$cs-avatar-width});
+}
+.chatterName {
+  color: cs.$color-text-status-inactive;
+  line-height: cs.$line-height-body-s;
+  font-size: cs.$font-size-body-s;
+  margin-left: $bubble-horizontal-padding;
+  margin-bottom: cs.$space-scaled-xxxs;
 }
 .replyTextWrapper {
+  border-radius: cs.$border-radius-alert;
+  border: 1px solid cs.$color-border-divider-default;
+  padding: cs.$space-scaled-xxxs $bubble-horizontal-padding;
   word-break: break-word;
   font-size: cs.$font-size-body-s;
   color: cs.$color-text-status-inactive;
   line-height: cs.$line-height-body-s;
-  padding-bottom: cs.$space-scaled-xxxs;
 }
 .body {
   display: flex;
@@ -84,6 +106,7 @@ $avatar-width: 24px;
   // This offsets the margin from the drawer header
   margin-top: -20px;
   margin-right: -24px;
+  margin-left: -16px;
   margin-bottom: -40px;
   position: relative;
   overflow-y: scroll;

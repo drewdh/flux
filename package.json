@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@cloudscape-design/chat-components": "^1.0.0",
     "@cloudscape-design/component-toolkit": "^1.0.0-beta.49",
     "@cloudscape-design/components": "^3.0.667",
     "@cloudscape-design/design-tokens": "^3.0.36",

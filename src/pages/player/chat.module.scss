@@ -3,6 +3,10 @@
 $flux-avatar-width: 24px;
 $cs-avatar-width: 28px;
 $bubble-horizontal-padding: 10px;
+$top-nav-height: 58px;
+$footer-height: 41px;
+$drawer-header-height: 62px;
+$drawer-footer-height: 57px;
 
 .username {
   //color: cs.$color-text-status-inactive;
@@ -99,14 +103,16 @@ $bubble-horizontal-padding: 10px;
   flex-direction: column-reverse;
   position: relative;
   //max-height: 500px;
+  height: calc(100vh - #{$footer-height} - #{$top-nav-height} - #{$drawer-header-height} - #{$drawer-footer-height});
   overflow-y: auto;
+  padding-left: 28px;
   padding-right: 24px;
 }
 .container {
   // This offsets the margin from the drawer header
   margin-top: -20px;
   margin-right: -24px;
-  margin-left: -16px;
+  margin-left: -28px;
   margin-bottom: -40px;
   position: relative;
   overflow-y: scroll;
@@ -131,7 +137,7 @@ $bubble-horizontal-padding: 10px;
   left: 0;
   right: 0;
   border-top: 1px solid rgba(#b6bec9, 0.3);
-  padding: cs.$space-scaled-s cs.$space-scaled-xs cs.$space-scaled-s 0;
+  padding: cs.$space-scaled-s 16px cs.$space-scaled-s 28px;
 }
 .statusContainer {
   display: flex;

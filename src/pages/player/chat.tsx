@@ -76,13 +76,8 @@ export default function Chat({
   return (
     <>
       <div style={{ position: 'relative' }}>
-        <div ref={scrollContainerRef} className={styles.container}>
-          <div
-            className={styles.body}
-            // style={{
-            //   minHeight: `calc(100% - ${headerHeight}px - ${footerHeight}px - 16px)`,
-            // }}
-          >
+        <div className={styles.container}>
+          <div className={styles.body} ref={scrollContainerRef}>
             <div style={{ display: 'flex', flexDirection: 'column-reverse' }}>
               {isLoading && (
                 <div className={styles.statusContainer}>
@@ -174,9 +169,6 @@ export default function Chat({
                 </div>
               )}
               <div style={{ display: 'flex', gap: spaceScaledXs, flexWrap: 'nowrap' }}>
-                <div style={{ marginTop: '4px' }}>
-                  <Avatar userId={user?.id ?? ''} size="s" />
-                </div>
                 <ChatBox
                   value={chatMessage}
                   onChange={handleChange}

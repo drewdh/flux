@@ -117,11 +117,6 @@ $drawer-footer-height: 57px;
   position: relative;
   overflow-y: scroll;
 }
-.messages {
-  min-height: 100%;
-  display: flex;
-  flex-direction: column-reverse;
-}
 .header {
   position: sticky;
   background-color: rgba(255, 255, 255, 0.05);

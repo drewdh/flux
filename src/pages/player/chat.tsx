@@ -78,7 +78,7 @@ export default function Chat({
       <div style={{ position: 'relative' }}>
         <div className={styles.container}>
           <div className={styles.body} ref={scrollContainerRef}>
-            <div style={{ display: 'flex', flexDirection: 'column-reverse' }}>
+            <div style={{ display: 'flex', flexDirection: 'column-reverse', paddingBottom: '4px' }}>
               {isLoading && (
                 <div className={styles.statusContainer}>
                   <StatusIndicator type="loading">Loading chat</StatusIndicator>

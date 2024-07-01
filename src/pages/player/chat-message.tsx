@@ -8,9 +8,9 @@ import Emote from './emote';
 import { ChatEvent } from '../../api/twitch-types';
 import { spaceScaledXs } from '@cloudscape-design/design-tokens';
 
-export function Message({ message }: Props) {
+export function Message({ message, onMessageClick }: Props) {
   return (
-    <div className={clsx(styles.message, styles.clickable)}>
+    <div className={clsx(styles.message, styles.clickable)} onClick={onMessageClick}>
       {message.message.fragments?.map((fragment, index) => {
         if (fragment.type === 'mention' && message.reply) {
           return '';
@@ -47,9 +47,14 @@ export function Message({ message }: Props) {
   );
 }
 
-export default function ChatMessage({ message, onClick, variant = 'normal' }: Props) {
+export default function ChatMessage({
+  message,
+  onMessageClick,
+  onAvatarClick,
+  variant = 'normal',
+}: Props) {
   return (
-    <div onClick={onClick} className={styles.wrapper}>
+    <div className={styles.wrapper}>
       {message.reply && variant === 'normal' && (
         <div className={styles.replyWrapper}>
           <div className={styles.replyAvatar}>
@@ -75,7 +80,14 @@ export default function ChatMessage({ message, onClick, variant = 'normal' }: Pr
             alignItems: 'end',
           }}
         >
-          {variant === 'normal' && <Avatar userId={message.chatter_user_id} size="s" />}
+          {variant === 'normal' && (
+            <div
+              className={styles.clickable}
+              onClick={() => onAvatarClick?.(message.chatter_user_id)}
+            >
+              <Avatar userId={message.chatter_user_id} size="s" />
+            </div>
+          )}
           {/*<b style={{ color: message.color }}>{message.chatter_user_name}</b>*/}
           {/*{user?.broadcaster_type === 'partner' && (*/}
           {/*  <Box variant="span" padding={{ left: 'xxs' }}>*/}
@@ -84,7 +96,7 @@ export default function ChatMessage({ message, onClick, variant = 'normal' }: Pr
           {/*)}*/}
           <div>
             <div className={styles.chatterName}>{message.chatter_user_name}</div>
-            <Message message={message} variant={variant} />
+            <Message onMessageClick={onMessageClick} message={message} variant={variant} />
           </div>
         </div>
       </div>
@@ -94,6 +106,7 @@ export default function ChatMessage({ message, onClick, variant = 'normal' }: Pr
 
 interface Props {
   message: ChatEvent;
-  onClick?: () => void;
+  onAvatarClick?: (userId: string) => void;
+  onMessageClick?: () => void;
   variant?: 'featured' | 'normal';
 }

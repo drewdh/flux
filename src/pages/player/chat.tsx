@@ -139,7 +139,8 @@ export default function Chat({
                   // <div className={styles.messages}>
                   messages.map((message) => (
                     <ChatMessage
-                      onClick={() => setHighlightedMessage(message)}
+                      onAvatarClick={(userId) => onUserIdChange(userId)}
+                      onMessageClick={() => setHighlightedMessage(message)}
                       message={message}
                       key={message.message_id}
                     />

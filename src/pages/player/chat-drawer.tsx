@@ -16,7 +16,13 @@ enum SettingsId {
   Restrictions = 'restrictions',
 }
 
-export default function ChatDrawer({ error, isLoading, isReconnectError, messages }: Props) {
+export default function ChatDrawer({
+  error,
+  isLoading,
+  isReconnectError,
+  messages,
+  onUserIdChange,
+}: Props) {
   const { user } = useParams();
   const { data: usersData } = useGetUsers({ logins: [user!] }, { enabled: !!user });
   const broadcasterId = usersData?.data[0].id;
@@ -66,7 +72,7 @@ export default function ChatDrawer({ error, isLoading, isReconnectError, message
         }
       >
         <Chat
-          onUserIdChange={() => {}}
+          onUserIdChange={onUserIdChange}
           broadcasterUserId={broadcasterId}
           error={error}
           isLoading={isLoading}
@@ -86,5 +92,6 @@ interface Props {
   error: Error | null;
   isLoading: boolean;
   isReconnectError: boolean;
+  onUserIdChange: (userId: string | null) => void;
   messages: ChatEvent[];
 }

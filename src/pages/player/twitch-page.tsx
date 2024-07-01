@@ -65,6 +65,10 @@ export default function TwitchPage() {
             id: DrawerId.Chat,
             content: (
               <ChatDrawer
+                onUserIdChange={(userId) => {
+                  setSelectedUserId(userId);
+                  setActiveDrawerId(DrawerId.Profile);
+                }}
                 error={error}
                 isReconnectError={isReconnectError}
                 isLoading={isLoading}

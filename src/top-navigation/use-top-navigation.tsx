@@ -10,8 +10,10 @@ import useNavigateWithRef from 'common/use-navigate-with-ref';
 import { useGetStreams, useRevoke, useSearchChannels, useValidate } from '../api/api';
 import useFollow from 'common/use-follow';
 import { connectHref } from '../pages/home/page';
+import { useFeedback } from '../feedback/feedback-context';
 
 export default function useTopNavigation(): State {
+  const { setIsFeedbackVisible } = useFeedback();
   const isNavigating = useRef<boolean>(false);
   const follow = useFollow();
   const location = useLocation();
@@ -93,7 +95,14 @@ export default function useTopNavigation(): State {
     },
   };
 
-  const utilities: TopNavigationProps.Utility[] = [];
+  const utilities: TopNavigationProps.Utility[] = [
+    {
+      type: 'button',
+      iconName: 'contact',
+      text: 'Feedback',
+      onClick: () => setIsFeedbackVisible(true),
+    },
+  ];
 
   if (scopeData?.login) {
     utilities.push({

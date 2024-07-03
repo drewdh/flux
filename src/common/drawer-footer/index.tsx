@@ -1,7 +1,7 @@
 import { PropsWithChildren } from 'react';
+import Box from '@cloudscape-design/components/box';
 
 import styles from './styles.module.scss';
-import Box from '@cloudscape-design/components/box';
 
 export default function DrawerFooter({ children, header }: PropsWithChildren<Props>) {
   return (

@@ -4,13 +4,11 @@ $flux-avatar-width: 24px;
 $cs-avatar-width: 28px;
 $bubble-horizontal-padding: 10px;
 $top-nav-height: 58px;
-$footer-height: 41px;
+$footer-height: 0px;
 $drawer-header-height: 62px;
 $drawer-footer-height: 57px;
 
 .username {
-  //color: cs.$color-text-status-inactive;
-  //font-size: 13px;
   padding-right: cs.$space-scaled-xxs;
 }
 .replyAvatar {
@@ -33,7 +31,6 @@ $drawer-footer-height: 57px;
 .messageWrapper {
   display: flex;
   flex-wrap: nowrap;
-  //gap: cs.$space-scaled-xs;
 }
 .replyConnector {
   position: absolute;

@@ -60,12 +60,13 @@ $drawer-footer-height: 57px;
   box-sizing: border-box;
   top: -10px;
   right: 14px;
-  // Height of s avatar plus 2 more pixels
-  bottom: 30px;
+  // Height of s avatar plus 4 more pixels
+  bottom: 32px;
   left: 14px;
   margin: 2px 2px 2px -1px;
-  border-color: cs.$color-background-input-disabled;
+  border-color: cs.$color-border-divider-default;
   border-width: 0 0 0 2px;
+  border-radius: 4px;
   border-style: solid;
 }
 .replyWrapper {

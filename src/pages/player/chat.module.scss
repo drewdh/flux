@@ -8,9 +8,6 @@ $footer-height: 0px;
 $drawer-header-height: 62px;
 $drawer-footer-height: 57px;
 
-.username {
-  padding-right: cs.$space-scaled-xxs;
-}
 .replyAvatar {
   padding: 0 5px;
   opacity: 0.56;
@@ -103,17 +100,15 @@ $drawer-footer-height: 57px;
   //max-height: 500px;
   height: calc(100vh - #{$footer-height} - #{$top-nav-height} - #{$drawer-header-height} - #{$drawer-footer-height});
   overflow-y: auto;
-  padding-left: 28px;
   padding-right: 24px;
 }
 .container {
-  // This offsets the margin from the drawer header
+  // Offset Cloudscape drawer paddings except left/slider
   margin-top: -20px;
   margin-right: -24px;
-  margin-left: -28px;
   margin-bottom: -40px;
   position: relative;
-  overflow-y: scroll;
+  overflow-y: hidden;
 }
 .header {
   position: sticky;
@@ -125,12 +120,8 @@ $drawer-footer-height: 57px;
   border-bottom: 1px solid rgba(#b6bec9, 0.3);
 }
 .footer {
-  position: sticky;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  border-top: 1px solid rgba(#b6bec9, 0.3);
-  padding: cs.$space-scaled-s 16px cs.$space-scaled-s 28px;
+  background-color: cs.$color-background-container-content;
+  padding: cs.$space-scaled-s 0;
 }
 .statusContainer {
   display: flex;

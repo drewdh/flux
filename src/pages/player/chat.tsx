@@ -78,7 +78,7 @@ export default function Chat({
       <div style={{ position: 'relative' }}>
         <div className={styles.container}>
           <div className={styles.body} ref={scrollContainerRef}>
-            <div style={{ display: 'flex', flexDirection: 'column-reverse', padding: '20px 0' }}>
+            <div style={{ display: 'flex', flexDirection: 'column-reverse', padding: '5px 0' }}>
               {isLoading && (
                 <div className={styles.statusContainer}>
                   <StatusIndicator type="loading">Loading chat</StatusIndicator>
@@ -176,7 +176,7 @@ export default function Chat({
                   onSubmit={handleSendChat}
                   placeholder={highlightedMessage ? 'Reply' : 'Chat'}
                 />
-                <div style={{ alignSelf: 'end' }}>
+                <div style={{ alignSelf: 'end', paddingRight: spaceScaledXs }}>
                   <Button onClick={() => handleSendChat()} variant="icon" iconName="send" />
                 </div>
               </div>

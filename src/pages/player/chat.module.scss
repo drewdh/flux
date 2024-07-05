@@ -3,10 +3,6 @@
 $flux-avatar-width: 24px;
 $cs-avatar-width: 28px;
 $bubble-horizontal-padding: 10px;
-$top-nav-height: 58px;
-$footer-height: 0px;
-$drawer-header-height: 62px;
-$drawer-footer-height: 57px;
 
 .replyAvatar {
   padding: 0 5px;
@@ -97,8 +93,6 @@ $drawer-footer-height: 57px;
   display: flex;
   flex-direction: column-reverse;
   position: relative;
-  //max-height: 500px;
-  height: calc(100vh - #{$footer-height} - #{$top-nav-height} - #{$drawer-header-height} - #{$drawer-footer-height});
   overflow-y: auto;
   padding-right: 24px;
 }
@@ -121,7 +115,9 @@ $drawer-footer-height: 57px;
 }
 .footer {
   background-color: cs.$color-background-container-content;
+  border-top: 1px solid cs.$color-border-divider-default;
   padding: cs.$space-scaled-s 0;
+  margin-right: 24px;
 }
 .statusContainer {
   display: flex;
@@ -141,6 +137,7 @@ $drawer-footer-height: 57px;
   position: absolute;
   display: flex;
   left: 0;
+  right: 0;
   justify-content: end;
   z-index: -1;
   pointer-events: none;

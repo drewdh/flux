@@ -19,6 +19,9 @@ import { useFeedback } from '../../feedback/feedback-context';
 import ChatBox from 'common/chat-box';
 import { useGetUsers, useSendChatMessage } from '../../api/api';
 
+const topNavHeight = '58px';
+const drawerHeaderHeight = '62px';
+
 export default function Chat({
   broadcasterUserId,
   onUserIdChange,
@@ -77,7 +80,13 @@ export default function Chat({
     <>
       <div style={{ position: 'relative' }}>
         <div className={styles.container}>
-          <div className={styles.body} ref={scrollContainerRef}>
+          <div
+            className={styles.body}
+            ref={scrollContainerRef}
+            style={{
+              height: `calc(100vh - ${topNavHeight} - ${drawerHeaderHeight} - ${footerHeight}px)`,
+            }}
+          >
             <div style={{ display: 'flex', flexDirection: 'column-reverse', padding: '5px 0' }}>
               {isLoading && (
                 <div className={styles.statusContainer}>
@@ -176,7 +185,7 @@ export default function Chat({
                   onSubmit={handleSendChat}
                   placeholder={highlightedMessage ? 'Reply' : 'Chat'}
                 />
-                <div style={{ alignSelf: 'end', paddingRight: spaceScaledXs }}>
+                <div style={{ alignSelf: 'end' }}>
                   <Button onClick={() => handleSendChat()} variant="icon" iconName="send" />
                 </div>
               </div>
@@ -187,7 +196,6 @@ export default function Chat({
           className={clsx(styles.unreadBadgeWrapper, isScrolled && styles.visible)}
           style={{
             bottom: `calc(${footerHeight}px + 16px)`,
-            right: `16px`,
           }}
         >
           <div className={styles.unreadBadge}>

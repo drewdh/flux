@@ -4,6 +4,7 @@ import { NonCancelableCustomEvent } from '@cloudscape-design/components';
 import { RefObject, useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useLocation } from 'react-router';
+import Icon from '@cloudscape-design/components/icon';
 
 import { interpolatePathname, Pathname } from 'utilities/routes';
 import useNavigateWithRef from 'common/use-navigate-with-ref';
@@ -11,9 +12,23 @@ import { useGetStreams, useRevoke, useSearchChannels, useValidate } from '../api
 import useFollow from 'common/use-follow';
 import { connectHref } from '../pages/home/page';
 import { useFeedback } from '../feedback/feedback-context';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faMoon } from '@fortawesome/pro-solid-svg-icons/faMoon';
+import { Appearance, useSettings } from 'utilities/settings';
+import { faRightFromBracket } from '@fortawesome/pro-solid-svg-icons';
+
+enum MenuItemId {
+  Feedback = 'feedback',
+  SignOut = 'signOut',
+  Settings = 'settings',
+  LightMode = 'lightMode',
+  DarkMode = 'darkMode',
+  DefaultAppearance = 'defaultAppearance',
+}
 
 export default function useTopNavigation(): State {
   const { setIsFeedbackVisible } = useFeedback();
+  const { appearance, setAppearance } = useSettings();
   const isNavigating = useRef<boolean>(false);
   const follow = useFollow();
   const location = useLocation();
@@ -97,46 +112,72 @@ export default function useTopNavigation(): State {
 
   const utilities: TopNavigationProps.Utility[] = [
     {
-      type: 'button',
-      iconName: 'contact',
-      text: 'Feedback',
-      onClick: () => setIsFeedbackVisible(true),
+      type: 'menu-dropdown',
+      iconSvg: <Icon svg={<FontAwesomeIcon icon={faMoon} />} />,
+      title: 'Appearance',
+      onItemClick: (event) => {
+        const { id } = event.detail;
+        const appearances: Record<string, Appearance> = {
+          [MenuItemId.LightMode]: Appearance.Light,
+          [MenuItemId.DarkMode]: Appearance.Dark,
+          [MenuItemId.DefaultAppearance]: Appearance.System,
+        };
+        setAppearance(appearances[id]);
+      },
+      items: [
+        {
+          id: MenuItemId.LightMode,
+          text: 'Light',
+          iconName: appearance === Appearance.Light ? 'check' : undefined,
+        },
+        {
+          id: MenuItemId.DarkMode,
+          text: 'Dark',
+          iconName: appearance === Appearance.Dark ? 'check' : undefined,
+        },
+        {
+          id: MenuItemId.DefaultAppearance,
+          text: 'Use system settings',
+          iconName: appearance === Appearance.System ? 'check' : undefined,
+        },
+      ],
+      // text: 'Feedback',
+      // onClick: () => setIsFeedbackVisible(true),
     },
   ];
 
   if (scopeData?.login) {
     utilities.push({
       type: 'menu-dropdown',
-      iconName: 'user-profile-active',
+      // iconName: 'user-profile-active',
       text: scopeData.login,
       onItemFollow: (event) => {
         follow({ href: event.detail.href!, event });
       },
       onItemClick: (event) => {
-        if (event.detail.id === 'sign-out') {
+        if (event.detail.id === MenuItemId.SignOut) {
           return signOut();
+        }
+        if (event.detail.id === MenuItemId.Feedback) {
+          setIsFeedbackVisible(true);
         }
       },
       items: [
         {
-          items: [
-            {
-              id: 'foo',
-              iconName: 'user-profile',
-              text: 'Your profile',
-              href: interpolatePathname(Pathname.Channel, { login: scopeData.login }),
-            },
-            {
-              id: 'settings',
-              iconName: 'settings',
-              text: 'Settings',
-              href: Pathname.Settings,
-            },
-          ],
+          id: MenuItemId.Settings,
+          text: 'Settings',
+          iconName: 'settings',
+          href: Pathname.Settings,
         },
         {
-          id: 'sign-out',
+          id: MenuItemId.Feedback,
+          text: 'Send feedback',
+          iconName: 'contact',
+        },
+        {
+          id: MenuItemId.SignOut,
           text: 'Sign out',
+          iconSvg: <FontAwesomeIcon icon={faRightFromBracket} />,
         },
       ],
     });

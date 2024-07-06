@@ -2,7 +2,6 @@ import Header from '@cloudscape-design/components/header';
 import SpaceBetween from '@cloudscape-design/components/space-between';
 
 import FluxAppLayout from 'common/flux-app-layout';
-import Theme from './theme';
 import Language from './language';
 import { useTranslation } from 'react-i18next';
 import Disconnect from './disconnect';
@@ -22,7 +21,6 @@ export default function SettingsPage() {
             {t('title')}
           </Header>
           <SpaceBetween size="l">
-            <Theme />
             <Language />
             <Disconnect />
           </SpaceBetween>

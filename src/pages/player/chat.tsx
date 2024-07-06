@@ -191,12 +191,6 @@ export default function Chat({
                       iconName="close"
                     />
                   </Box>
-                  <Box variant="h5">
-                    Replying to{' '}
-                    <Link onClick={() => onUserIdChange(highlightedMessage?.chatter_user_id)}>
-                      {highlightedMessage.chatter_user_name}
-                    </Link>
-                  </Box>
                   <ChatMessage message={highlightedMessage} variant="featured" />
                 </div>
               )}

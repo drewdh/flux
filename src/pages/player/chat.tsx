@@ -11,7 +11,7 @@ import { spaceScaledXs } from '@cloudscape-design/design-tokens';
 import { useContainerQuery } from '@cloudscape-design/component-toolkit';
 
 import styles from './chat.module.scss';
-import ChatMessage from './chat-message';
+import ChatMessage, { ChatMessageProps } from './chat-message';
 import { connectHref } from '../home/page';
 import { ChatEvent } from '../../api/twitch-types';
 import Avatar from 'common/avatar';
@@ -146,14 +146,36 @@ export default function Chat({
                 !error &&
                   !isLoading &&
                   // <div className={styles.messages}>
-                  messages.map((message) => (
-                    <ChatMessage
-                      onAvatarClick={(userId) => onUserIdChange(userId)}
-                      onMessageClick={() => setHighlightedMessage(message)}
-                      message={message}
-                      key={message.message_id}
-                    />
-                  ))
+                  messages.map((message, index) => {
+                    let chunkPosition: ChatMessageProps.ChunkPosition = 'none';
+                    const nextMessage = messages[index - 1];
+                    const prevMessage = messages[index + 1];
+                    if (message.reply || (prevMessage?.reply && nextMessage?.reply)) {
+                      chunkPosition = 'none';
+                    } else if (
+                      prevMessage?.chatter_user_id === message.chatter_user_id &&
+                      nextMessage?.chatter_user_id === message.chatter_user_id
+                    ) {
+                      chunkPosition = nextMessage?.reply
+                        ? 'last'
+                        : prevMessage?.reply
+                          ? 'first'
+                          : 'middle';
+                    } else if (nextMessage?.chatter_user_id === message.chatter_user_id) {
+                      chunkPosition = nextMessage?.reply ? 'none' : 'first';
+                    } else if (prevMessage?.chatter_user_id === message.chatter_user_id) {
+                      chunkPosition = prevMessage?.reply ? 'none' : 'last';
+                    }
+                    return (
+                      <ChatMessage
+                        onAvatarClick={(userId) => onUserIdChange(userId)}
+                        onMessageClick={() => setHighlightedMessage(message)}
+                        message={message}
+                        chunkPosition={chunkPosition}
+                        key={message.message_id}
+                      />
+                    );
+                  })
                 // </div>
               }
             </div>

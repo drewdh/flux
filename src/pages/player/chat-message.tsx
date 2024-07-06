@@ -1,14 +1,14 @@
 import { ReactNode } from 'react';
 import Link from '@cloudscape-design/components/link';
 import clsx from 'clsx';
+import { spaceScaledXs } from '@cloudscape-design/design-tokens';
 
 import styles from './chat.module.scss';
 import Avatar from 'common/avatar';
 import Emote from './emote';
 import { ChatEvent } from '../../api/twitch-types';
-import { spaceScaledXs } from '@cloudscape-design/design-tokens';
 
-export function Message({ message, onMessageClick }: Props) {
+function Message({ message, onMessageClick }: Props) {
   return (
     <div className={clsx(styles.message, styles.clickable)} onClick={onMessageClick}>
       {message.message.fragments?.map((fragment, index) => {
@@ -48,13 +48,14 @@ export function Message({ message, onMessageClick }: Props) {
 }
 
 export default function ChatMessage({
+  chunkPosition = 'none',
   message,
   onMessageClick,
   onAvatarClick,
   variant = 'normal',
 }: Props) {
   return (
-    <div className={styles.wrapper}>
+    <div className={clsx(styles.wrapper, styles[`chunk-position-${chunkPosition}`])}>
       {message.reply && variant === 'normal' && (
         <div className={styles.replyWrapper}>
           <div className={styles.replyAvatar}>
@@ -80,7 +81,10 @@ export default function ChatMessage({
             alignItems: 'end',
           }}
         >
-          {variant === 'normal' && (
+          {(chunkPosition === 'first' || chunkPosition === 'middle') && (
+            <div style={{ minWidth: '28px' }}>&nbsp;</div>
+          )}
+          {variant === 'normal' && (chunkPosition === 'last' || chunkPosition === 'none') && (
             <div
               className={styles.clickable}
               onClick={() => onAvatarClick?.(message.chatter_user_id)}
@@ -95,8 +99,15 @@ export default function ChatMessage({
           {/*  </Box>*/}
           {/*)}*/}
           <div>
-            <div className={styles.chatterName}>{message.chatter_user_name}</div>
-            <Message onMessageClick={onMessageClick} message={message} variant={variant} />
+            {(chunkPosition === 'first' || chunkPosition === 'none') && (
+              <div className={styles.chatterName}>{message.chatter_user_name}</div>
+            )}
+            <Message
+              chunkPosition={chunkPosition}
+              onMessageClick={onMessageClick}
+              message={message}
+              variant={variant}
+            />
           </div>
         </div>
       </div>
@@ -104,9 +115,15 @@ export default function ChatMessage({
   );
 }
 
+export declare namespace ChatMessageProps {
+  type ChunkPosition = 'first' | 'middle' | 'last' | 'none';
+  type Variant = 'featured' | 'normal';
+}
+
 interface Props {
+  chunkPosition?: ChatMessageProps.ChunkPosition;
   message: ChatEvent;
   onAvatarClick?: (userId: string) => void;
   onMessageClick?: () => void;
-  variant?: 'featured' | 'normal';
+  variant?: ChatMessageProps.Variant;
 }

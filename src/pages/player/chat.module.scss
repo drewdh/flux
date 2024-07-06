@@ -16,7 +16,16 @@ $bubble-horizontal-padding: 10px;
   background-color: cs.$color-background-button-primary-disabled;
 }
 .wrapper {
-  padding: 5px 0;
+  padding: cs.$space-scaled-xxs 0;
+  &.chunk-position-first {
+    padding: cs.$space-scaled-xxs 0 1px 0;
+  }
+  &.chunk-position-middle {
+    padding: 1px 0 1px 0;
+  }
+  &.chunk-position-last {
+    padding: 1px 0 cs.$space-scaled-xxs 0;
+  }
 }
 .clickable {
   cursor: pointer;

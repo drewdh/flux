@@ -75,7 +75,8 @@ export default function useChatMessages({ broadcasterId, onMessagesChange }: Pro
             return prevMessages;
           }
           onMessagesChange?.();
-          return [newMessage, ...prevMessages].slice(0, 500);
+          // Twitch limits chat to roughly 200 messages
+          return [newMessage, ...prevMessages].slice(0, 200);
         });
       }
     };

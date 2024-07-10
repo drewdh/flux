@@ -1,5 +1,5 @@
 import Container from '@cloudscape-design/components/container';
-import ColumnLayout from '@cloudscape-design/components/column-layout';
+import KeyValuePairs from '@cloudscape-design/components/key-value-pairs';
 import Header from '@cloudscape-design/components/header';
 import StatusIndicator from '@cloudscape-design/components/status-indicator';
 import Box from '@cloudscape-design/components/box';
@@ -101,44 +101,56 @@ export default function StreamDetails({ broadcasterUserId }: StreamDetailsProps)
 
   return (
     <Container header={<Header variant="h2">Information</Header>}>
-      <ColumnLayout columns={2} variant="text-grid">
-        <SpaceBetween size="l">
-          <div>
-            <Box variant="awsui-key-label">Category</Box>
-            {streamData?.game_id && streamData.game_name ? (
-              <InternalLink variant="primary" href={gameHref}>
-                {streamData.game_name}
-              </InternalLink>
-            ) : (
-              '-'
-            )}
-          </div>
-          <div>
-            <Box variant="awsui-key-label">Started</Box>
-            {streamData?.started_at ? <RelativeTime date={streamData.started_at} /> : '-'}
-          </div>
-          <div>
-            <Box variant="awsui-key-label">Viewers</Box>
-            <div>{streamData?.viewer_count.toLocaleString() ?? '-'}</div>
-          </div>
-        </SpaceBetween>
-        <SpaceBetween size="l">
-          <div>
-            <Box variant="awsui-key-label">Followed</Box>
-            <div>
-              {followData?.followed_at ? <RelativeTime date={followData.followed_at} /> : '-'}
-            </div>
-          </div>
-          <div>
-            <Box variant="awsui-key-label">Tags</Box>
-            <div>{streamData?.tags?.join(', ') ?? '-'}</div>
-          </div>
-          <div>
-            <Box variant="awsui-key-label">Language</Box>
-            <div>{languageLabelMap[streamData?.language ?? ''] ?? streamData?.language ?? '-'}</div>
-          </div>
-        </SpaceBetween>
-      </ColumnLayout>
+      <KeyValuePairs
+        columns={2}
+        items={[
+          {
+            type: 'group',
+            items: [
+              {
+                label: 'Category',
+                value:
+                  streamData?.game_id && streamData.game_name ? (
+                    <InternalLink variant="primary" href={gameHref}>
+                      {streamData.game_name}
+                    </InternalLink>
+                  ) : (
+                    '-'
+                  ),
+              },
+              {
+                label: 'Started',
+                value: streamData?.started_at ? <RelativeTime date={streamData.started_at} /> : '-',
+              },
+              {
+                label: 'Viewers',
+                value: streamData?.viewer_count.toLocaleString() ?? '-',
+              },
+            ],
+          },
+          {
+            type: 'group',
+            items: [
+              {
+                label: 'Followed',
+                value: followData?.followed_at ? (
+                  <RelativeTime date={followData.followed_at} />
+                ) : (
+                  '-'
+                ),
+              },
+              {
+                label: 'Tags',
+                value: streamData?.tags?.join(', ') ?? '-',
+              },
+              {
+                label: 'Language',
+                value: languageLabelMap[streamData?.language ?? ''] ?? streamData?.language ?? '-',
+              },
+            ],
+          },
+        ]}
+      />
     </Container>
   );
 }

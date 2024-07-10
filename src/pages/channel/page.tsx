@@ -6,7 +6,8 @@ import Tabs from '@cloudscape-design/components/tabs';
 import { format } from 'date-fns';
 import Box from '@cloudscape-design/components/box';
 import { useEffect, useState } from 'react';
-import ColumnLayout from '@cloudscape-design/components/column-layout';
+import Button from '@cloudscape-design/components/button';
+import KeyValuePairs from '@cloudscape-design/components/key-value-pairs';
 
 import FluxAppLayout from 'common/flux-app-layout';
 import { useGetChannelFollowers, useGetUsers } from '../../api/api';
@@ -15,7 +16,6 @@ import Avatar from 'common/avatar';
 import useTitle from 'utilities/use-title';
 import { interpolatePathname, Pathname } from 'utilities/routes';
 import styles from './styles.module.scss';
-import Button from '@cloudscape-design/components/button';
 
 enum TabId {
   Details = 'details',
@@ -23,11 +23,6 @@ enum TabId {
 export const broadcasterTypeLabel: Record<string, string> = {
   affiliate: 'Affiliate',
   partner: 'Partner',
-};
-const userTypeLabel: Record<string, string> = {
-  admin: 'Twitch administrator',
-  global_mod: 'Global moderator',
-  staff: 'Twitch staff',
 };
 
 const defaultTabId = TabId.Details;
@@ -116,35 +111,34 @@ export default function ChannelPage() {
                   label: 'Details',
                   href: interpolatePathname(Pathname.Channel, { login, tabId: TabId.Details }),
                   content: (
-                    <ColumnLayout columns={4} variant="text-grid">
-                      <div>
-                        <Box variant="awsui-key-label">Broadcaster level</Box>
-                        <div>
-                          {broadcasterTypeLabel[userData?.data[0].broadcaster_type ?? ''] ?? '-'}
-                        </div>
-                      </div>
-                      <div>
-                        <Box variant="awsui-key-label">Followers</Box>
-                        <div>
-                          {Number(followerData?.total ?? 0).toLocaleString()} follower
-                          {followerData?.total === 1 ? '' : 's'}
-                        </div>
-                      </div>
-                      <div>
-                        <Box variant="awsui-key-label">Created date</Box>
-                        <div>
-                          Joined {format(userData?.data[0].created_at ?? '', 'MMMM d, yyyy')}
-                        </div>
-                      </div>
-                      <div>
-                        <Box variant="awsui-key-label">User login</Box>
-                        <div>{userData?.data[0].login}</div>
-                      </div>
-                      <div>
-                        <Box variant="awsui-key-label">User ID</Box>
-                        <div>{userData?.data[0].id}</div>
-                      </div>
-                    </ColumnLayout>
+                    <KeyValuePairs
+                      columns={4}
+                      items={[
+                        {
+                          label: 'Broadcaster level',
+                          value:
+                            broadcasterTypeLabel[userData?.data[0].broadcaster_type ?? ''] ?? '-',
+                        },
+                        {
+                          label: 'Followers',
+                          value: `${Number(followerData?.total ?? 0).toLocaleString()} follower${
+                            followerData?.total === 1 ? '' : 's'
+                          }`,
+                        },
+                        {
+                          label: 'Created date',
+                          value: format(userData?.data[0].created_at ?? '', 'MMMM d, yyyy'),
+                        },
+                        {
+                          label: 'User login',
+                          value: userData?.data[0].login,
+                        },
+                        {
+                          label: 'User ID',
+                          value: userData?.data[0].id,
+                        },
+                      ]}
+                    />
                   ),
                 },
               ]}

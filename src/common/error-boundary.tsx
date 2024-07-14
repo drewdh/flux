@@ -4,6 +4,7 @@ import SpaceBetween from '@cloudscape-design/components/space-between';
 import Link from '@cloudscape-design/components/link';
 import { ExpandableSection } from '@cloudscape-design/components';
 import Box from '@cloudscape-design/components/box';
+import Button from '@cloudscape-design/components/button';
 
 import DhAppLayout from 'common/flux-app-layout';
 import { FeedbackContext } from '../feedback/feedback-context';
@@ -21,6 +22,10 @@ export default class ErrorBoundary extends React.Component<PropsWithChildren, St
     return { error };
   }
 
+  handleClick() {
+    this.setState({ error: undefined });
+  }
+
   render() {
     if (!this.state.error) {
       return this.props.children;
@@ -33,7 +38,11 @@ export default class ErrorBoundary extends React.Component<PropsWithChildren, St
             toolsHide
             content={
               <>
-                <Alert type="error" header="There was an error">
+                <Alert
+                  type="error"
+                  header="There was an error"
+                  action={<Button onClick={this.handleClick.bind(this)}>Reload</Button>}
+                >
                   <SpaceBetween size="m">
                     <div>
                       Reload the page or try again later.{' '}

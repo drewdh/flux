@@ -9,9 +9,12 @@ $viewport-breakpoint-xs: 688px;
   border: 1px solid cs.$color-border-divider-default;
 }
 .player {
+  aspect-ratio: 16 / 9;
   border-radius: 16px;
   overflow: hidden;
   background-color: cs.$color-background-input-disabled;
+  margin-left: auto;
+  margin-right: auto;
 }
 .stats {
   display: flex;

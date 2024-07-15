@@ -1,7 +1,6 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router';
 import SpaceBetween from '@cloudscape-design/components/space-between';
-import Grid from '@cloudscape-design/components/grid';
 import { useContainerQuery } from '@cloudscape-design/component-toolkit';
 import Header from '@cloudscape-design/components/header';
 import Link from '@cloudscape-design/components/link';
@@ -12,11 +11,10 @@ import { useGetStreamByUserLogin } from '../../api/api';
 import StreamDetails from './stream-details';
 import Box from '@cloudscape-design/components/box';
 import Avatar from 'common/avatar';
+import { topNavSelector } from '../../top-navigation/constants';
 
 export default function TwitchComponent({ onUserIdChange }: Props) {
   const player = useRef<any>(null);
-  const [playerWidth, playerRef] = useContainerQuery((rect) => rect.borderBoxWidth);
-  const [playerHeight, setPlayerHeight] = useState<number>(10);
   const { user: username } = useParams();
   useTitle(`${username} - Flux`);
 
@@ -38,10 +36,6 @@ export default function TwitchComponent({ onUserIdChange }: Props) {
   };
 
   useLayoutEffect(() => {
-    setPlayerHeight(((playerWidth ?? 0) * 9) / 16);
-  }, [playerWidth]);
-
-  useLayoutEffect(() => {
     if (!player.current) {
       // @ts-ignore
       player.current = new Twitch.Player('twitch-player', options);
@@ -59,13 +53,16 @@ export default function TwitchComponent({ onUserIdChange }: Props) {
     // return () => (player = undefined);
   }, []);
 
+  // Adjust max width so entire video player is visible when side panel is closed
+  const navHeight = document.querySelector(topNavSelector)?.getBoundingClientRect().height ?? 0;
+  const maxPlayerHeight = window.innerHeight - 24 - navHeight;
+
   return (
     <div className={styles.pageWrapper}>
       <SpaceBetween size="m">
         <div
           id="twitch-player"
-          ref={playerRef}
-          style={{ height: `${playerHeight}px` }}
+          style={{ maxHeight: `${maxPlayerHeight}px` }}
           className={styles.player}
         />
         <SpaceBetween size="s">

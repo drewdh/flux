@@ -141,22 +141,19 @@ export default function useTopNavigation(): State {
           description: 'test',
           items: [
             {
-              itemType: 'checkbox',
               id: MenuItemId.LightMode,
               text: 'Light',
-              checked: appearance === Appearance.Light,
+              iconName: appearance === Appearance.Light ? 'check' : undefined,
             },
             {
-              itemType: 'checkbox',
               id: MenuItemId.DarkMode,
               text: 'Dark',
-              checked: appearance === Appearance.Dark,
+              iconName: appearance === Appearance.Dark ? 'check' : undefined,
             },
             {
-              itemType: 'checkbox',
               id: MenuItemId.DefaultAppearance,
               text: 'Use system settings',
-              checked: appearance === Appearance.System,
+              iconName: appearance === Appearance.System ? 'check' : undefined,
             },
           ],
         },

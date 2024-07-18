@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Cards, { CardsProps } from '@cloudscape-design/components/cards';
-import Pagination, { PaginationProps } from '@cloudscape-design/components/pagination';
+import { PaginationProps } from '@cloudscape-design/components/pagination';
 import Header from '@cloudscape-design/components/header';
 import { NonCancelableCustomEvent } from '@cloudscape-design/components';
 
@@ -12,14 +12,20 @@ import { interpolatePathname, Pathname } from 'utilities/routes';
 import Empty from 'common/empty/empty';
 import FluxImage from 'common/flux-image';
 import styles from './styles.module.scss';
+import InfinitePagination from 'common/infinite-pagination';
 
 export default function CategoryResults({ query }: Props) {
   const [currentPageIndex, setCurrentPageIndex] = useState<number>(1);
 
-  const { hasNextPage, data, isFetching, isLoading, fetchNextPage, error } = useSearchCategories({
-    query,
-    pageSize: 12,
-  });
+  useEffect(() => {
+    setCurrentPageIndex(1);
+  }, [query]);
+
+  const { hasNextPage, data, isFetching, isFetchingNextPage, isLoading, fetchNextPage, error } =
+    useSearchCategories({
+      query,
+      pageSize: 12,
+    });
 
   const counter = useCounter({
     count: data?.pages.flatMap((page) => page.data).length ?? 0,
@@ -29,17 +35,8 @@ export default function CategoryResults({ query }: Props) {
 
   const items = data?.pages[currentPageIndex - 1]?.data ?? [];
 
-  const pagesCount = data?.pages.length ?? 1;
-
   function handlePaginationChange(event: NonCancelableCustomEvent<PaginationProps.ChangeDetail>) {
     setCurrentPageIndex(event.detail.currentPageIndex);
-  }
-
-  function handleNextPageClick(event: NonCancelableCustomEvent<PaginationProps.PageClickDetail>) {
-    const { requestedPageAvailable } = event.detail;
-    if (!requestedPageAvailable && hasNextPage) {
-      fetchNextPage();
-    }
   }
 
   const cardDefinition: CardsProps.CardDefinition<CategoryResult> = {
@@ -74,13 +71,13 @@ export default function CategoryResults({ query }: Props) {
       header={
         <Header
           actions={
-            <Pagination
-              disabled={isFetching}
-              onChange={handlePaginationChange}
-              onNextPageClick={handleNextPageClick}
+            <InfinitePagination
+              data={data}
               currentPageIndex={currentPageIndex}
-              pagesCount={pagesCount}
-              openEnd={hasNextPage}
+              onChange={handlePaginationChange}
+              fetchNextPage={fetchNextPage}
+              isFetchingNextPage={isFetchingNextPage}
+              hasNextPage={hasNextPage}
             />
           }
           counter={counter}

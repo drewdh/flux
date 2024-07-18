@@ -10,6 +10,8 @@ import { CategoryResult } from '../../api/twitch-types';
 import InternalLink from 'common/internal-link';
 import { interpolatePathname, Pathname } from 'utilities/routes';
 import Empty from 'common/empty/empty';
+import FluxImage from 'common/flux-image';
+import styles from './styles.module.scss';
 
 export default function CategoryResults({ query }: Props) {
   const [currentPageIndex, setCurrentPageIndex] = useState<number>(1);
@@ -41,20 +43,25 @@ export default function CategoryResults({ query }: Props) {
   }
 
   const cardDefinition: CardsProps.CardDefinition<CategoryResult> = {
-    header: (item) => (
-      <InternalLink
-        href={interpolatePathname(Pathname.Game, { gameId: item.id })}
-        fontSize="heading-m"
-      >
-        {item.name}
-      </InternalLink>
-    ),
+    header: (item) => {
+      const href = interpolatePathname(Pathname.Game, { gameId: item.id });
+      return (
+        <InternalLink href={href} fontSize="heading-m">
+          {item.name}
+        </InternalLink>
+      );
+    },
     sections: [
       {
         id: 'image',
         content: (item) => {
+          const href = interpolatePathname(Pathname.Game, { gameId: item.id });
           const imgSrc = item?.box_art_url.replace(/-\d+x\d+/g, `-${400}x${534}`);
-          return <img style={{ width: '100%' }} src={imgSrc} alt="placeholder" />;
+          return (
+            <InternalLink href={href}>
+              <FluxImage className={styles.categoryBoxArt} src={imgSrc} alt={item.name} />
+            </InternalLink>
+          );
         },
       },
     ],

@@ -35,7 +35,7 @@ export default function StreamDetails({ broadcasterUserId }: StreamDetailsProps)
     isLoading,
     error,
   } = useGetStreams({ userIds: [broadcasterUserId!] }, { enabled: !!broadcasterUserId });
-  const streamData = _streamData?.data[0];
+  const streamData = _streamData?.pages[0].data[0];
   const { setIsFeedbackVisible } = useFeedback();
   const { data: _followData } = useGetFollowedChannels({
     user_id: userData?.user_id,

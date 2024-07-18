@@ -107,15 +107,29 @@ export function useGetStreamByUserLogin(userLogin?: string, options: SafeOptions
   });
 }
 
-// TODO: Make this an infinite (paginated) query
 export function useGetStreams(
   request: GetStreamsRequest,
-  options: Partial<UseQueryOptions<GetStreamsResponse, TwitchError>> = {}
+  options: Partial<
+    UseInfiniteQueryOptions<
+      GetStreamsResponse,
+      Error,
+      InfiniteData<GetStreamsResponse>,
+      GetStreamsResponse,
+      [string, GetStreamsRequest],
+      string | undefined
+    >
+  > = {}
 ) {
-  return useQuery({
+  return useInfiniteQuery({
     ...options,
-    queryFn: () => twitchClient.getStreams(request),
+    queryFn: ({ pageParam }) =>
+      twitchClient.getStreams({
+        ...request,
+        nextToken: pageParam,
+      }),
     queryKey: [QueryKey.GetStreams, request],
+    initialPageParam: undefined,
+    getNextPageParam: (lastPage) => lastPage.pagination.cursor,
     // Order of results can change, so don't refetch
     refetchOnWindowFocus: false,
     refetchOnMount: false,

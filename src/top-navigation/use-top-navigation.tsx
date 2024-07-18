@@ -73,7 +73,9 @@ export default function useTopNavigation(): State {
         .flatMap((page) => page.data)
         .filter((result) => result.is_live)
         .map((result) => {
-          const thisStreamData = streamData?.data.find((stream) => stream.user_id === result.id);
+          const thisStreamData = streamData?.pages
+            .flatMap((page) => page.data)
+            .find((stream) => stream.user_id === result.id);
           const viewerCount = thisStreamData?.viewer_count ?? 0;
           return {
             label: result.display_name,
@@ -82,7 +84,7 @@ export default function useTopNavigation(): State {
           };
         }) ?? []
     );
-  }, [query, channelSearchData?.pages, streamData?.data]);
+  }, [query, channelSearchData?.pages, streamData?.pages]);
 
   function submitSearch(nextQuery?: string) {
     const finalQuery = nextQuery || query;

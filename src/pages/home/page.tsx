@@ -54,7 +54,7 @@ export default function TwitchPage() {
     pageSize: 5,
   });
   const followedStreams = data?.pages.flatMap((page) => page.data);
-  const topStreams = topStreamsData?.data;
+  const topStreams = topStreamsData?.pages.flatMap((page) => page.data);
   const isLoading = isLoadingFollowed || isLoadingTop;
 
   function renderContent() {

@@ -7,7 +7,9 @@ export default function LiveChannels({ gameId }: LiveChannelsProps) {
 
   return (
     <FlexibleColumnLayout columns={4} minColumnWidth={250}>
-      {data?.data.map((stream) => <VideoThumbnail isLive stream={stream} />)}
+      {data?.pages
+        .flatMap((page) => page.data)
+        .map((stream) => <VideoThumbnail isLive stream={stream} />)}
     </FlexibleColumnLayout>
   );
 }

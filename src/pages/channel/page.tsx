@@ -1,11 +1,10 @@
 import ContentLayout from '@cloudscape-design/components/content-layout';
-import { useNavigate, useParams } from 'react-router';
+import { useParams } from 'react-router';
 import StatusIndicator from '@cloudscape-design/components/status-indicator';
 import SpaceBetween from '@cloudscape-design/components/space-between';
 import Tabs from '@cloudscape-design/components/tabs';
 import { format } from 'date-fns';
 import Box from '@cloudscape-design/components/box';
-import { useEffect, useState } from 'react';
 import Button from '@cloudscape-design/components/button';
 import KeyValuePairs from '@cloudscape-design/components/key-value-pairs';
 
@@ -16,6 +15,7 @@ import Avatar from 'common/avatar';
 import useTitle from 'utilities/use-title';
 import { interpolatePathname, Pathname } from 'utilities/routes';
 import styles from './styles.module.scss';
+import useNavigableTabs from 'utilities/use-navigable-tabs';
 
 enum TabId {
   Details = 'details',
@@ -28,9 +28,11 @@ export const broadcasterTypeLabel: Record<string, string> = {
 const defaultTabId = TabId.Details;
 
 export default function ChannelPage() {
-  const { login = '', tabId } = useParams();
-  const navigate = useNavigate();
-  const [activeTabId, setActiveTabId] = useState<TabId>((tabId as TabId) ?? defaultTabId);
+  const { login = '' } = useParams();
+  const { activeTabId, handleChange: handleTabsChange } = useNavigableTabs({
+    defaultTabId: defaultTabId,
+    searchParamKey: 'tabId',
+  });
   const { data: userData, isLoading: isLoadingUser } = useGetUsers(
     { logins: [login!] },
     { enabled: !!login }
@@ -39,11 +41,6 @@ export default function ChannelPage() {
     broadcasterId: userData?.data[0].id,
   });
   useTitle(`${userData?.data[0].display_name ?? login} - Flux`);
-
-  // Let tab id route param be source of truth
-  useEffect(() => {
-    setActiveTabId((tabId as TabId) ?? defaultTabId);
-  }, [tabId]);
 
   const loading = isLoadingUser || isLoadingFollowers;
 
@@ -96,14 +93,7 @@ export default function ChannelPage() {
             }
           >
             <Tabs
-              onChange={(event) => {
-                const { activeTabHref, activeTabId: newActiveTabId } = event.detail;
-                if (activeTabHref) {
-                  navigate(activeTabHref);
-                } else {
-                  setActiveTabId(newActiveTabId as TabId);
-                }
-              }}
+              onChange={handleTabsChange}
               activeTabId={activeTabId}
               tabs={[
                 {

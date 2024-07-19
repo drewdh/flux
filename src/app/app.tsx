@@ -1,14 +1,16 @@
 import '@cloudscape-design/global-styles/index.css';
-import { Outlet } from 'react-router';
+import { Outlet, useLocation } from 'react-router';
 
 import TopNavigation from '../top-navigation';
 import ErrorBoundary from 'common/error-boundary';
 
 export default function App() {
+  const location = useLocation();
+
   return (
     <>
       <TopNavigation />
-      <ErrorBoundary>
+      <ErrorBoundary location={location}>
         <Outlet />
       </ErrorBoundary>
     </>

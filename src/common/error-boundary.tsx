@@ -5,12 +5,13 @@ import Link from '@cloudscape-design/components/link';
 import { ExpandableSection } from '@cloudscape-design/components';
 import Box from '@cloudscape-design/components/box';
 import Button from '@cloudscape-design/components/button';
+import { Location } from 'react-router';
 
 import DhAppLayout from 'common/flux-app-layout';
 import { FeedbackContext } from '../feedback/feedback-context';
 import { awsRum } from 'utilities/rum-init';
 
-export default class ErrorBoundary extends React.Component<PropsWithChildren, State> {
+export default class ErrorBoundary extends React.Component<PropsWithChildren<Props>, State> {
   constructor(props: PropsWithChildren) {
     super(props);
     this.state = { error: undefined };
@@ -22,8 +23,18 @@ export default class ErrorBoundary extends React.Component<PropsWithChildren, St
     return { error };
   }
 
-  handleClick() {
+  dismissError() {
     this.setState({ error: undefined });
+  }
+
+  componentDidUpdate(prevProps: Props) {
+    if (prevProps.location !== this.props.location) {
+      this.dismissError();
+    }
+  }
+
+  handleClick() {
+    this.dismissError();
   }
 
   render() {
@@ -41,7 +52,11 @@ export default class ErrorBoundary extends React.Component<PropsWithChildren, St
                 <Alert
                   type="error"
                   header="There was an error"
-                  action={<Button onClick={this.handleClick.bind(this)}>Reload</Button>}
+                  action={
+                    <Button iconName="refresh" onClick={this.handleClick.bind(this)}>
+                      Reload
+                    </Button>
+                  }
                 >
                   <SpaceBetween size="m">
                     <div>
@@ -72,6 +87,9 @@ export default class ErrorBoundary extends React.Component<PropsWithChildren, St
   }
 }
 
+interface Props {
+  location?: Location;
+}
 interface State {
   error?: Error;
 }

@@ -88,9 +88,11 @@ export default function useTopNavigation(): State {
 
   function submitSearch(nextQuery?: string) {
     const finalQuery = nextQuery || query;
+    const finalSearchParams = new URLSearchParams(searchParams);
+    finalSearchParams.set('query', finalQuery);
     navigate({
       pathname: Pathname.Results,
-      search: `?query=${finalQuery}`,
+      search: `?${finalSearchParams.toString()}`,
     });
   }
 

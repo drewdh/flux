@@ -1,5 +1,4 @@
 import { ReactNode } from 'react';
-import Box from '@cloudscape-design/components/box';
 import StatusIndicator from '@cloudscape-design/components/status-indicator';
 import FlexibleColumnLayout from 'common/flexible-column-layout';
 import SpaceBetween from '@cloudscape-design/components/space-between';
@@ -24,13 +23,13 @@ export default function FluxCards<T>({
     }
     if (loading) {
       return (
-        <Box textAlign="center">
+        <div className={styles.emptyWrapper}>
           <StatusIndicator type="loading">{loadingText}</StatusIndicator>
-        </Box>
+        </div>
       );
     }
     if (empty && items.length === 0) {
-      return <Box textAlign="center">{empty}</Box>;
+      return <div className={styles.emptyWrapper}>{empty}</div>;
     }
 
     return (

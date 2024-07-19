@@ -1,4 +1,10 @@
+@use '@cloudscape-design/design-tokens' as cs;
+
 .paginationWrapper {
   display: flex;
   justify-content: center;
+}
+.emptyWrapper {
+  padding: cs.$space-scaled-m cs.$space-scaled-l;
+  text-align: center;
 }

@@ -15,8 +15,8 @@ import VideoThumbnail from 'common/video-thumbnail';
 import { useFeedback } from '../../feedback/feedback-context';
 import Empty from 'common/empty/empty';
 import useCounter from 'utilities/use-counter';
-import styles from './styles.module.scss';
 import InfinitePagination from 'common/infinite-pagination';
+import CardsHeader from 'common/cards-header';
 
 export default function LiveChannels({ gameId }: LiveChannelsProps) {
   const [currentPageIndex, setCurrentPageIndex] = useState<number>(1);
@@ -75,27 +75,23 @@ export default function LiveChannels({ gameId }: LiveChannelsProps) {
   return (
     // Using a custom div instead of SpaceBetween so sticky works correctly
     <div style={{ display: 'flex', flexDirection: 'column', rowGap: spaceScaledL }}>
-      <div className={styles.sticky}>
-        <Container disableContentPaddings>
-          <Box padding={{ vertical: 's', horizontal: 'l' }}>
-            <Header
-              counter={counter}
-              actions={
-                <InfinitePagination
-                  currentPageIndex={currentPageIndex}
-                  onChange={handlePaginationChange}
-                  data={data}
-                  fetchNextPage={fetchNextPage}
-                  hasNextPage={hasNextPage}
-                  isFetchingNextPage={isFetchingNextPage}
-                />
-              }
-            >
-              Live channels
-            </Header>
-          </Box>
-        </Container>
-      </div>
+      <CardsHeader sticky>
+        <Header
+          counter={counter}
+          actions={
+            <InfinitePagination
+              currentPageIndex={currentPageIndex}
+              onChange={handlePaginationChange}
+              data={data}
+              fetchNextPage={fetchNextPage}
+              hasNextPage={hasNextPage}
+              isFetchingNextPage={isFetchingNextPage}
+            />
+          }
+        >
+          Live channels
+        </Header>
+      </CardsHeader>
       {renderContent()}
     </div>
   );

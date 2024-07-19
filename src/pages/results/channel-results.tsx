@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { PaginationProps } from '@cloudscape-design/components/pagination';
-import Header from '@cloudscape-design/components/header';
 import { NonCancelableCustomEvent } from '@cloudscape-design/components';
 import Box from '@cloudscape-design/components/box';
 import StatusIndicator from '@cloudscape-design/components/status-indicator';
@@ -15,7 +14,6 @@ import InfinitePagination from 'common/infinite-pagination';
 import FlexibleColumnLayout from 'common/flexible-column-layout';
 import VideoThumbnail from 'common/video-thumbnail';
 import { useFeedback } from '../../feedback/feedback-context';
-import CardsHeader from 'common/cards-header';
 
 export default function ChannelResults({ query }: Props) {
   const [currentPageIndex, setCurrentPageIndex] = useState<number>(1);
@@ -85,24 +83,17 @@ export default function ChannelResults({ query }: Props) {
   return (
     // Using a custom div instead of SpaceBetween so sticky works correctly
     <div style={{ display: 'flex', flexDirection: 'column', rowGap: spaceScaledL }}>
-      <CardsHeader sticky>
-        <Header
-          actions={
-            <InfinitePagination
-              data={data}
-              currentPageIndex={currentPageIndex}
-              onChange={handlePaginationChange}
-              fetchNextPage={fetchNextPage}
-              isFetchingNextPage={isFetchingNextPage}
-              hasNextPage={hasNextPage}
-            />
-          }
-          counter={counter}
-        >
-          Live channels
-        </Header>
-      </CardsHeader>
       {renderContent()}
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <InfinitePagination
+          data={data}
+          currentPageIndex={currentPageIndex}
+          onChange={handlePaginationChange}
+          fetchNextPage={fetchNextPage}
+          isFetchingNextPage={isFetchingNextPage}
+          hasNextPage={hasNextPage}
+        />
+      </div>
     </div>
   );
 }

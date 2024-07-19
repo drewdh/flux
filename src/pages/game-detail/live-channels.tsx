@@ -2,7 +2,6 @@ import Alert from '@cloudscape-design/components/alert';
 import Button from '@cloudscape-design/components/button';
 import StatusIndicator from '@cloudscape-design/components/status-indicator';
 import Box from '@cloudscape-design/components/box';
-import Container from '@cloudscape-design/components/container';
 import Header from '@cloudscape-design/components/header';
 import { spaceScaledL } from '@cloudscape-design/design-tokens';
 import { useState } from 'react';

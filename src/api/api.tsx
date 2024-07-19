@@ -41,6 +41,7 @@ export enum QueryKey {
   GetChannelFollowers = 'GetChannelFollowers',
   GetEmoteSets = 'GetEmoteSets',
   SearchChannels = 'SearchChannels',
+  SearchChannelsWithStreamData = 'SearchChannelsWithStreamData',
   SearchCategories = 'SearchCategories',
   Validate = 'Validate',
   GetFollowedChannels = 'GetFollowedChannels',
@@ -201,6 +202,34 @@ export function useSearchChannels({ query, pageSize = 10 }: UseSearchOptions) {
     initialPageParam: undefined as string | undefined,
     getNextPageParam: (lastPage) => lastPage.pagination.cursor,
     queryKey: [QueryKey.SearchChannels, query],
+    enabled: !!query,
+    // Order of results can change, so don't refetch
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+  });
+}
+
+export function useSearchChannelsWithStreamData({ query, pageSize = 10 }: UseSearchOptions) {
+  return useInfiniteQuery({
+    queryFn: async ({ pageParam }) => {
+      const { data, pagination } = await twitchClient.searchChannels({
+        query,
+        pageSize,
+        live_only: true,
+        nextToken: pageParam,
+      });
+      const { data: streamData } = await twitchClient.getStreams({
+        userIds: data.map((result) => result.id),
+      });
+      return {
+        data: streamData,
+        pagination,
+      };
+    },
+    initialPageParam: undefined as string | undefined,
+    getNextPageParam: (lastPage) => lastPage.pagination.cursor,
+    queryKey: [QueryKey.SearchChannelsWithStreamData, query],
     enabled: !!query,
     // Order of results can change, so don't refetch
     refetchOnWindowFocus: false,

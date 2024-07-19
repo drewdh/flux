@@ -8,7 +8,7 @@ import Alert from '@cloudscape-design/components/alert';
 import Button from '@cloudscape-design/components/button';
 import { spaceScaledL } from '@cloudscape-design/design-tokens';
 
-import { useSearchChannels, useSearchChannelsWithStreamData } from '../../api/api';
+import { useSearchChannelsWithStreamData } from '../../api/api';
 import useCounter from 'utilities/use-counter';
 import Empty from 'common/empty/empty';
 import InfinitePagination from 'common/infinite-pagination';
@@ -28,7 +28,7 @@ export default function ChannelResults({ query }: Props) {
   const { hasNextPage, data, isFetching, isFetchingNextPage, isLoading, fetchNextPage, error } =
     useSearchChannelsWithStreamData({
       query,
-      pageSize: 12,
+      pageSize: 9,
     });
 
   const totalCount = data?.pages.flatMap((page) => page.data).length ?? 0;

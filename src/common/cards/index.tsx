@@ -6,7 +6,7 @@ import SpaceBetween from '@cloudscape-design/components/space-between';
 
 import styles from './styles.module.scss';
 
-export default function FluxCards({
+export default function FluxCards<T>({
   columns,
   empty,
   error,
@@ -17,7 +17,7 @@ export default function FluxCards({
   loadingText,
   minColumnWidth,
   pagination,
-}: FluxCardsProps) {
+}: FluxCardsProps<T>) {
   function renderContent() {
     if (invalid) {
       return error;

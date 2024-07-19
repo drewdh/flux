@@ -1,0 +1,22 @@
+@use '@cloudscape-design/design-tokens' as cs;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid cs.$color-border-divider-default;
+  border-radius: cs.$border-radius-container;
+  height: 100%;
+
+  .mediaWrapper {
+    border-top-left-radius: calc(#{cs.$border-radius-container} - 1px);
+    border-top-right-radius: calc(#{cs.$border-radius-container} - 1px);
+    overflow: hidden;
+  }
+
+  .media {
+    max-width: 100%;
+    display: block;
+    aspect-ratio: 3 / 4;
+    background-color: cs.$color-background-input-disabled;
+  }
+}

@@ -1,35 +1,22 @@
-import { useEffect, useState } from 'react';
-import { PaginationProps } from '@cloudscape-design/components/pagination';
-import { NonCancelableCustomEvent } from '@cloudscape-design/components';
 import Alert from '@cloudscape-design/components/alert';
 import Button from '@cloudscape-design/components/button';
 
 import { useSearchChannelsWithStreamData } from '../../api/api';
 import Empty from 'common/empty/empty';
-import InfinitePagination from 'common/infinite-pagination';
 import VideoThumbnail from 'common/video-thumbnail';
 import { useFeedback } from '../../feedback/feedback-context';
 import FluxCards from 'common/cards';
 
 export default function ChannelResults({ query }: Props) {
-  const [currentPageIndex, setCurrentPageIndex] = useState<number>(1);
   const { setIsFeedbackVisible } = useFeedback();
 
-  useEffect(() => {
-    setCurrentPageIndex(1);
-  }, [query]);
-
-  const { hasNextPage, data, isFetching, isFetchingNextPage, isLoading, fetchNextPage, error } =
+  const { data, isFetchingNextPage, isLoading, fetchNextPage, error } =
     useSearchChannelsWithStreamData({
       query,
       pageSize: 9,
     });
 
-  const items = data?.pages[currentPageIndex - 1]?.data ?? [];
-
-  function handlePaginationChange(event: NonCancelableCustomEvent<PaginationProps.ChangeDetail>) {
-    setCurrentPageIndex(event.detail.currentPageIndex);
-  }
+  const items = data?.pages.flatMap((page) => page.data) ?? [];
 
   return (
     <FluxCards
@@ -44,22 +31,14 @@ export default function ChannelResults({ query }: Props) {
           {error?.message}
         </Alert>
       }
+      fetchingNextPage={isFetchingNextPage}
       invalid={!!error}
       itemMapper={(stream) => <VideoThumbnail stream={stream} isLive />}
       items={items}
-      loading={isLoading || isFetching}
+      loading={isLoading}
       loadingText="Loading live channels"
+      onLastItemVisible={() => fetchNextPage()}
       minColumnWidth={250}
-      pagination={
-        <InfinitePagination
-          data={data}
-          currentPageIndex={currentPageIndex}
-          onChange={handlePaginationChange}
-          fetchNextPage={fetchNextPage}
-          isFetchingNextPage={isFetchingNextPage}
-          hasNextPage={hasNextPage}
-        />
-      }
     />
   );
 }

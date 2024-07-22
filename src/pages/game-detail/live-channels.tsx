@@ -1,26 +1,19 @@
 import Alert from '@cloudscape-design/components/alert';
 import Button from '@cloudscape-design/components/button';
-import { useState } from 'react';
-import { NonCancelableCustomEvent } from '@cloudscape-design/components';
-import { PaginationProps } from '@cloudscape-design/components/pagination';
 
 import { useGetStreams } from '../../api/api';
 import VideoThumbnail from 'common/video-thumbnail';
 import { useFeedback } from '../../feedback/feedback-context';
 import Empty from 'common/empty/empty';
-import InfinitePagination from 'common/infinite-pagination';
 import FluxCards from 'common/cards';
 import { Stream } from '../../api/twitch-types';
 
 export default function LiveChannels({ gameId }: LiveChannelsProps) {
-  const [currentPageIndex, setCurrentPageIndex] = useState<number>(1);
-  const { data, isLoading, isFetching, fetchNextPage, isFetchingNextPage, hasNextPage, error } =
-    useGetStreams({ gameIds: [gameId], type: 'live', pageSize: 12 }, { enabled: !!gameId.length });
+  const { data, isLoading, isFetching, fetchNextPage, error } = useGetStreams(
+    { gameIds: [gameId], type: 'live', pageSize: 28 },
+    { enabled: !!gameId.length }
+  );
   const { setIsFeedbackVisible } = useFeedback();
-
-  function handlePaginationChange(event: NonCancelableCustomEvent<PaginationProps.ChangeDetail>) {
-    setCurrentPageIndex(event.detail.currentPageIndex);
-  }
 
   return (
     <FluxCards<Stream>
@@ -35,22 +28,14 @@ export default function LiveChannels({ gameId }: LiveChannelsProps) {
           {error?.message}
         </Alert>
       }
+      fetchingNextPage={isFetching}
       invalid={!!error}
       itemMapper={(stream) => <VideoThumbnail stream={stream} isLive />}
-      items={data?.pages[currentPageIndex - 1]?.data ?? []}
-      loading={isLoading || isFetching}
+      items={data?.pages?.flatMap((data) => data.data) ?? []}
+      loading={isLoading}
       loadingText="Loading live channels"
       minColumnWidth={250}
-      pagination={
-        <InfinitePagination
-          currentPageIndex={currentPageIndex}
-          onChange={handlePaginationChange}
-          data={data}
-          fetchNextPage={fetchNextPage}
-          hasNextPage={hasNextPage}
-          isFetchingNextPage={isFetchingNextPage}
-        />
-      }
+      onLastItemVisible={() => fetchNextPage()}
     />
   );
 }

@@ -1,6 +1,7 @@
 @use '@cloudscape-design/design-tokens' as cs;
 
-.paginationWrapper {
+.spinnerWrapper {
+  color: cs.$color-text-status-inactive;
   display: flex;
   justify-content: center;
 }

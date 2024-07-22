@@ -14,7 +14,7 @@ export default function CategoryThumbnail({ href, imgSrc, title }: Props) {
         </InternalLink>
       </div>
       <Box padding="l" variant="h3">
-        <InternalLink fontSize="heading-s" href={href}>
+        <InternalLink fontSize="heading-xs" href={href}>
           {title}
         </InternalLink>
       </Box>

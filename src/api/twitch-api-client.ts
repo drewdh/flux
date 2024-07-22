@@ -17,6 +17,8 @@ import {
   GetGamesResponse,
   GetStreamsRequest,
   GetStreamsResponse,
+  GetTopGamesRequest,
+  GetTopGamesResponse,
   GetUsersRequest,
   GetUsersResponse,
   RevokeRequest,
@@ -305,6 +307,22 @@ export class TwitchApiClient {
     request.ids?.forEach((id) => params.append('id', id));
     request.igdbIds?.forEach((igdb_id) => params.append('igdb_id', igdb_id));
     const resp = await fetch(`https://api.twitch.tv/helix/games?${params.toString()}`, {
+      method: 'GET',
+      headers: this.getDefaultHeaders(),
+    });
+    const respBody = await resp.json();
+    if (!resp.ok) {
+      throw new TwitchError(respBody);
+    }
+    return respBody;
+  }
+
+  async getTopGames(request: GetTopGamesRequest): Promise<GetTopGamesResponse> {
+    const params = new URLSearchParams();
+    Object.keys(request).forEach((key) =>
+      params.append(key, request[key as keyof GetTopGamesRequest] as string)
+    );
+    const resp = await fetch(`https://api.twitch.tv/helix/games/top?${params.toString()}`, {
       method: 'GET',
       headers: this.getDefaultHeaders(),
     });

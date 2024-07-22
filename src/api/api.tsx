@@ -22,6 +22,8 @@ import {
   GetGamesResponse,
   GetStreamsRequest,
   GetStreamsResponse,
+  GetTopGamesRequest,
+  GetTopGamesResponse,
   GetUsersRequest,
   GetUsersResponse,
   SendChatMessageRequest,
@@ -354,6 +356,18 @@ export function useGetGames(
     ...options,
     queryKey: [QueryKey.GetGames, request],
     queryFn: () => twitchClient.getGames(request),
+    staleTime: Infinity,
+  });
+}
+
+export function useGetTopGames(
+  request: GetTopGamesRequest,
+  options: Omit<UseQueryOptions<GetTopGamesResponse, TwitchError>, 'queryKey' | 'queryFn'> = {}
+) {
+  return useQuery({
+    ...options,
+    queryKey: [],
+    queryFn: () => twitchClient.getTopGames(request),
     staleTime: Infinity,
   });
 }

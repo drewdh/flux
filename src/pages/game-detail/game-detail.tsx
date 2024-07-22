@@ -95,7 +95,7 @@ export default function GameDetailPage() {
                 tabs={[
                   {
                     id: TabId.LiveChannels,
-                    label: 'Live channels',
+                    label: 'Top streams',
                     content: <LiveChannels gameId={gameId} />,
                   },
                 ]}

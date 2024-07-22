@@ -7,13 +7,15 @@ import StatusIndicator from '@cloudscape-design/components/status-indicator';
 import Container from '@cloudscape-design/components/container';
 
 import DhAppLayout from 'common/flux-app-layout';
-import { useGetFollowedStreams, useGetStreams } from '../../api/api';
+import { useGetFollowedStreams, useGetStreams, useGetTopGames } from '../../api/api';
 import useTitle from 'utilities/use-title';
 import FlexibleColumnLayout from 'common/flexible-column-layout';
 import VideoThumbnail from 'common/video-thumbnail';
 import Empty from 'common/empty/empty';
 import styles from './styles.module.scss';
 import FullHeightContent from 'common/full-height-content';
+import CategoryThumbnail from 'common/category-thumbnail';
+import { interpolatePathname, Pathname } from 'utilities/routes';
 
 const connectSearchParams = new URLSearchParams({
   response_type: 'token',
@@ -49,13 +51,14 @@ export default function TwitchPage() {
   }, [search]);
 
   const { data, isLoading: isLoadingFollowed } = useGetFollowedStreams();
-  const { data: topStreamsData, isLoading: isLoadingTop } = useGetStreams({
+  const { data: topStreamsData, isLoading: isLoadingTopStreams } = useGetStreams({
     type: 'live',
     pageSize: 10,
   });
+  const { data: topGamesData, isLoading: isLoadingTopGames } = useGetTopGames({ first: 10 });
   const followedStreams = data?.pages.flatMap((page) => page.data);
   const topStreams = topStreamsData?.pages.flatMap((page) => page.data);
-  const isLoading = isLoadingFollowed || isLoadingTop;
+  const isLoading = isLoadingFollowed || isLoadingTopStreams || isLoadingTopGames;
 
   function renderContent() {
     if (!isConnected) {
@@ -88,7 +91,7 @@ export default function TwitchPage() {
     return (
       <SpaceBetween size="l">
         <SpaceBetween size="m">
-          <Header>Live followed channels</Header>
+          <Header>Following</Header>
           <FlexibleColumnLayout columns={6} minColumnWidth={326}>
             {followedStreams?.map((stream) => (
               <VideoThumbnail showCategory isLive stream={stream} />
@@ -101,7 +104,17 @@ export default function TwitchPage() {
           </FlexibleColumnLayout>
         </SpaceBetween>
         <SpaceBetween size="m">
-          <Header>Top live streams</Header>
+          <Header>Popular categories</Header>
+          <FlexibleColumnLayout columns={10} minColumnWidth={150}>
+            {topGamesData?.data?.map((game) => {
+              const href = interpolatePathname(Pathname.Game, { gameId: game.id });
+              const imgSrc = game?.box_art_url.replace('{width}x{height}', '400x534');
+              return <CategoryThumbnail imgSrc={imgSrc} href={href} title={game.name} />;
+            })}
+          </FlexibleColumnLayout>
+        </SpaceBetween>
+        <SpaceBetween size="m">
+          <Header>Popular streams</Header>
           <FlexibleColumnLayout columns={6} minColumnWidth={326}>
             {topStreams?.map((stream, index) => (
               <VideoThumbnail

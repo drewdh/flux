@@ -541,3 +541,15 @@ export interface Game {
 export interface GetGamesResponse {
   data: Game[];
 }
+export interface GetTopGamesRequest {
+  /** The maximum number of items to return per page in the response. The minimum page size is 1 item per page and the maximum is 100 items per page. The default is 20. */
+  first?: number;
+  /** The cursor used to get the previous page of results. The Pagination object in the response contains the cursor’s value. */
+  before?: string;
+  /** The cursor used to get the next page of results. The Pagination object in the response contains the cursor’s value. */
+  after?: string;
+}
+export interface GetTopGamesResponse {
+  data: Game[];
+  pagination?: Pagination;
+}

@@ -51,7 +51,7 @@ export default function TwitchPage() {
   const { data, isLoading: isLoadingFollowed } = useGetFollowedStreams();
   const { data: topStreamsData, isLoading: isLoadingTop } = useGetStreams({
     type: 'live',
-    pageSize: 5,
+    pageSize: 10,
   });
   const followedStreams = data?.pages.flatMap((page) => page.data);
   const topStreams = topStreamsData?.pages.flatMap((page) => page.data);
@@ -101,7 +101,7 @@ export default function TwitchPage() {
           </FlexibleColumnLayout>
         </SpaceBetween>
         <SpaceBetween size="m">
-          <Header>Top 5 live streams</Header>
+          <Header>Top live streams</Header>
           <FlexibleColumnLayout columns={6} minColumnWidth={326}>
             {topStreams?.map((stream, index) => (
               <VideoThumbnail

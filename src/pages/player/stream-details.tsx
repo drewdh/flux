@@ -8,12 +8,19 @@ import Link from '@cloudscape-design/components/link';
 import Alert from '@cloudscape-design/components/alert';
 import ExpandableSection from '@cloudscape-design/components/expandable-section';
 
-import { useGetFollowedChannels, useGetStreams, useValidate } from '../../api/api';
+import {
+  useGetChannelFollowers,
+  useGetFollowedChannels,
+  useGetStreams,
+  useValidate,
+} from '../../api/api';
 import InternalLink from 'common/internal-link';
 import { interpolatePathname, Pathname } from 'utilities/routes';
 import RelativeTime from 'common/relative-time';
 import Empty from 'common/empty/empty';
 import { useFeedback } from '../../feedback/feedback-context';
+import Icon from '@cloudscape-design/components/icon';
+import Avatar from 'common/avatar';
 
 const languageLabelMap: Record<string, string> = {
   en: 'English',
@@ -36,6 +43,9 @@ export default function StreamDetails({ broadcasterUserId }: StreamDetailsProps)
     error,
   } = useGetStreams({ userIds: [broadcasterUserId!] }, { enabled: !!broadcasterUserId });
   const streamData = _streamData?.pages[0].data[0];
+  const { data: followerData, isLoading: isLoadingFollowers } = useGetChannelFollowers({
+    broadcasterId: broadcasterUserId,
+  });
   const { setIsFeedbackVisible } = useFeedback();
   const { data: _followData } = useGetFollowedChannels({
     user_id: userData?.user_id,
@@ -100,54 +110,56 @@ export default function StreamDetails({ broadcasterUserId }: StreamDetailsProps)
   const gameHref = interpolatePathname(Pathname.Game, { gameId: streamData?.game_id ?? '' });
 
   return (
-    <Container header={<Header variant="h2">Information</Header>}>
+    <Container
+      header={
+        <Header
+          variant="h2"
+          description={
+            <InternalLink
+              variant="primary"
+              href={interpolatePathname(Pathname.Channel, { login: streamData?.user_login ?? '' })}
+            >
+              <SpaceBetween size="xs" direction="horizontal">
+                <Avatar userId={streamData?.user_id ?? ''} size="s" />
+                {streamData?.user_name}
+              </SpaceBetween>
+            </InternalLink>
+          }
+          actions={`${streamData?.viewer_count.toLocaleString() ?? 0} watching now`}
+        >
+          {streamData?.title}
+        </Header>
+      }
+    >
       <KeyValuePairs
-        columns={2}
+        columns={6}
         items={[
           {
-            type: 'group',
-            items: [
-              {
-                label: 'Category',
-                value:
-                  streamData?.game_id && streamData.game_name ? (
-                    <InternalLink variant="primary" href={gameHref}>
-                      {streamData.game_name}
-                    </InternalLink>
-                  ) : (
-                    '-'
-                  ),
-              },
-              {
-                label: 'Started',
-                value: streamData?.started_at ? <RelativeTime date={streamData.started_at} /> : '-',
-              },
-              {
-                label: 'Viewers',
-                value: streamData?.viewer_count.toLocaleString() ?? '-',
-              },
-            ],
+            label: 'Category',
+            value:
+              streamData?.game_id && streamData.game_name ? (
+                <InternalLink variant="primary" href={gameHref}>
+                  {streamData.game_name}
+                </InternalLink>
+              ) : (
+                '-'
+              ),
           },
           {
-            type: 'group',
-            items: [
-              {
-                label: 'Followed',
-                value: followData?.followed_at ? (
-                  <RelativeTime date={followData.followed_at} />
-                ) : (
-                  '-'
-                ),
-              },
-              {
-                label: 'Tags',
-                value: streamData?.tags?.join(', ') ?? '-',
-              },
-              {
-                label: 'Language',
-                value: languageLabelMap[streamData?.language ?? ''] ?? streamData?.language ?? '-',
-              },
-            ],
+            label: 'Started',
+            value: streamData?.started_at ? <RelativeTime date={streamData.started_at} /> : '-',
+          },
+          {
+            label: 'Followers',
+            value: followerData?.total.toLocaleString() ?? '-',
+          },
+          {
+            label: 'Tags',
+            value: streamData?.tags?.join(', ') ?? '-',
+          },
+          {
+            label: 'Language',
+            value: languageLabelMap[streamData?.language ?? ''] ?? streamData?.language ?? '-',
           },
         ]}
       />

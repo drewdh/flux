@@ -1,16 +1,11 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef } from 'react';
 import { useParams } from 'react-router';
 import SpaceBetween from '@cloudscape-design/components/space-between';
-import { useContainerQuery } from '@cloudscape-design/component-toolkit';
-import Header from '@cloudscape-design/components/header';
-import Link from '@cloudscape-design/components/link';
 
 import styles from './styles.module.scss';
 import useTitle from 'utilities/use-title';
 import { useGetStreamByUserLogin } from '../../api/api';
 import StreamDetails from './stream-details';
-import Box from '@cloudscape-design/components/box';
-import Avatar from 'common/avatar';
 import { topNavSelector } from '../../top-navigation/constants';
 
 export default function TwitchComponent({ onUserIdChange }: Props) {
@@ -65,22 +60,6 @@ export default function TwitchComponent({ onUserIdChange }: Props) {
           style={{ maxHeight: `${maxPlayerHeight}px` }}
           className={styles.player}
         />
-        <SpaceBetween size="s">
-          <Header>{streamData?.title}</Header>
-          <SpaceBetween size="xs" direction="horizontal">
-            <Link onClick={() => onUserIdChange(streamData?.user_id ?? null)}>
-              <Avatar userId={streamData?.user_id} size="m" />
-            </Link>
-            <Box fontWeight="bold">
-              <Link
-                onClick={() => onUserIdChange(streamData?.user_id ?? null)}
-                fontSize="heading-m"
-              >
-                {streamData?.user_name}
-              </Link>
-            </Box>
-          </SpaceBetween>
-        </SpaceBetween>
         <StreamDetails broadcasterUserId={streamData?.user_id} />
       </SpaceBetween>
     </div>

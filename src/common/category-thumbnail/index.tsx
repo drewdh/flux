@@ -7,18 +7,16 @@ import styles from './styles.module.scss';
 /** Container with top media that doesn't restrict the media's height */
 export default function CategoryThumbnail({ href, imgSrc, title }: Props) {
   return (
-    <div className={styles.container}>
-      <div className={styles.mediaWrapper}>
-        <InternalLink href={href}>
+    <InternalLink href={href}>
+      <div className={styles.container}>
+        <div className={styles.mediaWrapper}>
           <FluxImage alt={title} src={imgSrc} className={styles.media} />
-        </InternalLink>
-      </div>
-      <Box padding="l" variant="h3">
-        <InternalLink fontSize="heading-xs" href={href}>
+        </div>
+        <Box padding={{ vertical: 's' }} variant="h5" color="inherit">
           {title}
-        </InternalLink>
-      </Box>
-    </div>
+        </Box>
+      </div>
+    </InternalLink>
   );
 }
 

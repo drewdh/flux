@@ -133,10 +133,6 @@ export function useGetStreams(
     queryKey: [QueryKey.GetStreams, request],
     initialPageParam: undefined,
     getNextPageParam: (lastPage) => lastPage.pagination.cursor,
-    // Order of results can change, so don't refetch
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
-    refetchOnReconnect: false,
   });
 }
 

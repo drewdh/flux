@@ -19,7 +19,6 @@ import { interpolatePathname, Pathname } from 'utilities/routes';
 import RelativeTime from 'common/relative-time';
 import Empty from 'common/empty/empty';
 import { useFeedback } from '../../feedback/feedback-context';
-import Icon from '@cloudscape-design/components/icon';
 import Avatar from 'common/avatar';
 
 const languageLabelMap: Record<string, string> = {
@@ -36,22 +35,19 @@ const languageLabelMap: Record<string, string> = {
 };
 
 export default function StreamDetails({ broadcasterUserId }: StreamDetailsProps) {
-  const { data: userData } = useValidate();
   const {
     data: _streamData,
     isLoading,
     error,
-  } = useGetStreams({ userIds: [broadcasterUserId!] }, { enabled: !!broadcasterUserId });
+  } = useGetStreams(
+    { userIds: [broadcasterUserId!] },
+    { enabled: !!broadcasterUserId, refetchInterval: 60000 }
+  );
   const streamData = _streamData?.pages[0].data[0];
   const { data: followerData, isLoading: isLoadingFollowers } = useGetChannelFollowers({
     broadcasterId: broadcasterUserId,
   });
   const { setIsFeedbackVisible } = useFeedback();
-  const { data: _followData } = useGetFollowedChannels({
-    user_id: userData?.user_id,
-    broadcaster_id: broadcasterUserId,
-  });
-  const followData = _followData?.data[0];
 
   if (!broadcasterUserId) {
     return null;

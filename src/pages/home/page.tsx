@@ -51,10 +51,18 @@ export default function TwitchPage() {
   }, [search]);
 
   const { data, isLoading: isLoadingFollowed } = useGetFollowedStreams();
-  const { data: topStreamsData, isLoading: isLoadingTopStreams } = useGetStreams({
-    type: 'live',
-    pageSize: 10,
-  });
+  const { data: topStreamsData, isLoading: isLoadingTopStreams } = useGetStreams(
+    {
+      type: 'live',
+      pageSize: 10,
+    },
+    {
+      // Order of results can change, so don't refetch
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+    }
+  );
   const { data: topGamesData, isLoading: isLoadingTopGames } = useGetTopGames({ first: 10 });
   const followedStreams = data?.pages.flatMap((page) => page.data);
   const topStreams = topStreamsData?.pages.flatMap((page) => page.data);

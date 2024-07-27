@@ -11,7 +11,13 @@ import { Stream } from '../../api/twitch-types';
 export default function LiveChannels({ gameId }: LiveChannelsProps) {
   const { data, isLoading, isFetching, fetchNextPage, error } = useGetStreams(
     { gameIds: [gameId], type: 'live', pageSize: 28 },
-    { enabled: !!gameId.length }
+    {
+      enabled: !!gameId.length,
+      // Order of results can change, so don't refetch
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+    }
   );
   const { setIsFeedbackVisible } = useFeedback();
 

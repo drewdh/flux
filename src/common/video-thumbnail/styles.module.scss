@@ -1,43 +1,46 @@
 @use '@cloudscape-design/design-tokens' as cs;
 
+.wrapper {
+  transition: transform 0.16s ease-out;
+
+  &:hover {
+    transform: scale(1.007);
+  }
+}
+.mediaWrapper {
+  border-radius: cs.$border-radius-container;
+  overflow: hidden;
+}
+a {
+  text-decoration: none;
+}
+.headerWrapper {
+  display: flex;
+  column-gap: cs.$space-scaled-xs;
+}
+.contentWrapper {
+  padding: cs.$space-scaled-s 0;
+}
+.viewerCountWrapper {
+  margin-left: auto;
+  display: flex;
+  align-items: start;
+  color: cs.$color-text-body-secondary;
+  font-size: cs.$font-size-body-s;
+  line-height: cs.$line-height-body-s;
+  font-family: cs.$font-family-base;
+  .viewerCount {
+    display: flex;
+    align-items: center;
+    column-gap: cs.$space-scaled-xxs;
+  }
+}
 .streamTitle {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
-  line-height: cs.$line-height-heading-m;
+  line-height: cs.$line-height-heading-s;
   overflow: hidden;
   text-overflow: ellipsis;
   word-break: break-word;
-}
-.cardWrapper {
-  cursor: pointer;
-  border-radius: cs.$border-radius-container;
-  border: 1px solid cs.$color-border-divider-default;
-}
-.cardWrapper a:hover {
-  text-decoration-line: none !important;
-}
-.thumbnailWrapper {
-  padding-top: cs.$space-scaled-s;
-  display: flex;
-  column-gap: cs.$space-scaled-m;
-}
-.details {
-  display: flex;
-  flex-wrap: nowrap;
-  flex-direction: column;
-  gap: cs.$space-scaled-xxs;
-}
-.rank {
-  font-family: cs.$font-family-base;
-  font-size: cs.$font-size-display-l;
-  // Use the same size as font to more closely align text to start of container
-  line-height: cs.$font-size-display-l;
-  font-weight: bold;
-  color: cs.$color-text-status-inactive;
-}
-.username {
-  vertical-align: top;
-  margin-left: cs.$space-static-xs;
-  color: cs.$color-text-body-default;
 }

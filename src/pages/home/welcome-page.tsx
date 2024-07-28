@@ -17,7 +17,7 @@ export default function WelcomePage() {
               Flux
             </Box>
             <Box margin={{ top: 'xl', bottom: 's' }} variant="h1">
-              Experience Twitch in stunning, easy-to-use style.
+              Experience Twitch in a new, easy-to-use design.
             </Box>
             <Box margin={{ top: 'xxl', bottom: 's' }}>
               <Button href={connectHref} variant="primary">

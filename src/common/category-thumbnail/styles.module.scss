@@ -7,7 +7,7 @@
   transition: transform 0.16s ease-out;
 
   &:hover {
-    transform: scale(1.007);
+    transform: scale3d(1.05, 1.05, 1.05);
   }
 
   .mediaWrapper {
@@ -21,5 +21,23 @@
     aspect-ratio: 3 / 4;
     object-fit: cover;
     background-color: cs.$color-background-input-disabled;
+  }
+
+  .titleWrapper {
+    padding: cs.$space-scaled-s 0;
+    font-family: cs.$font-family-base;
+    font-size: cs.$font-size-body-m;
+    line-height: cs.$line-height-body-m;
+    color: cs.$color-text-body-default;
+  }
+
+  .title {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    word-break: break-word;
+    text-align: center;
   }
 }

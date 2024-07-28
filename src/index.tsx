@@ -50,7 +50,7 @@ const router = createBrowserRouter([
         element: <SettingsPage />,
       },
       {
-        path: Pathname.Channel,
+        path: Pathname.Profile,
         element: <ChannelPage />,
       },
       {

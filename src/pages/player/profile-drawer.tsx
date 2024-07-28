@@ -64,7 +64,7 @@ export default function ProfileDrawer({ userId }: Props) {
         <DrawerFooter header="Learn more">
           <SpaceBetween size="xxs" direction="vertical">
             <InternalLink
-              href={interpolatePathname(Pathname.Channel, { login: userData?.login ?? '' })}
+              href={interpolatePathname(Pathname.Profile, { login: userData?.login ?? '' })}
             >
               Profile page
             </InternalLink>

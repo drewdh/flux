@@ -1,23 +1,23 @@
-import {
-  colorBackgroundInputDisabled,
-  spaceScaledXs,
-  spaceScaledXxs,
-} from '@cloudscape-design/design-tokens';
+import { colorBackgroundInputDisabled } from '@cloudscape-design/design-tokens';
 import Box from '@cloudscape-design/components/box';
 import SpaceBetween from '@cloudscape-design/components/space-between';
-import Icon from '@cloudscape-design/components/icon';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserGroup } from '@fortawesome/pro-solid-svg-icons';
+import ButtonDropdown from '@cloudscape-design/components/button-dropdown';
+import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 
 import { interpolatePathname, Pathname } from 'utilities/routes';
 import Avatar from 'common/avatar';
-import InternalLink from 'common/internal-link';
 import styles from './styles.module.scss';
 import { Stream } from '../../api/twitch-types';
 import FluxImage from 'common/flux-image';
-import { Link } from 'react-router-dom';
+
+enum DropdownItemId {
+  Category = 'category',
+  Profile = 'profile',
+}
 
 export default function VideoThumbnail({ isLive, stream }: VideoThumbnailProps) {
+  const navigate = useNavigate();
   const videoHref = interpolatePathname(Pathname.Live, { user: stream.user_login });
   const viewerCount = stream.viewer_count.toLocaleString(undefined, {
     notation: 'compact',
@@ -40,44 +40,39 @@ export default function VideoThumbnail({ isLive, stream }: VideoThumbnailProps) 
           />
         </div>
         <div className={styles.contentWrapper}>
-          <SpaceBetween direction="vertical" size="xxs">
-            <SpaceBetween direction="vertical" size="xxs">
-              <div className={styles.headerWrapper}>
-                <InternalLink
-                  href={interpolatePathname(Pathname.Channel, { login: stream.user_login })}
-                >
-                  <Avatar userId={stream.user_id} size="m" />
-                </InternalLink>
-                <div>
-                  <InternalLink
-                    href={interpolatePathname(Pathname.Channel, { login: stream.user_login })}
-                  >
-                    <Box fontWeight="bold" color="text-body-secondary">
-                      {stream.user_name}
-                    </Box>
-                  </InternalLink>
-                  <InternalLink
-                    href={interpolatePathname(Pathname.Game, { gameId: stream.game_id })}
-                  >
-                    <Box variant="small" display="block">
-                      {stream.game_name}
-                    </Box>
-                  </InternalLink>
-                </div>
-                <div className={styles.viewerCountWrapper}>
-                  <div className={styles.viewerCount}>
-                    <Icon svg={<FontAwesomeIcon icon={faUserGroup} />} variant="subtle" />
-                    {viewerCount}
-                  </div>
-                </div>
-              </div>
-            </SpaceBetween>
-            <InternalLink href={videoHref}>
-              <Box variant="h5" color="inherit">
-                <span className={styles.streamTitle}>{stream.title}</span>
-              </Box>
-            </InternalLink>
-          </SpaceBetween>
+          <Avatar userId={stream.user_id} size="m" />
+          <Box>
+            <span className={styles.streamTitle}>{stream.title}</span>
+            <Box variant="small">{stream.user_name}</Box>
+            <Box variant="small" display="block">
+              <SpaceBetween size="xxs" direction="horizontal">
+                <span>{stream.game_name}</span>
+                <span>&bull;</span>
+                {viewerCount} viewers
+              </SpaceBetween>
+            </Box>
+          </Box>
+          <div className={styles.ellipsisWrapper}>
+            <ButtonDropdown
+              onItemFollow={(e) => {
+                e.preventDefault();
+                navigate(e.detail.href!);
+              }}
+              items={[
+                {
+                  href: interpolatePathname(Pathname.Game, { gameId: stream.game_id }),
+                  text: 'Go to category',
+                  id: DropdownItemId.Category,
+                },
+                {
+                  href: interpolatePathname(Pathname.Profile, { login: stream.user_login }),
+                  text: 'Go to profile',
+                  id: DropdownItemId.Profile,
+                },
+              ]}
+              variant="icon"
+            />
+          </div>
         </div>
       </div>
     </Link>

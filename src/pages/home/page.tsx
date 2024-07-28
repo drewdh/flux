@@ -100,7 +100,7 @@ export default function TwitchPage() {
       <SpaceBetween size="l">
         <SpaceBetween size="m">
           <Header>Following</Header>
-          <FlexibleColumnLayout columns={6} minColumnWidth={326}>
+          <FlexibleColumnLayout columns={6} minColumnWidth={350}>
             {followedStreams?.map((stream) => (
               <VideoThumbnail showCategory isLive stream={stream} />
             ))}
@@ -123,7 +123,7 @@ export default function TwitchPage() {
         </SpaceBetween>
         <SpaceBetween size="m">
           <Header>Popular streams</Header>
-          <FlexibleColumnLayout columns={6} minColumnWidth={326}>
+          <FlexibleColumnLayout columns={6} minColumnWidth={350}>
             {topStreams?.map((stream, index) => (
               <VideoThumbnail
                 isLive

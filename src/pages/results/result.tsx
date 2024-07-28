@@ -48,7 +48,7 @@ export default function Result({ channel }: Props) {
           watching
         </Box>
         <InternalLink
-          href={interpolatePathname(Pathname.Channel, { login: channel.broadcaster_login })}
+          href={interpolatePathname(Pathname.Profile, { login: channel.broadcaster_login })}
         >
           <Box color="text-body-secondary" fontSize="body-s" padding={{ bottom: 'm' }}>
             <SpaceBetween size="xs" alignItems="center" direction="horizontal">

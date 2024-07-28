@@ -113,7 +113,7 @@ export default function StreamDetails({ broadcasterUserId }: StreamDetailsProps)
           description={
             <InternalLink
               variant="primary"
-              href={interpolatePathname(Pathname.Channel, { login: streamData?.user_login ?? '' })}
+              href={interpolatePathname(Pathname.Profile, { login: streamData?.user_login ?? '' })}
             >
               <SpaceBetween size="xs" direction="horizontal">
                 <Avatar userId={streamData?.user_id ?? ''} size="s" />

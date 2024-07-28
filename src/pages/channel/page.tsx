@@ -99,7 +99,7 @@ export default function ChannelPage() {
                 {
                   id: TabId.Details,
                   label: 'Details',
-                  href: interpolatePathname(Pathname.Channel, { login, tabId: TabId.Details }),
+                  href: interpolatePathname(Pathname.Profile, { login, tabId: TabId.Details }),
                   content: (
                     <KeyValuePairs
                       columns={4}

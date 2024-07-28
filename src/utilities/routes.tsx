@@ -4,7 +4,7 @@ export enum Pathname {
   Signin = '/auth/signin',
   PasswordReset = '/auth/reset',
   Live = '/live/:user',
-  Channel = '/channel/:login/:tabId?',
+  Profile = '/profile/:login/:tabId?',
   Results = '/results',
   Settings = '/settings',
   Game = '/category/:gameId',
@@ -12,7 +12,7 @@ export enum Pathname {
 /** This does not handle for optional static segments (e.g., `/projects/project?/:id`) */
 export function interpolatePathname(pathname: Pathname.Live, values: { user: string }): string;
 export function interpolatePathname(
-  pathname: Pathname.Channel,
+  pathname: Pathname.Profile,
   values: { login: string; tabId?: string }
 ): string;
 export function interpolatePathname(pathname: Pathname.Game, values: { gameId: string }): string;

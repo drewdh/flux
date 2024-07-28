@@ -3,15 +3,16 @@
 .container {
   display: flex;
   flex-direction: column;
-  height: 100%;
-  transition: transform 0.16s ease-out;
+  transition: background-color 0.16s ease-out;
+  border-radius: cs.$border-radius-container;
+  padding: cs.$space-scaled-s;
 
   &:hover {
-    transform: scale3d(1.05, 1.05, 1.05);
+    background-color: cs.$color-background-input-disabled;
   }
 
   .mediaWrapper {
-    border-radius: cs.$border-radius-container;
+    border-radius: calc(#{cs.$border-radius-container} - #{cs.$space-scaled-s});
     overflow: hidden;
   }
 

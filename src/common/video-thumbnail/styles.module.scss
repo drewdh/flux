@@ -2,7 +2,7 @@
 
 .wrapper {
   transition: background-color 0.16s ease-out;
-  border-radius: cs.$border-radius-container;
+  border-radius: 24px;
   padding: cs.$space-scaled-s;
 
   &:hover, &:focus {
@@ -11,7 +11,7 @@
   }
 }
 .mediaWrapper {
-  border-radius: calc(#{cs.$border-radius-container} - #{cs.$space-scaled-s});
+  border-radius: calc(24px - #{cs.$space-scaled-s});
   overflow: hidden;
 }
 a {
@@ -25,7 +25,6 @@ a {
 }
 .ellipsisWrapper {
   margin-top: -6px;
-  margin-right: -6px;
   margin-left: auto;
 }
 .viewerCountWrapper {

@@ -1,14 +1,13 @@
 import CloudscapeTopNavigation from '@cloudscape-design/components/top-navigation';
 import Autosuggest from '@cloudscape-design/components/autosuggest';
+import { useTranslation } from 'react-i18next';
+import SpaceBetween from '@cloudscape-design/components/space-between';
+import clsx from 'clsx';
 
 import styles from './styles.module.scss';
 import { topNavId } from './constants';
 import useTopNavigation from './use-top-navigation';
 import Feedback from '../feedback/internal/feedback';
-import { useTranslation } from 'react-i18next';
-import SpaceBetween from '@cloudscape-design/components/space-between';
-import Button from '@cloudscape-design/components/button';
-import clsx from 'clsx';
 
 export default function TopNavigation() {
   const { t } = useTranslation();
@@ -22,6 +21,7 @@ export default function TopNavigation() {
     handleSubmit,
     i18nStrings,
     identity,
+    searchHidden,
     searchInputValue,
     utilities,
   } = useTopNavigation();
@@ -34,28 +34,29 @@ export default function TopNavigation() {
           i18nStrings={i18nStrings}
           utilities={utilities}
           search={
-            <form
-              onSubmit={(e) => {
-                console.log('form onSubmit');
-                e.preventDefault();
-                handleSubmit();
-              }}
-            >
-              <SpaceBetween size="xs" direction="horizontal">
-                <Autosuggest
-                  enteredTextLabel={(value) => `Search for "${value}"`}
-                  ref={autosuggestRef}
-                  filteringType="manual"
-                  onChange={handleSearchChange}
-                  onLoadItems={handleLoadItems}
-                  onSelect={handleSelect}
-                  onKeyDown={handleKeyDown}
-                  placeholder={t('nav.search.placeholder')}
-                  value={searchInputValue}
-                  options={autosuggestOptions}
-                />
-              </SpaceBetween>
-            </form>
+            !searchHidden && (
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleSubmit();
+                }}
+              >
+                <SpaceBetween size="xs" direction="horizontal">
+                  <Autosuggest
+                    enteredTextLabel={(value) => `Search for "${value}"`}
+                    ref={autosuggestRef}
+                    filteringType="manual"
+                    onChange={handleSearchChange}
+                    onLoadItems={handleLoadItems}
+                    onSelect={handleSelect}
+                    onKeyDown={handleKeyDown}
+                    placeholder={t('nav.search.placeholder')}
+                    value={searchInputValue}
+                    options={autosuggestOptions}
+                  />
+                </SpaceBetween>
+              </form>
+            )
           }
         />
       </div>

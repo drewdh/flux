@@ -1,10 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
-import Button from '@cloudscape-design/components/button';
 import SpaceBetween from '@cloudscape-design/components/space-between';
 import Header from '@cloudscape-design/components/header';
 import StatusIndicator from '@cloudscape-design/components/status-indicator';
-import Container from '@cloudscape-design/components/container';
 
 import DhAppLayout from 'common/flux-app-layout';
 import { useGetFollowedStreams, useGetStreams, useGetTopGames } from '../../api/api';
@@ -16,6 +14,7 @@ import styles from './styles.module.scss';
 import FullHeightContent from 'common/full-height-content';
 import CategoryThumbnail from 'common/category-thumbnail';
 import { interpolatePathname, Pathname } from 'utilities/routes';
+import WelcomePage from './welcome-page';
 
 const connectSearchParams = new URLSearchParams({
   response_type: 'token',
@@ -68,27 +67,11 @@ export default function TwitchPage() {
   const topStreams = topStreamsData?.pages.flatMap((page) => page.data);
   const isLoading = isLoadingFollowed || isLoadingTopStreams || isLoadingTopGames;
 
+  if (!isConnected) {
+    return <WelcomePage />;
+  }
+
   function renderContent() {
-    if (!isConnected) {
-      return (
-        <Container
-          header={
-            <Header
-              actions={
-                <Button href={connectHref} variant="primary">
-                  Sign in with Twitch
-                </Button>
-              }
-            >
-              Welcome to Flux
-            </Header>
-          }
-        >
-          Flux is an updated take on Twitch created by a single developer, powered by Twitch's
-          public APIs. To use Flux, you must first authorize the connection in Twitch.
-        </Container>
-      );
-    }
     if (isLoading) {
       return (
         <FullHeightContent>

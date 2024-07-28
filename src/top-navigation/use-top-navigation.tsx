@@ -173,12 +173,12 @@ export default function useTopNavigation(): State {
       ],
     });
   } else {
-    utilities.push({
-      type: 'button',
-      iconName: 'user-profile',
-      href: connectHref,
-      text: 'Sign in',
-    });
+    // utilities.push({
+    //   type: 'button',
+    //   iconName: 'user-profile',
+    //   href: connectHref,
+    //   text: 'Sign in',
+    // });
   }
 
   function handleLoadItems(event: NonCancelableCustomEvent<AutosuggestProps.LoadItemsDetail>) {
@@ -222,6 +222,7 @@ export default function useTopNavigation(): State {
     i18nStrings,
     identity,
     searchInputValue: query,
+    searchHidden: !scopeData?.login,
     utilities,
   };
 }
@@ -234,6 +235,7 @@ interface State {
   handleSearchChange: (event: NonCancelableCustomEvent<AutosuggestProps.ChangeDetail>) => void;
   handleSelect: (event: NonCancelableCustomEvent<AutosuggestProps.SelectDetail>) => void;
   handleSubmit: () => void;
+  searchHidden: boolean;
   i18nStrings: TopNavigationProps.I18nStrings;
   identity: TopNavigationProps.Identity;
   searchInputValue: string;

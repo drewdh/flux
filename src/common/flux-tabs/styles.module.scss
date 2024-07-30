@@ -1,0 +1,39 @@
+@use '@cloudscape-design/design-tokens' as cs;
+
+.tabsWrapper {
+  display: flex;
+  font-family: cs.$font-family-base;
+  line-height: cs.$line-height-body-m;
+  font-size: cs.$font-size-body-m;
+}
+.tabs {
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  column-gap: cs.$space-scaled-xxxs;
+  flex-wrap: nowrap;
+  background-color: cs.$color-background-input-disabled;
+  border-radius: cs.$border-radius-button;
+  padding: cs.$space-scaled-xxs;
+}
+.tab {
+  border: none;
+  color: cs.$color-text-segment-default;
+  border-radius: cs.$border-radius-button;
+  cursor: pointer;
+  padding: cs.$space-scaled-xxs cs.$space-scaled-xxxl;
+  font-weight: bold;
+  letter-spacing: 0.25px;
+  line-height: cs.$line-height-body-m;
+  transition: background-color 0.16s ease-out;
+
+  &:hover, &:focus {
+    background-color: cs.$color-background-segment-hover;
+    color: cs.$color-text-segment-hover;
+  }
+
+  &.active, &:active {
+    background-color: cs.$color-background-segment-active;
+    color: cs.$color-text-segment-active;
+  }
+}

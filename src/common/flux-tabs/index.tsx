@@ -1,11 +1,12 @@
-import React, { createRef, useRef, useState } from 'react';
+import React, { createRef, useId, useRef, useState } from 'react';
+import { NonCancelableCustomEvent } from '@cloudscape-design/components';
 import SpaceBetween from '@cloudscape-design/components/space-between';
 import clsx from 'clsx';
 
 import styles from './styles.module.scss';
-import { NonCancelableCustomEvent } from '@cloudscape-design/components';
 
 export default function FluxTabs({ tabs, activeTabId, onChange, label }: FluxTabsProps) {
+  const namespaceId = useId();
   const activeTab = tabs.find((tab) => tab.id === activeTabId);
   const [focusedTabIndex, setFocusedTabIndex] = useState<number>(0);
   const tabRefs = useRef(tabs.map((tab) => createRef<HTMLAnchorElement>()));
@@ -33,9 +34,9 @@ export default function FluxTabs({ tabs, activeTabId, onChange, label }: FluxTab
         >
           {tabs.map((tab, index) => (
             <a
-              aria-controls={`panel-${tab.id}`}
+              aria-controls={`${namespaceId}-panel-${tab.id}`}
               aria-selected={activeTabId === tab.id}
-              id={`tab-${tab.id}`}
+              id={`${namespaceId}-tab-${tab.id}`}
               role="tab"
               ref={tabRefs.current[index]}
               href={tab.href}
@@ -61,10 +62,10 @@ export default function FluxTabs({ tabs, activeTabId, onChange, label }: FluxTab
         </div>
       </div>
       <div
-        aria-labelledby={`tab-${activeTabId}`}
+        aria-labelledby={`${namespaceId}-tab-${activeTabId}`}
         tabIndex={0}
         role="tabpanel"
-        id={`panel-${activeTabId}`}
+        id={`${namespaceId}-panel-${activeTabId}`}
       >
         {activeTab?.content}
       </div>

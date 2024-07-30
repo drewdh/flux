@@ -25,7 +25,7 @@
   font-weight: bold;
   letter-spacing: 0.25px;
   line-height: cs.$line-height-body-m;
-  transition: background-color 0.16s ease-out;
+  transition: background-color 0.16s ease-out, color 0.16s ease-out;
 
   &:hover, &:focus {
     background-color: cs.$color-background-segment-hover;

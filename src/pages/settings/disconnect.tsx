@@ -1,10 +1,8 @@
 import Container from '@cloudscape-design/components/container';
 import Header from '@cloudscape-design/components/header';
-import Box from '@cloudscape-design/components/box';
 import Link from '@cloudscape-design/components/link';
 import Alert from '@cloudscape-design/components/alert';
 import SpaceBetween from '@cloudscape-design/components/space-between';
-import Button from '@cloudscape-design/components/button';
 
 export default function Disconnect() {
   return (

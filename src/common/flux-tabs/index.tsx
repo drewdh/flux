@@ -9,7 +9,7 @@ export default function FluxTabs({ tabs, activeTabId, onChange, label }: FluxTab
   const namespaceId = useId();
   const activeTab = tabs.find((tab) => tab.id === activeTabId);
   const [focusedTabIndex, setFocusedTabIndex] = useState<number>(0);
-  const tabRefs = useRef(tabs.map((tab) => createRef<HTMLAnchorElement>()));
+  const tabRefs = useRef(tabs.map(() => createRef<HTMLAnchorElement>()));
 
   function focusTab(index: number) {
     setFocusedTabIndex(index);

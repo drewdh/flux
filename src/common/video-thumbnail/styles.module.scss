@@ -4,10 +4,10 @@
   transition: background-color 0.16s ease-out;
   border-radius: 24px;
   padding: cs.$space-scaled-s;
+  cursor: pointer;
 
   &:hover, &:focus {
     background-color: cs.$color-background-input-disabled;
-    //box-shadow: cs.$shadow-container-active;
   }
 }
 .mediaWrapper {
@@ -22,10 +22,6 @@ a {
   display: flex;
   column-gap: cs.$space-scaled-xs;
   padding-top: cs.$space-scaled-s;
-}
-.ellipsisWrapper {
-  margin-top: -6px;
-  margin-left: auto;
 }
 .viewerCountWrapper {
   margin-left: auto;
@@ -42,6 +38,9 @@ a {
   }
 }
 .streamTitle {
+  a {
+    color: cs.$color-text-body-default;
+  }
   display: -webkit-box;
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;

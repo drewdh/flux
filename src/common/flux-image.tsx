@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Badge } from '@cloudscape-design/components';
+import Badge from '@cloudscape-design/components/badge';
 import Icon from '@cloudscape-design/components/icon';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignalStream } from '@fortawesome/pro-solid-svg-icons';
@@ -35,11 +35,17 @@ export default function FluxImage({ src, isLive, ...rest }: Props) {
           style={{
             ...rest.style,
             opacity: isLoaded ? '1' : '0',
-            // transition: 'opacity 200ms ease-in-out',
           }}
         />
         {isLive && (
-          <div style={{ position: 'absolute', bottom: spaceScaledXs, right: spaceScaledXs }}>
+          <div
+            style={{
+              position: 'absolute',
+              bottom: spaceScaledXs,
+              right: spaceScaledXs,
+              pointerEvents: 'none',
+            }}
+          >
             <Badge color="red">
               <Icon svg={<FontAwesomeIcon icon={faSignalStream} />} /> LIVE
             </Badge>

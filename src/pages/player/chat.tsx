@@ -14,13 +14,12 @@ import styles from './chat.module.scss';
 import ChatMessage, { ChatMessageProps } from './chat-message';
 import { connectHref } from '../home/page';
 import { ChatEvent } from '../../api/twitch-types';
-import Avatar from 'common/avatar';
 import { useFeedback } from '../../feedback/feedback-context';
 import ChatBox from 'common/chat-box';
 import { useGetUsers, useSendChatMessage } from '../../api/api';
 
 const topNavHeight = '58px';
-const drawerHeaderHeight = '62px';
+const drawerHeaderHeight = '65px';
 
 export default function Chat({
   broadcasterUserId,

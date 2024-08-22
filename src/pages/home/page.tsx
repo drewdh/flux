@@ -56,10 +56,7 @@ export default function TwitchPage() {
       pageSize: 10,
     },
     {
-      // Order of results can change, so don't refetch
-      refetchOnWindowFocus: false,
-      refetchOnMount: false,
-      refetchOnReconnect: false,
+      staleTime: 5000,
     }
   );
   const { data: topGamesData, isLoading: isLoadingTopGames } = useGetTopGames({ first: 10 });

@@ -9,7 +9,8 @@ export default function CategoryThumbnail({ href, imgSrc, title }: Props) {
     <Link to={href}>
       <div className={styles.container}>
         <div className={styles.mediaWrapper}>
-          <FluxImage alt={title} src={imgSrc} className={styles.media} />
+          {/* Leave alt empty since it's the same text as the category title */}
+          <FluxImage alt="" src={imgSrc} className={styles.media} />
         </div>
         <div className={styles.titleWrapper}>
           <div className={styles.title}>{title}</div>

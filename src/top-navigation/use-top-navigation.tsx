@@ -116,6 +116,7 @@ export default function useTopNavigation(): State {
     utilities.push({
       type: 'menu-dropdown',
       iconName: 'user-profile-active',
+      ariaLabel: 'Account menu',
       title: scopeData.login,
       onItemFollow: (event) => {
         follow({ href: event.detail.href!, event });

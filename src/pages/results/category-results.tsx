@@ -6,7 +6,7 @@ import FluxCards from 'common/cards';
 import CategoryThumbnail from 'common/category-thumbnail';
 
 export default function CategoryResults({ query }: Props) {
-  const { data, isFetchingNextPage, isLoading, fetchNextPage, error } = useSearchCategories({
+  const { data, isFetchingNextPage, isLoading, fetchNextPage } = useSearchCategories({
     query,
     pageSize: 12,
   });

@@ -8,12 +8,7 @@ import Link from '@cloudscape-design/components/link';
 import Alert from '@cloudscape-design/components/alert';
 import ExpandableSection from '@cloudscape-design/components/expandable-section';
 
-import {
-  useGetChannelFollowers,
-  useGetFollowedChannels,
-  useGetStreams,
-  useValidate,
-} from '../../api/api';
+import { useGetChannelFollowers, useGetStreams } from '../../api/api';
 import InternalLink from 'common/internal-link';
 import { interpolatePathname, Pathname } from 'utilities/routes';
 import RelativeTime from 'common/relative-time';
@@ -44,7 +39,7 @@ export default function StreamDetails({ broadcasterUserId }: StreamDetailsProps)
     { enabled: !!broadcasterUserId, refetchInterval: 60000 }
   );
   const streamData = _streamData?.pages[0].data[0];
-  const { data: followerData, isLoading: isLoadingFollowers } = useGetChannelFollowers({
+  const { data: followerData } = useGetChannelFollowers({
     broadcasterId: broadcasterUserId,
   });
   const { setIsFeedbackVisible } = useFeedback();

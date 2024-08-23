@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useRef } from 'react';
+import React, { useEffect, useLayoutEffect, useMemo, useRef } from 'react';
 import { useParams } from 'react-router';
 import SpaceBetween from '@cloudscape-design/components/space-between';
 
@@ -22,13 +22,16 @@ export default function TwitchComponent({ onUserIdChange }: Props) {
   const { data } = useGetStreamByUserLogin(username, { refetchInterval: 1000 * 60 });
   const streamData = data?.data?.[0];
 
-  const options = {
-    width: '100%',
-    height: '100%',
-    channel: username,
-    autoplay: true,
-    muted: false,
-  };
+  const options = useMemo(
+    () => ({
+      width: '100%',
+      height: '100%',
+      channel: username,
+      autoplay: true,
+      muted: false,
+    }),
+    [username]
+  );
 
   useLayoutEffect(() => {
     if (!player.current) {
@@ -46,7 +49,7 @@ export default function TwitchComponent({ onUserIdChange }: Props) {
       player.current?.setMuted(false);
     });
     // return () => (player = undefined);
-  }, []);
+  }, [options]);
 
   // Adjust max width so entire video player is visible when side panel is closed
   const navHeight = document.querySelector(topNavSelector)?.getBoundingClientRect().height ?? 0;

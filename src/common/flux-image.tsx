@@ -32,6 +32,7 @@ export default function FluxImage({ src, isLive, ...rest }: Props) {
         <img
           src={src}
           {...rest}
+          alt={rest.alt}
           style={{
             ...rest.style,
             opacity: isLoaded ? '1' : '0',

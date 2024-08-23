@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { ReactNode, useEffect, useLayoutEffect, useRef } from 'react';
 import StatusIndicator from '@cloudscape-design/components/status-indicator';
 import FlexibleColumnLayout from 'common/flexible-column-layout';
 import SpaceBetween from '@cloudscape-design/components/space-between';

@@ -13,7 +13,6 @@ export default function LiveChannels({ gameId }: LiveChannelsProps) {
     { gameIds: [gameId], type: 'live', pageSize: 28 },
     {
       enabled: !!gameId.length,
-      staleTime: 5000,
     }
   );
   const { setIsFeedbackVisible } = useFeedback();

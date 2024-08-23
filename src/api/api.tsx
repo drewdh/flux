@@ -88,7 +88,10 @@ export function useGetFollowedStreams(options: UseGetFollowedStreamsOptions = {}
   const { data: users } = useGetUsers({});
   const user = users?.data[0];
   return useInfiniteQuery({
+    // Overrideable options
+    staleTime: 1000 * 60 * 5,
     ...options,
+    // Non-overrideable options
     queryFn: ({ pageParam }) =>
       twitchClient.getFollowedStreams({ userId: user!.id, nextToken: pageParam, pageSize: 20 }),
     queryKey: [QueryKey.GetFollowedStreams],
@@ -124,6 +127,7 @@ export function useGetStreams(
   > = {}
 ) {
   return useInfiniteQuery({
+    staleTime: 1000 * 60 * 5,
     ...options,
     queryFn: ({ pageParam }) =>
       twitchClient.getStreams({
@@ -201,10 +205,6 @@ export function useSearchChannels({ query, pageSize = 10 }: UseSearchOptions) {
     getNextPageParam: (lastPage) => lastPage.pagination.cursor,
     queryKey: [QueryKey.SearchChannels, query],
     enabled: !!query,
-    // Order of results can change, so don't refetch
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
-    refetchOnReconnect: false,
   });
 }
 
@@ -229,10 +229,6 @@ export function useSearchChannelsWithStreamData({ query, pageSize = 10 }: UseSea
     getNextPageParam: (lastPage) => lastPage.pagination.cursor,
     queryKey: [QueryKey.SearchChannelsWithStreamData, query],
     enabled: !!query,
-    // Order of results can change, so don't refetch
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
-    refetchOnReconnect: false,
   });
 }
 
@@ -248,10 +244,6 @@ export function useSearchCategories({ query, pageSize = 10 }: UseSearchOptions) 
     getNextPageParam: (lastPage) => lastPage.pagination.cursor,
     queryKey: [QueryKey.SearchCategories, query],
     enabled: !!query,
-    // Order of results can change, so don't refetch
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
-    refetchOnReconnect: false,
   });
 }
 

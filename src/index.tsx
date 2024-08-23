@@ -66,9 +66,12 @@ const messages = await importMessages(locale);
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      retry: (failureCount, error) => {
+      retry: (_failureCount, error) => {
         return (error as TwitchError).status !== 401;
       },
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+      refetchOnWindowFocus: false,
     },
   },
 });

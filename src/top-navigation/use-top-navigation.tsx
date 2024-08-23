@@ -9,9 +9,9 @@ import { interpolatePathname, Pathname } from 'utilities/routes';
 import useNavigateWithRef from 'common/use-navigate-with-ref';
 import { useGetStreams, useRevoke, useSearchChannels, useValidate } from '../api/api';
 import useFollow from 'common/use-follow';
-import { connectHref } from '../pages/home/page';
 import { useFeedback } from '../feedback/feedback-context';
 import { Appearance, useSettings } from 'utilities/settings';
+import { useQueryClient } from '@tanstack/react-query';
 
 enum MenuItemId {
   Feedback = 'feedback',
@@ -25,6 +25,7 @@ enum MenuItemId {
 export default function useTopNavigation(): State {
   const { setIsFeedbackVisible } = useFeedback();
   const { appearance, setAppearance } = useSettings();
+  const queryClient = useQueryClient();
   const isNavigating = useRef<boolean>(false);
   const follow = useFollow();
   const location = useLocation();
@@ -104,8 +105,10 @@ export default function useTopNavigation(): State {
   const identity: TopNavigationProps.Identity = {
     title: 'Flux',
     href: Pathname.Home,
-    onFollow: (event) => {
+    onFollow: async (event) => {
       event.preventDefault();
+      // Clicking this logo should be like reloading the page, so let's invalidate all queries
+      await queryClient.invalidateQueries();
       navigate(Pathname.Home);
     },
   };

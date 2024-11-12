@@ -1,5 +1,6 @@
 export enum Pathname {
   Home = '/',
+  Welcome = '/welcome',
   Fallback = '*',
   Signin = '/auth/signin',
   PasswordReset = '/auth/reset',

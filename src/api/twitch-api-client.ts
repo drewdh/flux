@@ -42,7 +42,11 @@ export class TwitchApiClient {
   }
 
   private getAccessToken() {
-    return localStorage.getItem('access_token');
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+      throw new Error('Missing access token.');
+    }
+    return token;
   }
 
   private getDefaultHeaders(): { Authorization: string; 'Client-Id'?: string } {

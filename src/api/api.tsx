@@ -272,10 +272,11 @@ export function useRevoke() {
     throwOnError: true,
     mutationKey: [MutationKey.Revoke],
     onSuccess: () => {
+      // TODO: Add success notification
+      navigate(Pathname.Welcome);
       localStorage.removeItem('access_token');
       client.removeQueries({ queryKey: [QueryKey.Validate] });
       client.removeQueries({ queryKey: [QueryKey.GetFollowedStreams] });
-      navigate({ pathname: Pathname.Home, search: '?signOut=true' });
     },
   });
 }

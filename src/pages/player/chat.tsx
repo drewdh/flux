@@ -102,7 +102,6 @@ export default function Chat({
                   header="Chat not enabled"
                   action={
                     <Button
-                      onClick={() => localStorage.setItem('access_token', '')}
                       href={connectHref}
                       iconName="external"
                       iconAlign="right"

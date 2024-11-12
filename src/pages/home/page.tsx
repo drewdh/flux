@@ -14,7 +14,6 @@ import styles from './styles.module.scss';
 import FullHeightContent from 'common/full-height-content';
 import CategoryThumbnail from 'common/category-thumbnail';
 import { interpolatePathname, Pathname } from 'utilities/routes';
-import WelcomePage from './welcome-page';
 
 const connectSearchParams = new URLSearchParams({
   response_type: 'token',
@@ -30,7 +29,7 @@ export const connectHref = `https://id.twitch.tv/oauth2/authorize?${connectSearc
 export default function TwitchPage() {
   useTitle('Flux');
   const [isConnected, setIsConnected] = useState<boolean>(false);
-  const { hash, search } = useLocation();
+  const { hash } = useLocation();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -40,15 +39,9 @@ export default function TwitchPage() {
       localStorage.setItem('access_token', hashAccessToken);
       navigate({ hash: '' }, { replace: true });
     }
+    // TODO: Handle user denying permission
     setIsConnected(Boolean(hashAccessToken || localStorage.getItem('access_token')));
   }, [hash, navigate]);
-
-  useEffect(() => {
-    const urlSearchParams = new URLSearchParams(search);
-    if (urlSearchParams.get('signOut') === 'true') {
-      setIsConnected(false);
-    }
-  }, [search]);
 
   const { data, isLoading: isLoadingFollowed } = useGetFollowedStreams();
   const { data: topStreamsData, isLoading: isLoadingTopStreams } = useGetStreams({
@@ -61,7 +54,7 @@ export default function TwitchPage() {
   const isLoading = isLoadingFollowed || isLoadingTopStreams || isLoadingTopGames;
 
   if (!isConnected) {
-    return <WelcomePage />;
+    navigate(Pathname.Welcome);
   }
 
   function renderContent() {

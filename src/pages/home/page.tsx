@@ -48,7 +48,7 @@ export default function TwitchPage() {
     type: 'live',
     pageSize: 10,
   });
-  const { data: topGamesData, isLoading: isLoadingTopGames } = useGetTopGames({ first: 10 });
+  const { data: topGamesData, isLoading: isLoadingTopGames } = useGetTopGames({ first: 7 });
   const followedStreams = data?.pages.flatMap((page) => page.data);
   const topStreams = topStreamsData?.pages.flatMap((page) => page.data);
   const isLoading = isLoadingFollowed || isLoadingTopStreams || isLoadingTopGames;
@@ -82,7 +82,7 @@ export default function TwitchPage() {
         </SpaceBetween>
         <SpaceBetween size="m">
           <Header>Popular categories</Header>
-          <FlexibleColumnLayout columns={10} minColumnWidth={150}>
+          <FlexibleColumnLayout columns={7} minColumnWidth={150}>
             {topGamesData?.data?.map((game) => {
               const href = interpolatePathname(Pathname.Game, { gameId: game.id });
               const imgSrc = game?.box_art_url.replace('{width}x{height}', '400x534');
@@ -112,5 +112,5 @@ export default function TwitchPage() {
     );
   }
 
-  return <DhAppLayout maxContentWidth={3100} toolsHide content={renderContent()} />;
+  return <DhAppLayout maxContentWidth={1600} toolsHide content={renderContent()} />;
 }

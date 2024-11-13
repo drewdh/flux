@@ -5,7 +5,7 @@ import SpaceBetween from '@cloudscape-design/components/space-between';
 import Tabs from '@cloudscape-design/components/tabs';
 import { format } from 'date-fns';
 import Box from '@cloudscape-design/components/box';
-import Button from '@cloudscape-design/components/button';
+import Link from '@cloudscape-design/components/link';
 import KeyValuePairs from '@cloudscape-design/components/key-value-pairs';
 
 import FluxAppLayout from 'common/flux-app-layout';
@@ -21,8 +21,8 @@ enum TabId {
   Details = 'details',
 }
 export const broadcasterTypeLabel: Record<string, string> = {
-  affiliate: 'Affiliate',
-  partner: 'Partner',
+  affiliate: 'Twitch Affiliate',
+  partner: 'Twitch Partner',
 };
 
 const defaultTabId = TabId.Details;
@@ -48,7 +48,7 @@ export default function ChannelPage() {
     <FluxAppLayout
       toolsHide
       navigationHide
-      maxContentWidth={1300}
+      disableContentPaddings
       content={
         loading ? (
           <FullHeightContent>
@@ -57,6 +57,8 @@ export default function ChannelPage() {
         ) : (
           <ContentLayout
             disableOverlap
+            maxContentWidth={1300}
+            headerVariant="high-contrast"
             header={
               <div className={styles.header}>
                 <Avatar userId={userData?.data[0].id ?? ''} size="l" />
@@ -64,30 +66,9 @@ export default function ChannelPage() {
                   <Box fontSize="display-l" fontWeight="bold">
                     {userData?.data[0].display_name}
                   </Box>
-                  <Box color="text-body-secondary">
-                    <SpaceBetween size="s" direction="horizontal">
-                      <span>
-                        {Number(followerData?.total ?? 0).toLocaleString(undefined, {
-                          notation: 'compact',
-                        })}{' '}
-                        follower{followerData?.total === 1 ? '' : 's'}
-                      </span>
-                    </SpaceBetween>
-                  </Box>
                   <div className={styles.longText}>
                     <Box color="text-body-secondary">{userData?.data[0].description}</Box>
                   </div>
-                  <Box margin={{ top: 's' }}>
-                    <Button
-                      variant="normal"
-                      href={`https://www.twitch.tv/${userData?.data[0].login}/about`}
-                      target="_blank"
-                      iconName="external"
-                      iconAlign="right"
-                    >
-                      Learn more
-                    </Button>
-                  </Box>
                 </SpaceBetween>
               </div>
             }
@@ -105,27 +86,27 @@ export default function ChannelPage() {
                       columns={4}
                       items={[
                         {
-                          label: 'Broadcaster level',
+                          label: 'Level',
+                          info: (
+                            <Link
+                              href="https://www.twitch.tv/p/en/partners/faq/"
+                              variant="info"
+                              external
+                            >
+                              Info
+                            </Link>
+                          ),
                           value:
-                            broadcasterTypeLabel[userData?.data[0].broadcaster_type ?? ''] ?? '-',
+                            broadcasterTypeLabel[userData?.data[0].broadcaster_type ?? ''] ??
+                            'Standard',
                         },
                         {
                           label: 'Followers',
-                          value: `${Number(followerData?.total ?? 0).toLocaleString()} follower${
-                            followerData?.total === 1 ? '' : 's'
-                          }`,
+                          value: Number(followerData?.total ?? 0).toLocaleString(),
                         },
                         {
-                          label: 'Created date',
+                          label: 'Joined date',
                           value: format(userData?.data[0].created_at ?? '', 'MMMM d, yyyy'),
-                        },
-                        {
-                          label: 'User login',
-                          value: userData?.data[0].login,
-                        },
-                        {
-                          label: 'User ID',
-                          value: userData?.data[0].id,
                         },
                       ]}
                     />

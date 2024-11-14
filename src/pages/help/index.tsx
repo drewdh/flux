@@ -16,9 +16,9 @@ export default function HelpPage() {
             <div>
               <Header variant="h3">How does Flux use my information?</Header>
               <Box variant="p">
-                Flux uses only the Twitch information you authorized to share when you connected to
-                Twitch. This information is used to analyze site usage. Your information is never
-                shared with third parties.
+                Flux uses only the information you authorized to share when you connected to Twitch.
+                This information is used to analyze site usage. Your information is never shared
+                with third parties.
               </Box>
             </div>
             <div>

@@ -7,6 +7,8 @@ i18n
   .use(initReactI18next)
   .init({
     debug: true,
+    // Only use English for now since most strings aren't translated
+    lng: 'en-US',
     fallbackLng: 'en-US',
     interpolation: {
       // not needed for react as it escapes by default

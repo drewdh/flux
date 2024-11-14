@@ -10,21 +10,16 @@ import useNavigateWithRef from 'common/use-navigate-with-ref';
 import { useGetStreams, useRevoke, useSearchChannels, useValidate } from '../api/api';
 import useFollow from 'common/use-follow';
 import { useFeedback } from '../feedback/feedback-context';
-import { Appearance, useSettings } from 'utilities/settings';
 import { useQueryClient } from '@tanstack/react-query';
 
 enum MenuItemId {
   Feedback = 'feedback',
   SignOut = 'signOut',
   Settings = 'settings',
-  LightMode = 'lightMode',
-  DarkMode = 'darkMode',
-  DefaultAppearance = 'defaultAppearance',
 }
 
 export default function useTopNavigation(): State {
   const { setIsFeedbackVisible } = useFeedback();
-  const { appearance, setAppearance } = useSettings();
   const queryClient = useQueryClient();
   const isNavigating = useRef<boolean>(false);
   const follow = useFollow();
@@ -130,39 +125,12 @@ export default function useTopNavigation(): State {
           signOut();
         } else if (id === MenuItemId.Feedback) {
           setIsFeedbackVisible(true);
-        } else if (id === MenuItemId.DarkMode) {
-          setAppearance(Appearance.Dark);
-        } else if (id === MenuItemId.LightMode) {
-          setAppearance(Appearance.Light);
-        } else if (id === MenuItemId.DefaultAppearance) {
-          setAppearance(Appearance.System);
         }
       },
       items: [
         {
           id: MenuItemId.SignOut,
           text: 'Sign out',
-        },
-        {
-          text: 'Appearance',
-          description: 'test',
-          items: [
-            {
-              id: MenuItemId.LightMode,
-              text: 'Light',
-              iconName: appearance === Appearance.Light ? 'check' : undefined,
-            },
-            {
-              id: MenuItemId.DarkMode,
-              text: 'Dark',
-              iconName: appearance === Appearance.Dark ? 'check' : undefined,
-            },
-            {
-              id: MenuItemId.DefaultAppearance,
-              text: 'Use system settings',
-              iconName: appearance === Appearance.System ? 'check' : undefined,
-            },
-          ],
         },
         {
           id: MenuItemId.Settings,

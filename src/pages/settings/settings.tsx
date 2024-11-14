@@ -3,7 +3,6 @@ import SpaceBetween from '@cloudscape-design/components/space-between';
 import { useTranslation } from 'react-i18next';
 
 import FluxAppLayout from 'common/flux-app-layout';
-import Disconnect from './disconnect';
 import useTitle from 'utilities/use-title';
 import Appearance from './appearance';
 
@@ -24,7 +23,6 @@ export default function SettingsPage() {
             <Appearance />
             {/* Most strings aren't translated, so let's not even show this for now. */}
             {/*<Language />*/}
-            <Disconnect />
           </SpaceBetween>
         </SpaceBetween>
       }

@@ -8,6 +8,7 @@ export enum Pathname {
   Profile = '/profile/:login/:tabId?',
   Results = '/results',
   Settings = '/settings',
+  Help = '/help',
   Game = '/category/:gameId',
 }
 /** This does not handle for optional static segments (e.g., `/projects/project?/:id`) */

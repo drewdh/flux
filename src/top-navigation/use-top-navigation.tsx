@@ -16,6 +16,7 @@ enum MenuItemId {
   Feedback = 'feedback',
   SignOut = 'signOut',
   Settings = 'settings',
+  Help = 'help',
 }
 
 export default function useTopNavigation(): State {
@@ -136,6 +137,11 @@ export default function useTopNavigation(): State {
           id: MenuItemId.Settings,
           text: 'Settings',
           href: Pathname.Settings,
+        },
+        {
+          id: MenuItemId.Help,
+          text: 'Help',
+          href: Pathname.Help,
         },
         {
           id: MenuItemId.Feedback,

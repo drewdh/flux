@@ -23,6 +23,7 @@ import ChannelPage from './pages/channel/page';
 import GameDetailPage from './pages/game-detail/game-detail';
 import { FeedbackProvider } from './feedback/feedback-context';
 import WelcomePage from './pages/home/welcome-page';
+import HelpPage from './pages/help';
 
 const router = createBrowserRouter([
   {
@@ -61,6 +62,10 @@ const router = createBrowserRouter([
       {
         path: Pathname.Game,
         element: <GameDetailPage />,
+      },
+      {
+        path: Pathname.Help,
+        element: <HelpPage />,
       },
     ],
   },

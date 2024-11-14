@@ -127,17 +127,16 @@ export default function useTopNavigation(): State {
       onItemClick: (event) => {
         const { id } = event.detail;
         if (id === MenuItemId.SignOut) {
-          return signOut();
+          signOut();
+        } else if (id === MenuItemId.Feedback) {
+          setIsFeedbackVisible(true);
+        } else if (id === MenuItemId.DarkMode) {
+          setAppearance(Appearance.Dark);
+        } else if (id === MenuItemId.LightMode) {
+          setAppearance(Appearance.Light);
+        } else if (id === MenuItemId.DefaultAppearance) {
+          setAppearance(Appearance.System);
         }
-        if (id === MenuItemId.Feedback) {
-          return setIsFeedbackVisible(true);
-        }
-        const appearances: Record<string, Appearance> = {
-          [MenuItemId.LightMode]: Appearance.Light,
-          [MenuItemId.DarkMode]: Appearance.Dark,
-          [MenuItemId.DefaultAppearance]: Appearance.System,
-        };
-        setAppearance(appearances[id]);
       },
       items: [
         {

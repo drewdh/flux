@@ -3,8 +3,11 @@ import ContentLayout from '@cloudscape-design/components/content-layout';
 import Header from '@cloudscape-design/components/header';
 import SpaceBetween from '@cloudscape-design/components/space-between';
 import Box from '@cloudscape-design/components/box';
+import useTitle from 'utilities/use-title';
 
 export default function HelpPage() {
+  useTitle('Help - Flux');
+
   return (
     <FluxAppLayout
       navigationHide

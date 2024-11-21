@@ -17,5 +17,9 @@ export async function sendFeedback(request: SendFeedbackRequest): Promise<SendFe
     },
     body: JSON.stringify(request),
   });
-  return resp.json();
+  const body = await resp.json();
+  if (!resp.ok) {
+    throw body;
+  }
+  return body;
 }

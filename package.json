@@ -2,6 +2,7 @@
   "name": "flux",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "dependencies": {
     "@cloudscape-design/chat-components": "^1.0.0",
     "@cloudscape-design/component-toolkit": "^1.0.0-beta.52",
@@ -33,7 +34,6 @@
     "react-keyed-flatten-children": "^3.0.0",
     "react-router": "^6.8.1",
     "react-router-dom": "^6.8.1",
-    "react-scripts": "5.0.1",
     "sass": "^1.58.0",
     "typescript": "^4.9.5",
     "uuid": "^9.0.0",
@@ -42,10 +42,9 @@
   },
   "scripts": {
     "analyze": "source-map-explorer 'build/static/js/*.js'",
-    "start": "craco start",
-    "build": "craco build",
-    "test": "craco test",
-    "eject": "craco eject",
+    "start": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
     "format": "prettier . --write"
   },
   "eslintConfig": {
@@ -69,12 +68,14 @@
     ]
   },
   "devDependencies": {
-    "@craco/craco": "^7.1.0",
     "@types/big.js": "^6.2.2",
     "@types/i18next": "^13.0.0",
     "@types/lodash": "^4.14.194",
     "@types/uuid": "^9.0.0",
+    "@vitejs/plugin-react": "^4.3.3",
+    "browserslist-to-esbuild": "^2.1.1",
     "prettier": "3.1.0",
-    "source-map-explorer": "^2.5.3"
+    "source-map-explorer": "^2.5.3",
+    "vite": "^5.4.11"
   }
 }

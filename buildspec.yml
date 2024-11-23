@@ -12,6 +12,9 @@ phases:
       - echo Build started on `date`
       - node -v
       - npm run build
+  post_build:
+    commands:
+      - aws s3 rm s3://flux.watch --recursive
 artifacts:
   files:
     - '**/*'

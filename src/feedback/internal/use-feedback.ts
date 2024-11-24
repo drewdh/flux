@@ -1,13 +1,13 @@
 import { Ref, useRef, useState } from 'react';
-import { AlertProps } from '@cloudscape-design/components';
+import { AlertProps } from '@cloudscape-design/components/alert';
 import { TextareaProps } from '@cloudscape-design/components/textarea';
 import { RadioGroupProps } from '@cloudscape-design/components/radio-group';
 import { SelectProps } from '@cloudscape-design/components/select';
-import { useTranslation } from 'react-i18next';
 import { InputProps } from '@cloudscape-design/components/input';
 
 import { sendFeedback } from './feedback-api';
 import { useFeedback as useFeedbackContext } from '../feedback-context';
+import getCountString from 'utilities/get-count-string';
 
 enum Satisfied {
   Yes = 'yes',
@@ -29,7 +29,6 @@ export interface Values {
 }
 
 export default function useFeedback(): State {
-  const { t } = useTranslation();
   const alertRef = useRef<AlertProps.Ref>(null);
   const emailRef = useRef<InputProps.Ref>(null);
   const messageRef = useRef<TextareaProps.Ref>(null);
@@ -39,19 +38,19 @@ export default function useFeedback(): State {
   const { isFeedbackVisible: visible, setIsFeedbackVisible: setVisible } = useFeedbackContext();
   const typeOptions: SelectProps.Option[] = [
     {
-      label: t('feedback.typeGeneral'),
+      label: 'General feedback',
       value: Type.General,
     },
     {
-      label: t('feedback.typeFeatureRequest'),
+      label: 'Feature request',
       value: Type.FeatureRequest,
     },
     {
-      label: t('feedback.typeIssue'),
+      label: 'Report an issue',
       value: Type.Issue,
     },
     {
-      label: t('feedback.typeUi'),
+      label: 'UI feedback',
       value: Type.UiFeedback,
     },
   ];
@@ -82,17 +81,19 @@ export default function useFeedback(): State {
   const satisfiedItems: RadioGroupProps.RadioButtonDefinition[] = [
     {
       value: Satisfied.Yes,
-      label: t('feedback.satisfied'),
+      label: 'Yes',
     },
     {
       value: Satisfied.No,
-      label: t('feedback.dissatisfied'),
+      label: 'No',
     },
   ];
 
   function getMessageConstraintText(messageValue: string) {
     const remainingCharacters = 1000 - messageValue.length;
-    return t('feedback.charactersRemaining', {
+    return getCountString({
+      singularString: '{{count}} character remaining',
+      otherString: '{{count}} characters remaining',
       count: remainingCharacters,
     });
   }

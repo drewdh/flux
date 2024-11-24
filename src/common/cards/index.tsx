@@ -2,10 +2,10 @@ import { ReactNode, useEffect, useLayoutEffect, useRef } from 'react';
 import StatusIndicator from '@cloudscape-design/components/status-indicator';
 import FlexibleColumnLayout from 'common/flexible-column-layout';
 import SpaceBetween from '@cloudscape-design/components/space-between';
+import Spinner from '@cloudscape-design/components/spinner';
 import clsx from 'clsx';
 
 import styles from './styles.module.scss';
-import { Spinner } from '@cloudscape-design/components';
 
 export default function FluxCards<T>({
   columns,

@@ -2,7 +2,7 @@ import React, { PropsWithChildren } from 'react';
 import Alert from '@cloudscape-design/components/alert';
 import SpaceBetween from '@cloudscape-design/components/space-between';
 import Link from '@cloudscape-design/components/link';
-import { ExpandableSection } from '@cloudscape-design/components';
+import ExpandableSection from '@cloudscape-design/components/expandable-section';
 import Box from '@cloudscape-design/components/box';
 import Button from '@cloudscape-design/components/button';
 import { Location } from 'react-router';

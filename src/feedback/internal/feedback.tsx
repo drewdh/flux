@@ -4,8 +4,7 @@ import Header from '@cloudscape-design/components/header';
 import SpaceBetween from '@cloudscape-design/components/space-between';
 import Box from '@cloudscape-design/components/box';
 import Button from '@cloudscape-design/components/button';
-import { useTranslation } from 'react-i18next';
-import { Formik, Form } from 'formik';
+import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
 
 import useFeedback, { Values } from './use-feedback';
@@ -16,7 +15,6 @@ import FormikSelect from 'common/formik/select';
 import FormikRadioGroup from 'common/formik/radio-group';
 
 export default function Feedback() {
-  const { t } = useTranslation();
   const {
     alertRef,
     emailRef,
@@ -38,10 +36,10 @@ export default function Feedback() {
       initialValues={initialValues}
       validationSchema={Yup.object().shape({
         message: Yup.string()
-          .max(1000, t('feedback.error.maxMessage'))
-          .required(t('feedback.error.messageRequired')),
-        satisfied: Yup.string().required(t('feedback.error.satisfactionRequired')),
-        email: Yup.string().email(t('feedback.error.invalidEmail')),
+          .max(1000, 'Message must be 1,000 characters or fewer.')
+          .required('Enter a message.'),
+        satisfied: Yup.string().required('Choose a satisfaction.'),
+        email: Yup.string().email('Enter a valid email.'),
       })}
       onSubmit={handleSubmit}
     >
@@ -51,61 +49,57 @@ export default function Feedback() {
             <Box float="right">
               {isSuccess && (
                 <Button variant="primary" onClick={() => handleDismiss(resetForm)}>
-                  {t('common.close')}
+                  Close
                 </Button>
               )}
               {!isSuccess && (
                 <SpaceBetween size="xs" direction="horizontal">
                   <Button variant="link" onClick={() => handleDismiss(resetForm)}>
-                    {t('common.cancel')}
+                    Cancel
                   </Button>
                   <Button loading={isSubmitting} variant="primary" form="feedback">
-                    {t('common.submit')}
+                    Submit
                   </Button>
                 </SpaceBetween>
               )}
             </Box>
           }
-          header={<Header>{t('feedback.title')}</Header>}
+          header={<Header>Feedback</Header>}
           onDismiss={() => handleDismiss(resetForm)}
           visible={visible}
         >
           <Form id="feedback">
-            {isSuccess && <Alert type="success">{t('feedback.success')}</Alert>}
+            {isSuccess && <Alert type="success">Successfully submitted feedback.</Alert>}
             {!isSuccess && (
               <SpaceBetween size="l">
-                <span>{t('feedback.description')}</span>
-                <FormikFormField name="type" label={t('feedback.typeLabel')}>
+                <span>Thank you for taking time to provide feedback.</span>
+                <FormikFormField name="type" label="Feedback type">
                   <FormikSelect options={typeOptions} name="type" />
                 </FormikFormField>
                 <FormikFormField
                   name="message"
-                  label={t('feedback.messageLabel')}
+                  label="Message"
                   constraintText={getMessageConstraintText(values.message)}
                 >
                   <FormikTextArea ref={messageRef} name="message" />
                 </FormikFormField>
-                <FormikFormField name="satisfied" label={t('feedback.satisfactionLabel')}>
+                <FormikFormField name="satisfied" label="Are you satisfied with your experience?">
                   <FormikRadioGroup name="satisfied" items={satisfiedItems} ref={satisfiedRef} />
                 </FormikFormField>
                 <FormikFormField
                   name="email"
                   label={
                     <span>
-                      {t('feedback.emailLabel')} - <i>{t('common.optional')}</i>
+                      Email - <i>optional</i>
                     </span>
                   }
-                  description={t('feedback.emailDescription')}
+                  description="If you would like to be contacted about your feedback, enter your email address."
                 >
-                  <FormikInput
-                    name="email"
-                    ref={emailRef}
-                    placeholder={t('feedback.emailPlaceholder')}
-                  />
+                  <FormikInput name="email" ref={emailRef} placeholder="person@email.com" />
                 </FormikFormField>
                 {isApiError && (
                   <Alert ref={alertRef} type="error">
-                    {t('feedback.error.general')}
+                    Failed to submit feedback. Try again later.
                   </Alert>
                 )}
               </SpaceBetween>

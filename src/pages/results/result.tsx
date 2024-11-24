@@ -1,4 +1,5 @@
 import SpaceBetween from '@cloudscape-design/components/space-between';
+import Badge from '@cloudscape-design/components/badge';
 import Box from '@cloudscape-design/components/box';
 import Avatar from 'common/avatar';
 import InternalLink from 'common/internal-link';
@@ -6,7 +7,6 @@ import Icon from '@cloudscape-design/components/icon';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBadgeCheck, faSignalStream } from '@fortawesome/pro-solid-svg-icons';
 import { spaceScaledL } from '@cloudscape-design/design-tokens';
-import { Badge } from '@cloudscape-design/components';
 
 import { ChannelResult } from '../../api/twitch-types';
 import { useGetStreamByUserLogin, useGetUsers } from '../../api/api';

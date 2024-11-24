@@ -4,20 +4,18 @@ import Popover from '@cloudscape-design/components/popover';
 import Container from '@cloudscape-design/components/container';
 import Header from '@cloudscape-design/components/header';
 import Select, { SelectProps } from '@cloudscape-design/components/select';
-import { useTranslation } from 'react-i18next';
 
 import { useSettings } from 'utilities/settings';
 import styles from './styles.module.scss';
 
 export default function Language() {
-  const { t, i18n } = useTranslation();
   const options = useMemo(
     (): SelectProps.Option[] => [
-      { value: '', label: t('settings.language.system') },
+      { value: '', label: 'Use system settings' },
       { value: 'en-US', label: 'English (US)' },
       { value: 'de', label: 'Deutsch' },
     ],
-    [t]
+    []
   );
 
   const { language, setLanguage } = useSettings();
@@ -28,7 +26,7 @@ export default function Language() {
   // Reselect selected option if language changes so selected option shows correct translation
   useEffect(() => {
     setSelectedOption(options.find((option) => option.value === language)!);
-  }, [i18n.language, language, options]);
+  }, [language, options]);
 
   return (
     <Container
@@ -48,7 +46,7 @@ export default function Language() {
             </Box>
           }
         >
-          {t('settings.language.title')}
+          Language
         </Header>
       }
     >

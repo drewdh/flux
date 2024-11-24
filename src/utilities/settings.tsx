@@ -6,7 +6,6 @@ import {
   useEffect,
   useState,
 } from 'react';
-import { useTranslation } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import { applyMode, Mode } from '@cloudscape-design/global-styles';
 
@@ -34,7 +33,6 @@ const SettingsContext = createContext<UseSettingsResult>({
 
 let isAppearanceInitialized = false;
 export function SettingsProvider({ children }: PropsWithChildren) {
-  const { i18n } = useTranslation();
   const [appearance, setAppearance] = useLocalStorage<Appearance>(
     LocalStorageKey.Appearance,
     defaultAppearance
@@ -75,10 +73,10 @@ export function SettingsProvider({ children }: PropsWithChildren) {
       } else {
         defaultLang = 'en-US';
       }
-      i18n.changeLanguage(value || defaultLang);
+      // i18n.changeLanguage(value || defaultLang);
       setLanguage(value);
     },
-    [i18n, setLanguage]
+    [setLanguage]
   );
 
   useEffect(() => {

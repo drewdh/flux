@@ -9,11 +9,11 @@ import {
   differenceInYears,
   format,
 } from 'date-fns';
-import { useTranslation } from 'react-i18next';
+
+import getCountString from 'utilities/get-count-string';
 
 export default function RelativeTime({ date: unparsedDate, inline }: Props) {
   const [relativeTime, setRelativeTime] = useState<string>('');
-  const { t } = useTranslation();
 
   const updateRelativeTime = useCallback((): void => {
     if (!unparsedDate) {
@@ -23,31 +23,67 @@ export default function RelativeTime({ date: unparsedDate, inline }: Props) {
     const date = new Date(unparsedDate);
     const diffInSeconds = differenceInSeconds(today, date);
     if (diffInSeconds < 60) {
-      return setRelativeTime(t('time.now'));
+      return setRelativeTime('Just now');
     }
     const diffInMinutes = differenceInMinutes(today, date);
     if (diffInMinutes < 60) {
-      return setRelativeTime(t('time.minutes', { count: diffInMinutes }));
+      return setRelativeTime(
+        getCountString({
+          count: diffInMinutes,
+          singularString: '{{count}} minute ago',
+          otherString: '{{count}} minutes ago',
+        })
+      );
     }
     const diffInHours = differenceInHours(today, date);
     if (diffInHours < 25) {
-      return setRelativeTime(t('time.hours', { count: diffInHours }));
+      return setRelativeTime(
+        getCountString({
+          count: diffInHours,
+          singularString: '{{count}} hour ago',
+          otherString: '{{count}} hours ago',
+        })
+      );
     }
     const diffInDays = differenceInDays(today, date);
     if (diffInDays < 32) {
-      return setRelativeTime(t('time.days', { count: diffInDays }));
+      return setRelativeTime(
+        getCountString({
+          count: diffInDays,
+          singularString: '{{count}} day ago',
+          otherString: '{{count}} days ago',
+        })
+      );
     }
     const diffInWeeks = differenceInWeeks(today, date);
     if (diffInWeeks < 5) {
-      return setRelativeTime(t('time.weeks', { count: diffInWeeks }));
+      return setRelativeTime(
+        getCountString({
+          count: diffInWeeks,
+          singularString: '{{count}} week ago',
+          otherString: '{{count}} weeks ago',
+        })
+      );
     }
     const diffInMonths = differenceInMonths(today, date);
     if (diffInMonths < 13) {
-      return setRelativeTime(t('time.months', { count: diffInMonths }));
+      return setRelativeTime(
+        getCountString({
+          count: diffInMonths,
+          singularString: '{{count}} month ago',
+          otherString: '{{count}} months ago',
+        })
+      );
     }
     const diffInYears = differenceInYears(today, date);
-    setRelativeTime(t('time.years', { count: diffInYears }));
-  }, [t, unparsedDate]);
+    setRelativeTime(
+      getCountString({
+        count: diffInYears,
+        singularString: '{{count}} year ago',
+        otherString: '{{count}} years ago',
+      })
+    );
+  }, [unparsedDate]);
 
   const absoluteTimestamp = useMemo((): string => {
     if (!unparsedDate) {

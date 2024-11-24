@@ -1,6 +1,5 @@
 import CloudscapeTopNavigation from '@cloudscape-design/components/top-navigation';
 import Autosuggest from '@cloudscape-design/components/autosuggest';
-import { useTranslation } from 'react-i18next';
 import SpaceBetween from '@cloudscape-design/components/space-between';
 import clsx from 'clsx';
 
@@ -10,7 +9,6 @@ import useTopNavigation from './use-top-navigation';
 import Feedback from '../feedback/internal/feedback';
 
 export default function TopNavigation() {
-  const { t } = useTranslation();
   const {
     autosuggestRef,
     autosuggestOptions,
@@ -50,7 +48,7 @@ export default function TopNavigation() {
                     onLoadItems={handleLoadItems}
                     onSelect={handleSelect}
                     onKeyDown={handleKeyDown}
-                    placeholder={t('nav.search.placeholder')}
+                    placeholder="Search live streams"
                     value={searchInputValue}
                     options={autosuggestOptions}
                   />

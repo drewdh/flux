@@ -7,7 +7,6 @@ import { QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-qu
 
 import { Pathname } from 'utilities/routes';
 import './index.scss';
-import './i18n';
 import './utilities/rum-init';
 import App from './app/app';
 import reportWebVitals from './reportWebVitals';
@@ -71,7 +70,7 @@ const router = createBrowserRouter([
   },
 ]);
 
-const locale = document.documentElement.lang;
+const locale = 'en';
 const messages = await importMessages(locale);
 const queryClient = new QueryClient({
   queryCache: new QueryCache({

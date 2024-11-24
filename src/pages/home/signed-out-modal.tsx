@@ -6,7 +6,7 @@ import TextContent from '@cloudscape-design/components/text-content';
 import SpaceBetween from '@cloudscape-design/components/space-between';
 import Button from '@cloudscape-design/components/button';
 
-import { connectHref } from './page';
+import { connectHref } from '../../constants';
 
 export default function SignedOutModal() {
   const [visible, setVisible] = useState<boolean>(false);

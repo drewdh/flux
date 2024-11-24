@@ -12,7 +12,7 @@ import { useContainerQuery } from '@cloudscape-design/component-toolkit';
 
 import styles from './chat.module.scss';
 import ChatMessage, { ChatMessageProps } from './chat-message';
-import { connectHref } from '../home/page';
+import { connectHref } from '../../constants';
 import { ChatEvent } from '../../api/twitch-types';
 import { useFeedback } from '../../feedback/feedback-context';
 import ChatBox from 'common/chat-box';

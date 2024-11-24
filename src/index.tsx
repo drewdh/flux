@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { lazy } from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter } from 'react-router-dom';
 import { RouterProvider } from 'react-router';
@@ -11,19 +11,19 @@ import './i18n';
 import './utilities/rum-init';
 import App from './app/app';
 import reportWebVitals from './reportWebVitals';
-import TwitchPlayerPage from './pages/player/twitch-page';
-import TwitchPage from './pages/home/page';
-import ResultsPage from './pages/results/page';
 import ErrorBoundary from 'common/error-boundary';
-import NotFoundPage from './pages/not-found-page';
-import SettingsPage from './pages/settings/settings';
 import { SettingsProvider } from 'utilities/settings';
 import { TwitchError } from './api/twitch-api-client';
-import ChannelPage from './pages/channel/page';
-import GameDetailPage from './pages/game-detail/game-detail';
 import { FeedbackProvider } from './feedback/feedback-context';
-import WelcomePage from './pages/home/welcome-page';
-import HelpPage from './pages/help';
+const TwitchPlayerPage = lazy(() => import('./pages/player/twitch-page'));
+const TwitchPage = lazy(() => import('./pages/home/page'));
+const ResultsPage = lazy(() => import('./pages/results/page'));
+const NotFoundPage = lazy(() => import('./pages/not-found-page'));
+const SettingsPage = lazy(() => import('./pages/settings/settings'));
+const ChannelPage = lazy(() => import('./pages/channel/page'));
+const GameDetailPage = lazy(() => import('./pages/game-detail/game-detail'));
+const WelcomePage = lazy(() => import('./pages/home/welcome-page'));
+const HelpPage = lazy(() => import('./pages/help'));
 
 const router = createBrowserRouter([
   {

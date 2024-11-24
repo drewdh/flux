@@ -3,7 +3,7 @@ import Button from '@cloudscape-design/components/button';
 
 import FluxAppLayout from 'common/flux-app-layout';
 import FullHeightContent from 'common/full-height-content';
-import { connectHref } from './page';
+import { connectHref } from '../../constants';
 import SignedOutModal from './signed-out-modal';
 
 export default function WelcomePage() {

@@ -3,6 +3,9 @@ import { Outlet, useLocation } from 'react-router';
 
 import TopNavigation from '../top-navigation';
 import ErrorBoundary from 'common/error-boundary';
+import { Suspense } from 'react';
+import FluxAppLayout from 'common/flux-app-layout';
+import StatusIndicator from '@cloudscape-design/components/status-indicator';
 
 export default function App() {
   const location = useLocation();
@@ -11,8 +14,20 @@ export default function App() {
     <>
       <TopNavigation />
       <ErrorBoundary location={location}>
-        <Outlet />
+        <Suspense fallback={<Loading />}>
+          <Outlet />
+        </Suspense>
       </ErrorBoundary>
     </>
+  );
+}
+
+function Loading() {
+  return (
+    <FluxAppLayout
+      content={<StatusIndicator type="loading">Loading</StatusIndicator>}
+      navigationHide
+      toolsHide
+    />
   );
 }

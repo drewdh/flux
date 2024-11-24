@@ -32,7 +32,7 @@ import {
 import { TwitchApiClient, TwitchError } from './twitch-api-client';
 import { Pathname } from 'utilities/routes';
 import useAddNotification from 'common/use-add-notification';
-import { connectHref } from '../pages/home/page';
+import { connectHref } from '../constants';
 import { awsRum } from 'utilities/rum-init';
 
 export enum QueryKey {

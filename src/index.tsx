@@ -1,4 +1,4 @@
-import React, { lazy } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter } from 'react-router-dom';
 import { RouterProvider } from 'react-router';
@@ -14,15 +14,6 @@ import ErrorBoundary from 'common/error-boundary';
 import { SettingsProvider } from 'utilities/settings';
 import { TwitchError } from './api/twitch-api-client';
 import { FeedbackProvider } from './feedback/feedback-context';
-const TwitchPlayerPage = lazy(() => import('./pages/player/twitch-page'));
-const TwitchPage = lazy(() => import('./pages/home/page'));
-const ResultsPage = lazy(() => import('./pages/results/page'));
-const NotFoundPage = lazy(() => import('./pages/not-found-page'));
-const SettingsPage = lazy(() => import('./pages/settings/settings'));
-const ChannelPage = lazy(() => import('./pages/channel/page'));
-const GameDetailPage = lazy(() => import('./pages/game-detail/game-detail'));
-const WelcomePage = lazy(() => import('./pages/home/welcome-page'));
-const HelpPage = lazy(() => import('./pages/help'));
 
 const router = createBrowserRouter([
   {
@@ -32,39 +23,66 @@ const router = createBrowserRouter([
       {
         path: Pathname.Fallback,
         // TODO: Log 404s since it could be a broken link
-        element: <NotFoundPage />,
+        lazy: async () => {
+          const file = await import('./pages/not-found-page');
+          return { Component: file.default };
+        },
       },
       {
         path: Pathname.Live,
-        element: <TwitchPlayerPage />,
+        lazy: async () => {
+          const file = await import('./pages/player/twitch-page');
+          return { Component: file.default };
+        },
       },
       {
         path: Pathname.Welcome,
-        element: <WelcomePage />,
+        lazy: async () => {
+          const file = await import('./pages/home/welcome-page');
+          return { Component: file.default };
+        },
       },
       {
         path: Pathname.Home,
-        element: <TwitchPage />,
+        lazy: async () => {
+          const file = await import('./pages/home/page');
+          return { Component: file.default };
+        },
       },
       {
         path: Pathname.Results,
-        element: <ResultsPage />,
+        lazy: async () => {
+          const file = await import('./pages/results/page');
+          return { Component: file.default };
+        },
       },
       {
         path: Pathname.Settings,
-        element: <SettingsPage />,
+        lazy: async () => {
+          const file = await import('./pages/settings/settings');
+          return { Component: file.default };
+        },
       },
       {
         path: Pathname.Profile,
-        element: <ChannelPage />,
+        lazy: async () => {
+          const file = await import('./pages/channel/page');
+          return { Component: file.default };
+        },
       },
       {
         path: Pathname.Game,
-        element: <GameDetailPage />,
+        lazy: async () => {
+          const file = await import('./pages/game-detail/game-detail');
+          return { Component: file.default };
+        },
       },
       {
         path: Pathname.Help,
-        element: <HelpPage />,
+        lazy: async () => {
+          const file = await import('./pages/help');
+          return { Component: file.default };
+        },
       },
     ],
   },

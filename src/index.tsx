@@ -8,7 +8,6 @@ import { QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-qu
 import { Pathname } from 'utilities/routes';
 import './index.scss';
 import './utilities/rum-init';
-import App from './app/app';
 import reportWebVitals from './reportWebVitals';
 import ErrorBoundary from 'common/error-boundary';
 import { SettingsProvider } from 'utilities/settings';
@@ -17,7 +16,10 @@ import { FeedbackProvider } from './feedback/feedback-context';
 
 const router = createBrowserRouter([
   {
-    element: <App />,
+    lazy: async () => {
+      const file = await import('./app/app');
+      return { Component: file.default };
+    },
     errorElement: <ErrorBoundary />,
     children: [
       {

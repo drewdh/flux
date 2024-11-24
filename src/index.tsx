@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { lazy } from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter } from 'react-router-dom';
 import { RouterProvider } from 'react-router';
@@ -9,7 +9,7 @@ import { Pathname } from 'utilities/routes';
 import './index.scss';
 import './utilities/rum-init';
 import reportWebVitals from './reportWebVitals';
-import ErrorBoundary from 'common/error-boundary';
+const ErrorBoundary = lazy(() => import('common/error-boundary'));
 import { SettingsProvider } from 'utilities/settings';
 import { TwitchError } from './api/twitch-api-client';
 import { FeedbackProvider } from './feedback/feedback-context';

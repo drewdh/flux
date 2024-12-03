@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router';
+import { Navigate, useLocation, useNavigate } from 'react-router';
 import SpaceBetween from '@cloudscape-design/components/space-between';
 import Header from '@cloudscape-design/components/header';
 import StatusIndicator from '@cloudscape-design/components/status-indicator';
@@ -43,7 +43,7 @@ export default function TwitchPage() {
   const isLoading = isLoadingFollowed || isLoadingTopStreams || isLoadingTopGames;
 
   if (!isConnected) {
-    navigate(Pathname.Welcome);
+    return <Navigate to={Pathname.Welcome} />;
   }
 
   function renderContent() {

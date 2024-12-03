@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useMemo } from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router';
 import SpaceBetween from '@cloudscape-design/components/space-between';
 import Header from '@cloudscape-design/components/header';
@@ -17,11 +17,10 @@ import { interpolatePathname, Pathname } from 'utilities/routes';
 
 export default function TwitchPage() {
   useTitle('Flux');
-  const [isConnected, setIsConnected] = useState<boolean>(false);
   const { hash } = useLocation();
   const navigate = useNavigate();
 
-  useEffect(() => {
+  const isConnected = useMemo(() => {
     const hashParams = new URLSearchParams(hash.split('#')[1]);
     const hashAccessToken = hashParams.get('access_token');
     if (hashAccessToken) {
@@ -29,7 +28,7 @@ export default function TwitchPage() {
       navigate({ hash: '' }, { replace: true });
     }
     // TODO: Handle user denying permission
-    setIsConnected(Boolean(hashAccessToken || localStorage.getItem('access_token')));
+    return Boolean(hashAccessToken || localStorage.getItem('access_token'));
   }, [hash, navigate]);
 
   const { data, isLoading: isLoadingFollowed } = useGetFollowedStreams();

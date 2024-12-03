@@ -9,6 +9,7 @@ import { Pathname } from 'utilities/routes';
 import './index.scss';
 import './utilities/rum-init';
 import reportWebVitals from './reportWebVitals';
+import App from './app/app';
 const ErrorBoundary = lazy(() => import('common/error-boundary'));
 import { SettingsProvider } from 'utilities/settings';
 import { TwitchError } from './api/twitch-api-client';
@@ -16,10 +17,7 @@ import { FeedbackProvider } from './feedback/feedback-context';
 
 const router = createBrowserRouter([
   {
-    lazy: async () => {
-      const file = await import('./app/app');
-      return { Component: file.default };
-    },
+    element: <App />,
     errorElement: <ErrorBoundary />,
     children: [
       {

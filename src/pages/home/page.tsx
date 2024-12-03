@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useCallback } from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router';
 import SpaceBetween from '@cloudscape-design/components/space-between';
 import Header from '@cloudscape-design/components/header';
@@ -20,15 +20,15 @@ export default function TwitchPage() {
   const { hash } = useLocation();
   const navigate = useNavigate();
 
-  const isConnected = useMemo(() => {
+  const getAccessToken = useCallback((): string | null => {
     const hashParams = new URLSearchParams(hash.split('#')[1]);
     const hashAccessToken = hashParams.get('access_token');
+    // TODO: Handle user denying permission
     if (hashAccessToken) {
       localStorage.setItem('access_token', hashAccessToken);
       navigate({ hash: '' }, { replace: true });
     }
-    // TODO: Handle user denying permission
-    return Boolean(hashAccessToken || localStorage.getItem('access_token'));
+    return hashAccessToken || localStorage.getItem('access_token');
   }, [hash, navigate]);
 
   const { data, isLoading: isLoadingFollowed } = useGetFollowedStreams();
@@ -41,7 +41,7 @@ export default function TwitchPage() {
   const topStreams = topStreamsData?.pages.flatMap((page) => page.data);
   const isLoading = isLoadingFollowed || isLoadingTopStreams || isLoadingTopGames;
 
-  if (!isConnected) {
+  if (!getAccessToken()) {
     return <Navigate to={Pathname.Welcome} />;
   }
 

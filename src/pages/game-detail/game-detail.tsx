@@ -43,7 +43,7 @@ export default function GameDetailPage() {
   return (
     <FluxAppLayout
       toolsHide
-      maxContentWidth={1300}
+      disableContentPaddings
       content={
         <>
           {loading ? (
@@ -53,6 +53,8 @@ export default function GameDetailPage() {
           ) : (
             <ContentLayout
               disableOverlap
+              maxContentWidth={1300}
+              headerVariant="high-contrast"
               header={
                 <div className={styles.header}>
                   <FluxImage

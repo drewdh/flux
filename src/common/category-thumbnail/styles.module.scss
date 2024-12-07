@@ -2,16 +2,20 @@
 
 .container {
   display: flex;
+  border: 1px solid cs.$color-border-divider-secondary;
   flex-direction: column;
-  transition: background-color 0.16s ease-out;
+  transition: all .3s cubic-bezier(0,0,.5,1);
   border-radius: 20px;
+  box-shadow: 2px 4px 12px #00000014;
+  background-color: cs.$color-background-input-disabled;
 
   &:hover {
-    background-color: cs.$color-background-input-disabled;
+    box-shadow: 2px 4px 16px #00000029;
   }
 
   .mediaWrapper {
-    border-radius: calc(24px - #{cs.$space-scaled-s});
+    border-top-left-radius: calc(24px - #{cs.$space-scaled-s});
+    border-top-right-radius: calc(24px - #{cs.$space-scaled-s});
     overflow: hidden;
   }
 
@@ -24,7 +28,7 @@
   }
 
   .titleWrapper {
-    padding: cs.$space-scaled-s 0;
+    padding: cs.$space-scaled-m;
     font-family: cs.$font-family-base;
     font-size: cs.$font-size-body-m;
     line-height: cs.$line-height-body-m;

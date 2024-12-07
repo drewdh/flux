@@ -1,26 +1,30 @@
 @use '@cloudscape-design/design-tokens' as cs;
 
 .wrapper {
-  transition: background-color 0.16s ease-out;
   border-radius: 20px;
   cursor: pointer;
+  background-color: cs.$color-background-input-disabled;
+  box-shadow: 2px 4px 12px #00000014;
+  transition: all .3s cubic-bezier(0,0,.5,1);
+  border: 1px solid cs.$color-border-divider-secondary;
 
-  &:hover, &:focus {
-    background-color: cs.$color-background-input-disabled;
+  &:hover {
+    box-shadow: 2px 4px 16px #00000029;
   }
 }
 .mediaWrapper {
-  border-radius: calc(24px - #{cs.$space-scaled-s});
+  border-top-left-radius: calc(24px - #{cs.$space-scaled-s});
+  border-top-right-radius: calc(24px - #{cs.$space-scaled-s});
   overflow: hidden;
 }
 a {
   text-decoration: none;
 }
 .contentWrapper {
-  align-items: start;
+  align-items: center;
   display: flex;
   column-gap: cs.$space-scaled-xs;
-  padding: cs.$space-scaled-s 0;
+  padding: cs.$space-scaled-m;
 }
 .viewerCountWrapper {
   margin-left: auto;

@@ -3,13 +3,14 @@
 $xxs: 16px;
 $xs: 18px;
 $s: 28px;
+$m: 42px;
 $l: 180px;
 
 .avatar {
-  border-radius: 35px;
+  border-radius: $m;
   display: block;
-  width: 35px;
-  height: 35px;
+  width: $m;
+  height: $m;
   &.xxs {
     border-radius: $xxs;
     width: $xxs;

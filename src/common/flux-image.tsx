@@ -14,7 +14,7 @@ function preloadImage(src: string) {
   });
 }
 
-export default function FluxImage({ src, isLive, viewCount, ...rest }: Props) {
+export default function FluxImage({ src, isLive, ...rest }: Props) {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
   useEffect(() => {
@@ -52,18 +52,6 @@ export default function FluxImage({ src, isLive, viewCount, ...rest }: Props) {
             </Badge>
           </div>
         )}
-        {viewCount && (
-          <div
-            style={{
-              position: 'absolute',
-              bottom: spaceScaledXs,
-              right: spaceScaledXs,
-              pointerEvents: 'none',
-            }}
-          >
-            <Badge color="grey">{viewCount} viewers</Badge>
-          </div>
-        )}
       </div>
     </div>
   );
@@ -72,5 +60,4 @@ export default function FluxImage({ src, isLive, viewCount, ...rest }: Props) {
 interface Props
   extends React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement> {
   isLive?: boolean;
-  viewCount?: number;
 }

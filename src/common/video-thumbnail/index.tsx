@@ -23,7 +23,6 @@ export default function VideoThumbnail({ isLive, stream }: VideoThumbnailProps) 
       <div className={styles.mediaWrapper}>
         <Link to={videoHref} onClick={(e) => e.stopPropagation()}>
           <FluxImage
-            viewCount={viewerCount}
             style={{
               aspectRatio: '16 / 9',
               backgroundColor: colorBackgroundInputDisabled,
@@ -36,23 +35,17 @@ export default function VideoThumbnail({ isLive, stream }: VideoThumbnailProps) 
         </Link>
       </div>
       <div className={styles.contentWrapper}>
-        <Link to={profileHref} onClick={(e) => e.stopPropagation()}>
-          <Avatar userId={stream.user_id} size="m" />
-        </Link>
+        <Avatar userId={stream.user_id} size="m" />
         <Box>
-          <span className={styles.streamTitle}>
-            <Link to={videoHref} onClick={(e) => e.stopPropagation()}>
-              {stream.user_name}
-            </Link>
-          </span>
+          <span className={styles.streamTitle}>{stream.user_name}</span>
           {/*<Link to={profileHref} onClick={(e) => e.stopPropagation()}>*/}
           {/*  <Box variant="small">{stream.user_name}</Box>*/}
           {/*</Link>*/}
           <Box variant="small" display="block">
             <SpaceBetween size="xxs" direction="horizontal">
               <span>{stream.game_name}</span>
-              {/*<span>&bull;</span>*/}
-              {/*{viewerCount} viewers*/}
+              <span>&bull;</span>
+              {viewerCount} viewers
             </SpaceBetween>
           </Box>
         </Box>

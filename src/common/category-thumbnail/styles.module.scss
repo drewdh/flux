@@ -6,12 +6,13 @@
   border-radius: calc(24px - #{cs.$space-scaled-s});
   overflow: hidden;
   flex-direction: column;
-  transition: all .3s cubic-bezier(0,0,.5,1);
+  transition: all 150ms ease-out;
   box-shadow: 2px 4px 12px #00000014;
   background-color: cs.$color-background-input-disabled;
 
   &:hover {
     box-shadow: 2px 4px 16px #00000029;
+    transform: scale(1.01);
   }
 
   .media {

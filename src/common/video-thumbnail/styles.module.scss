@@ -1,7 +1,8 @@
 @use '@cloudscape-design/design-tokens' as cs;
 
 .wrapper {
-  border-radius: 20px;
+  border-radius: calc(24px - #{cs.$space-scaled-s});
+  overflow: hidden;
   cursor: pointer;
   background-color: cs.$color-background-input-disabled;
   box-shadow: 2px 4px 12px #00000014;
@@ -11,11 +12,6 @@
   &:hover {
     box-shadow: 2px 4px 16px #00000029;
   }
-}
-.mediaWrapper {
-  border-top-left-radius: calc(24px - #{cs.$space-scaled-s});
-  border-top-right-radius: calc(24px - #{cs.$space-scaled-s});
-  overflow: hidden;
 }
 a {
   text-decoration: none;

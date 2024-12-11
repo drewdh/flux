@@ -3,20 +3,15 @@
 .container {
   display: flex;
   border: 1px solid cs.$color-border-divider-secondary;
+  border-radius: calc(24px - #{cs.$space-scaled-s});
+  overflow: hidden;
   flex-direction: column;
   transition: all .3s cubic-bezier(0,0,.5,1);
-  border-radius: 20px;
   box-shadow: 2px 4px 12px #00000014;
   background-color: cs.$color-background-input-disabled;
 
   &:hover {
     box-shadow: 2px 4px 16px #00000029;
-  }
-
-  .mediaWrapper {
-    border-top-left-radius: calc(24px - #{cs.$space-scaled-s});
-    border-top-right-radius: calc(24px - #{cs.$space-scaled-s});
-    overflow: hidden;
   }
 
   .media {

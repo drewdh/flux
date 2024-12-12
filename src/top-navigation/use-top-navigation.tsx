@@ -10,7 +10,6 @@ import { useFeedback } from '../feedback/feedback-context';
 enum MenuItemId {
   Feedback = 'feedback',
   SignOut = 'signOut',
-  Settings = 'settings',
   Help = 'help',
 }
 
@@ -39,7 +38,16 @@ export default function useTopNavigation(): State {
     },
   };
 
-  const utilities: TopNavigationProps.Utility[] = [];
+  const utilities: TopNavigationProps.Utility[] = [
+    {
+      type: 'button',
+      iconName: 'settings',
+      href: Pathname.Settings,
+      onFollow: (event) => {
+        follow({ href: event.detail.href!, event });
+      },
+    },
+  ];
 
   if (scopeData?.login) {
     utilities.push({
@@ -62,11 +70,6 @@ export default function useTopNavigation(): State {
         {
           id: MenuItemId.SignOut,
           text: 'Sign out',
-        },
-        {
-          id: MenuItemId.Settings,
-          text: 'Settings',
-          href: Pathname.Settings,
         },
         {
           id: MenuItemId.Help,

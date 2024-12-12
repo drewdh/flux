@@ -7,22 +7,22 @@ import styles from './styles.module.scss';
 import { topNavId } from './constants';
 import useTopNavigation from './use-top-navigation';
 import Feedback from '../feedback/internal/feedback';
+import useGlobalSearch from './use-global-search';
 
 export default function TopNavigation() {
+  const { i18nStrings, identity, utilities } = useTopNavigation();
+
   const {
-    autosuggestRef,
     autosuggestOptions,
+    autosuggestRef,
     handleKeyDown,
     handleLoadItems,
     handleSearchChange,
     handleSelect,
     handleSubmit,
-    i18nStrings,
-    identity,
     searchHidden,
     searchInputValue,
-    utilities,
-  } = useTopNavigation();
+  } = useGlobalSearch();
 
   return (
     <>

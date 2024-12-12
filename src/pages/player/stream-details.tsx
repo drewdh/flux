@@ -18,6 +18,7 @@ import Avatar from 'common/avatar';
 
 const languageLabelMap: Record<string, string> = {
   en: 'English',
+  ja: 'Japanese',
   de: 'German',
   es: 'Spanish',
   pt: 'Portuguese',

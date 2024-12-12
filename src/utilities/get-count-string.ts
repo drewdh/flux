@@ -1,3 +1,5 @@
+import interpolate from 'utilities/interpolate';
+
 interface GetCountStringOptions {
   singularString: string;
   otherString: string;
@@ -9,5 +11,6 @@ export default function getCountString({
   otherString,
   count,
 }: GetCountStringOptions) {
-  return (count === 1 ? singularString : otherString).replace('{{count}}', count.toLocaleString());
+  const template = count === 1 ? singularString : otherString;
+  return interpolate(template, { count: count.toLocaleString() });
 }

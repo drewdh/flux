@@ -102,60 +102,69 @@ export default function StreamDetails({ broadcasterUserId }: StreamDetailsProps)
   const gameHref = interpolatePathname(Pathname.Game, { gameId: streamData?.game_id ?? '' });
 
   return (
-    <Container
-      header={
-        <Header
-          variant="h2"
-          description={
+    <SpaceBetween size="l">
+      <SpaceBetween size="xxs">
+        <Header variant="h3" headingTagOverride="h1">
+          {streamData?.title}
+        </Header>
+        <SpaceBetween size="xs" direction="horizontal" alignItems="center">
+          <InternalLink
+            variant="primary"
+            href={interpolatePathname(Pathname.Profile, { login: streamData?.user_login ?? '' })}
+          >
+            <Avatar userId={streamData?.user_id ?? ''} size="m" />
+          </InternalLink>
+          <SpaceBetween direction="vertical" size="xxs">
             <InternalLink
               variant="primary"
               href={interpolatePathname(Pathname.Profile, { login: streamData?.user_login ?? '' })}
             >
-              <SpaceBetween size="xs" direction="horizontal">
-                <Avatar userId={streamData?.user_id ?? ''} size="s" />
-                {streamData?.user_name}
-              </SpaceBetween>
+              {streamData?.user_name}
             </InternalLink>
-          }
-          actions={`${streamData?.viewer_count.toLocaleString() ?? 0} watching now`}
-        >
-          {streamData?.title}
-        </Header>
-      }
-    >
-      <KeyValuePairs
-        columns={6}
-        items={[
-          {
-            label: 'Category',
-            value:
-              streamData?.game_id && streamData.game_name ? (
-                <InternalLink variant="primary" href={gameHref}>
-                  {streamData.game_name}
-                </InternalLink>
-              ) : (
-                '-'
-              ),
-          },
-          {
-            label: 'Started',
-            value: streamData?.started_at ? <RelativeTime date={streamData.started_at} /> : '-',
-          },
-          {
-            label: 'Followers',
-            value: followerData?.total.toLocaleString() ?? '-',
-          },
-          {
-            label: 'Tags',
-            value: streamData?.tags?.join(', ') ?? '-',
-          },
-          {
-            label: 'Language',
-            value: languageLabelMap[streamData?.language ?? ''] ?? streamData?.language ?? '-',
-          },
-        ]}
-      />
-    </Container>
+            <Box variant="small" color="text-body-secondary">
+              {followerData?.total.toLocaleString(undefined, { notation: 'compact' }) ?? '0'}{' '}
+              followers
+            </Box>
+          </SpaceBetween>
+        </SpaceBetween>
+      </SpaceBetween>
+      <Container>
+        <SpaceBetween size="l">
+          <KeyValuePairs
+            columns={3}
+            items={[
+              {
+                label: 'Viewers',
+                value: `${streamData?.viewer_count.toLocaleString() ?? 0} watching now`,
+              },
+              {
+                label: 'Started',
+                value: streamData?.started_at ? <RelativeTime date={streamData.started_at} /> : '-',
+              },
+              {
+                label: 'Category',
+                value:
+                  streamData?.game_id && streamData.game_name ? (
+                    <InternalLink variant="primary" href={gameHref}>
+                      {streamData.game_name}
+                    </InternalLink>
+                  ) : (
+                    '-'
+                  ),
+              },
+            ]}
+          />
+          <KeyValuePairs
+            items={[
+              {
+                label: 'Tags',
+                value: streamData?.tags?.join(', ') ?? '-',
+              },
+            ]}
+          />
+        </SpaceBetween>
+      </Container>
+    </SpaceBetween>
   );
 }
 

@@ -24,7 +24,6 @@ export default function TwitchPage() {
   const isMobile = useMobile();
   const [activeDrawerId, setActiveDrawerId] = useState<string | null>(() => DrawerId.Chat);
   const [selectedUserId, setSelectedUserId] = useState<string | null>(broadcasterId);
-  const [disableContentPaddings, setDisableContentPaddings] = useState<boolean>(false);
   const [hasUnread, setHasUnread] = useState<boolean>(false);
 
   const handleMessagesChange = useCallback(() => {
@@ -50,11 +49,8 @@ export default function TwitchPage() {
     }
   }, [selectedUserId, broadcasterId]);
 
-  // Update layout when resized
+  // Hide full-screen drawer on mobile
   useEffect(() => {
-    setDisableContentPaddings(isMobile);
-
-    // Hide full-screen drawer on mobile
     if (isMobile) {
       setActiveDrawerId(null);
     }
@@ -104,8 +100,7 @@ export default function TwitchPage() {
           },
         },
       ]}
-      disableContentPaddings={disableContentPaddings}
-      maxContentWidth={1700}
+      disableContentPaddings={isMobile}
       onDrawerChange={(event) => {
         const nextActiveDrawerId = event.detail.activeDrawerId;
         setActiveDrawerId(nextActiveDrawerId);
@@ -113,7 +108,6 @@ export default function TwitchPage() {
           setHasUnread(false);
         }
       }}
-      contentType="wizard"
       content={
         <TwitchComponent
           onUserIdChange={(userId) => {

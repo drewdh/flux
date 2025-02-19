@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { NonCancelableCustomEvent } from '@cloudscape-design/components';
 
 import DhAppLayout from 'common/flux-app-layout';
 import TwitchComponent from './twitch';
@@ -17,7 +18,7 @@ enum DrawerId {
 
 export default function TwitchPage() {
   const { user } = useParams();
-  const [chatSize, setChatSize] = useLocalStorage<number>(LocalStorageKey.ChatDrawerSize, 290);
+  const [drawerSize, setDrawerSize] = useLocalStorage<number>(LocalStorageKey.DrawerSize, 290);
   const { data: usersData } = useGetUsers({ logins: [user!] }, { enabled: !!user });
   const broadcasterId = usersData?.data[0].id ?? null;
   const isMobile = useMobile();
@@ -29,6 +30,13 @@ export default function TwitchPage() {
   const handleMessagesChange = useCallback(() => {
     setHasUnread(activeDrawerId !== DrawerId.Chat);
   }, [activeDrawerId]);
+
+  const handleDrawerResize = useCallback(
+    (event: NonCancelableCustomEvent<{ size: number }>) => {
+      setDrawerSize(event.detail.size);
+    },
+    [setDrawerSize]
+  );
 
   const { error, isLoading, isReconnectError, messages } = useChatMessages({
     broadcasterId: broadcasterId ?? '',
@@ -78,14 +86,15 @@ export default function TwitchPage() {
           ariaLabels: {
             drawerName: 'Chat',
           },
-          onResize: (event) => {
-            setChatSize(event.detail.size);
-          },
-          defaultSize: chatSize,
+          onResize: handleDrawerResize,
+          defaultSize: drawerSize,
           resizable: true,
         },
         {
           id: DrawerId.Profile,
+          defaultSize: drawerSize,
+          resizable: true,
+          onResize: handleDrawerResize,
           content: <ProfileDrawer userId={selectedUserId} />,
           trigger: {
             iconName: 'user-profile',

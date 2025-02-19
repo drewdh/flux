@@ -3,7 +3,7 @@ import { Dispatch, SetStateAction, useCallback, useState } from 'react';
 export enum LocalStorageKey {
   Appearance = 'appearance',
   Language = 'i18nextLng',
-  ChatDrawerSize = 'chatDrawerSize',
+  DrawerSize = 'drawerSize',
 }
 
 /** Helper functions for accessing local storage that safely stringify and parse values */

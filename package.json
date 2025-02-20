@@ -6,7 +6,7 @@
   "dependencies": {
     "@cloudscape-design/chat-components": "^1.0.0",
     "@cloudscape-design/component-toolkit": "^1.0.0-beta.52",
-    "@cloudscape-design/components": "^3.0.682",
+    "@cloudscape-design/components": "^3.0.904",
     "@cloudscape-design/design-tokens": "^3.0.40",
     "@cloudscape-design/global-styles": "^1.0.31",
     "@fortawesome/fontawesome-svg-core": "^6.4.2",

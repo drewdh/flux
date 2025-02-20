@@ -18,7 +18,6 @@ export default defineConfig({
     },
   },
   server: {
-    open: true,
     port: 3000,
     https: {
       cert: './certs/localhost.pem',
@@ -30,7 +29,6 @@ export default defineConfig({
   },
   preview: {
     port: 3000,
-    open: true,
     https: {
       cert: './certs/localhost.pem',
       key: './certs/localhost-key.pem',

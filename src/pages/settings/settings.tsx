@@ -21,6 +21,7 @@ export default function SettingsPage() {
             <Appearance />
             {/* Most strings aren't translated, so let's not even show this for now. */}
             {/*<Language />*/}
+            {/*<StreamLanguages />*/}
           </SpaceBetween>
         </SpaceBetween>
       }

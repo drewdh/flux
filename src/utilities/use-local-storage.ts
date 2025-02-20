@@ -3,6 +3,7 @@ import { Dispatch, SetStateAction, useCallback, useState } from 'react';
 export enum LocalStorageKey {
   Appearance = 'appearance',
   Language = 'i18nextLng',
+  StreamLanguages = 'streamLanguages',
   DrawerSize = 'drawerSize',
 }
 

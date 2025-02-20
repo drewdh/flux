@@ -24,11 +24,15 @@ export enum Appearance {
 
 const defaultAppearance = Appearance.Light;
 
+const noop = () => {};
+
 const SettingsContext = createContext<UseSettingsResult>({
   appearance: defaultAppearance,
-  setAppearance: () => {},
+  setAppearance: noop,
   language: '',
-  setLanguage: () => {},
+  setLanguage: noop,
+  streamLanguages: [],
+  setStreamLanguages: noop,
 });
 
 let isAppearanceInitialized = false;
@@ -38,6 +42,10 @@ export function SettingsProvider({ children }: PropsWithChildren) {
     defaultAppearance
   );
   const [language, setLanguage] = useLocalStorage<string>(LocalStorageKey.Language, '');
+  const [streamLanguages, setStreamLanguages] = useLocalStorage<string[]>(
+    LocalStorageKey.StreamLanguages,
+    []
+  );
   const [match] = useState(window.matchMedia('(prefers-color-scheme: dark)'));
 
   const handleAppearanceChange = useCallback(
@@ -94,6 +102,8 @@ export function SettingsProvider({ children }: PropsWithChildren) {
         setAppearance: handleAppearanceChange,
         language,
         setLanguage: handleLanguageChange,
+        streamLanguages,
+        setStreamLanguages,
       }}
     >
       {children}
@@ -108,4 +118,6 @@ interface UseSettingsResult {
   setAppearance: (appearance: Appearance) => void;
   language: string;
   setLanguage: (language: string) => void;
+  streamLanguages: string[];
+  setStreamLanguages: (languages: string[]) => void;
 }

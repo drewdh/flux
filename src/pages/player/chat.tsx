@@ -13,10 +13,10 @@ import { useContainerQuery } from '@cloudscape-design/component-toolkit';
 import styles from './chat.module.scss';
 import ChatMessage, { ChatMessageProps } from './chat-message';
 import { connectHref } from '../../constants';
-import { ChatEvent } from '../../api/twitch-types';
 import { useFeedback } from '../../feedback/feedback-context';
 import ChatBox from 'common/chat-box';
 import { useGetUsers, useSendChatMessage } from '../../api/api';
+import { ChatMessagesState } from 'common/use-chat-messages';
 
 const topNavHeight = '58px';
 const drawerHeaderHeight = '65px';
@@ -35,7 +35,8 @@ export default function Chat({
   const { data: userData } = useGetUsers({});
   const user = userData?.data[0];
   const [isScrolled, setIsScrolled] = useState<boolean>(false);
-  const [highlightedMessage, setHighlightedMessage] = useState<ChatEvent | null>(null);
+  const [highlightedMessage, setHighlightedMessage] =
+    useState<ChatMessagesState.ChatMessage | null>(null);
   const [footerHeight, footerRef] = useContainerQuery((rect) => rect.borderBoxHeight);
   const { mutate: sendChat } = useSendChatMessage();
 
@@ -62,7 +63,7 @@ export default function Chat({
         broadcaster_id: broadcasterUserId ?? '',
         message: message || chatMessage,
         sender_id: user?.id ?? '',
-        reply_parent_message_id: highlightedMessage?.message_id,
+        reply_parent_message_id: highlightedMessage?.data.message_id,
       });
       setChatMessage('');
       setHighlightedMessage(null);
@@ -145,32 +146,44 @@ export default function Chat({
                   !isLoading &&
                   // <div className={styles.messages}>
                   messages.map((message, index) => {
+                    if (message.type === 'info') {
+                      return (
+                        <Box variant="small" textAlign="center" padding={{ vertical: 'm' }}>
+                          {message.text}
+                        </Box>
+                      );
+                    }
                     let chunkPosition: ChatMessageProps.ChunkPosition = 'none';
-                    const nextMessage = messages[index - 1];
-                    const prevMessage = messages[index + 1];
-                    if (message.reply || (prevMessage?.reply && nextMessage?.reply)) {
+                    const nextMessage: ChatMessagesState.Message | undefined = messages[index - 1];
+                    const prevMessage: ChatMessagesState.Message | undefined = messages[index + 1];
+                    if (
+                      message.data.reply ||
+                      prevMessage?.type === 'info' ||
+                      nextMessage?.type === 'info' ||
+                      (prevMessage?.data.reply && nextMessage?.data.reply)
+                    ) {
                       chunkPosition = 'none';
                     } else if (
-                      prevMessage?.chatter_user_id === message.chatter_user_id &&
-                      nextMessage?.chatter_user_id === message.chatter_user_id
+                      prevMessage?.data.chatter_user_id === message.data.chatter_user_id &&
+                      nextMessage?.data.chatter_user_id === message.data.chatter_user_id
                     ) {
-                      chunkPosition = nextMessage?.reply
+                      chunkPosition = nextMessage?.data.reply
                         ? 'last'
-                        : prevMessage?.reply
+                        : prevMessage?.data.reply
                           ? 'first'
                           : 'middle';
-                    } else if (nextMessage?.chatter_user_id === message.chatter_user_id) {
-                      chunkPosition = nextMessage?.reply ? 'none' : 'first';
-                    } else if (prevMessage?.chatter_user_id === message.chatter_user_id) {
-                      chunkPosition = prevMessage?.reply ? 'none' : 'last';
+                    } else if (nextMessage?.data.chatter_user_id === message.data.chatter_user_id) {
+                      chunkPosition = nextMessage?.data.reply ? 'none' : 'first';
+                    } else if (prevMessage?.data.chatter_user_id === message.data.chatter_user_id) {
+                      chunkPosition = prevMessage?.data.reply ? 'none' : 'last';
                     }
                     return (
                       <ChatMessage
                         onAvatarClick={(userId) => onUserIdChange(userId)}
                         onMessageClick={() => setHighlightedMessage(message)}
-                        message={message}
+                        message={message.data}
                         chunkPosition={chunkPosition}
-                        key={message.message_id}
+                        key={message.data.message_id}
                       />
                     );
                   })
@@ -227,5 +240,5 @@ interface Props {
   error: Error | null;
   isLoading: boolean;
   isReconnectError: boolean;
-  messages: ChatEvent[];
+  messages: ChatMessagesState.Message[];
 }

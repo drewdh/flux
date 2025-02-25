@@ -9,6 +9,7 @@ import Chat from './chat';
 import { useGetUsers } from '../../api/api';
 import { ChatEvent } from '../../api/twitch-types';
 import ChatRestrictions from './chat-restrictions';
+import { ChatMessagesState } from 'common/use-chat-messages';
 
 // enum SettingsId {
 //   Restrictions = 'restrictions',
@@ -91,5 +92,5 @@ interface Props {
   isLoading: boolean;
   isReconnectError: boolean;
   onUserIdChange: (userId: string | null) => void;
-  messages: ChatEvent[];
+  messages: ChatMessagesState.Message[];
 }

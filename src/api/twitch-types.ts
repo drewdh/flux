@@ -354,6 +354,7 @@ export interface ChatEvent {
     /** User login of the sender of the thread’s parent message. */
     thread_user_login: string;
   };
+  type?: 'info' | undefined;
 }
 export interface ChatMessage {
   metadata: {

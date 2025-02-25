@@ -1,19 +1,50 @@
 import { useEffect, useState } from 'react';
 
-import { ChatEvent, ChatMessage as ChatMessageType, WelcomeMessage } from '../api/twitch-types';
+import {
+  ChatEvent,
+  ChatMessage,
+  ChatMessage as ChatMessageType,
+  WelcomeMessage,
+} from '../api/twitch-types';
 import {
   useCreateEventSubSubscription,
   useDeleteEventSubSubscription,
   useGetUsers,
 } from '../api/api';
 
-export default function useChatMessages({ broadcasterId, onMessagesChange }: Props): State {
+export default function useChatMessages({
+  broadcasterId,
+  onMessagesChange,
+  streamId,
+}: Props): ChatMessagesState {
+  const storageKey = `chat-${streamId}`;
   const [subscriptionId, setSubscriptionId] = useState<string>();
-  const [messages, setMessages] = useState<ChatEvent[]>([]);
+  const [messages, setMessages] = useState<ChatMessagesState.Message[]>([]);
   const [isReconnectError, setIsReconnectError] = useState<boolean>(false);
   const { mutate: deleteSubscription } = useDeleteEventSubSubscription();
   const { data: userData } = useGetUsers({});
   const user = userData?.data[0];
+
+  useEffect(() => {
+    const prevMessagesRaw = sessionStorage.getItem(storageKey);
+    try {
+      const prevMessages = prevMessagesRaw && JSON.parse(prevMessagesRaw);
+      if (!Array.isArray(prevMessages)) {
+        return;
+      }
+      if (!prevMessages.length) {
+        return setMessages(prevMessages);
+      }
+      // Add welcome message
+      setMessages([
+        {
+          type: 'info',
+          text: "Stream rejoined. Any messages sent while you were away won't be available.",
+        },
+        ...prevMessages,
+      ]);
+    } catch (_e) {}
+  }, [storageKey]);
 
   const {
     mutate: createSubscription,
@@ -69,19 +100,25 @@ export default function useChatMessages({ broadcasterId, onMessagesChange }: Pro
           // Some messages can be duplicated, so don't process these again
           // https://dev.twitch.tv/docs/eventsub/#handling-duplicate-events
           const isDuplicate = prevMessages.some(
-            (message) => message.message_id === newMessage.message_id
+            (message) =>
+              message.type === 'message' && message.data.message_id === newMessage.message_id
           );
           if (isDuplicate) {
             return prevMessages;
           }
           onMessagesChange?.();
           // Twitch limits chat to roughly 200 messages
-          return [newMessage, ...prevMessages].slice(0, 200);
+          const next = [
+            { type: 'message', data: newMessage } as ChatMessagesState.ChatMessage,
+            ...prevMessages,
+          ].slice(0, 200);
+          sessionStorage.setItem(storageKey, JSON.stringify(next));
+          return next;
         });
       }
     };
     return () => ws.close();
-  }, [broadcasterId, user, createSubscription, onMessagesChange]);
+  }, [broadcasterId, user, createSubscription, onMessagesChange, storageKey]);
 
   return {
     error,
@@ -91,14 +128,27 @@ export default function useChatMessages({ broadcasterId, onMessagesChange }: Pro
   };
 }
 
-interface State {
+export declare module ChatMessagesState {
+  interface ChatMessage {
+    type: 'message';
+    data: ChatEvent;
+  }
+  interface InfoMessage {
+    type: 'info';
+    text: string;
+  }
+  type Message = ChatMessage | InfoMessage;
+}
+
+export interface ChatMessagesState {
   error: Error | null;
   isLoading: boolean;
   isReconnectError: boolean;
-  messages: ChatEvent[];
+  messages: ChatMessagesState.Message[];
 }
 
 interface Props {
   broadcasterId: string;
   onMessagesChange?: () => void;
+  streamId?: string;
 }

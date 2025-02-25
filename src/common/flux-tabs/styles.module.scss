@@ -7,32 +7,36 @@
   font-size: cs.$font-size-body-m;
 }
 .tabs {
+  border: 2px solid cs.$color-border-input-default;
   margin-left: auto;
   margin-right: auto;
   display: flex;
-  column-gap: cs.$space-scaled-xxxs;
+  column-gap: cs.$space-scaled-xxs;
   flex-wrap: nowrap;
-  background-color: cs.$color-background-input-disabled;
   border-radius: cs.$border-radius-button;
-  padding: cs.$space-scaled-xxs;
+  padding: cs.$space-scaled-xxxs;
 }
 .tab {
   border: none;
-  color: cs.$color-text-segment-default;
+  color: cs.$color-text-button-normal-default;
   border-radius: cs.$border-radius-button;
   cursor: pointer;
-  padding: cs.$space-scaled-xxs cs.$space-scaled-xxxl;
+  padding: cs.$space-scaled-xxs cs.$space-scaled-m;
   font-weight: bold;
   letter-spacing: 0.25px;
   line-height: cs.$line-height-body-m;
-  transition: background-color 0.16s ease-out, color 0.16s ease-out;
 
   &:hover, &:focus {
-    background-color: cs.$color-background-segment-hover;
-    color: cs.$color-text-segment-hover;
+    background-color: cs.$color-background-button-normal-hover;
+    color: cs.$color-text-button-normal-hover;
   }
 
-  &.active, &:active {
+  &:active {
+    background-color: cs.$color-background-button-normal-active;
+    color: cs.$color-text-button-normal-active;
+  }
+
+  &.active {
     background-color: cs.$color-background-segment-active;
     color: cs.$color-text-segment-active;
   }

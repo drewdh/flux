@@ -8,11 +8,10 @@
   flex-direction: column;
   transition: all 150ms ease-out;
   box-shadow: 2px 4px 12px #00000014;
-  background-color: cs.$color-background-input-disabled;
 
   &:hover {
     box-shadow: 2px 4px 16px #00000029;
-    transform: scale(1.01);
+    background-color: cs.$color-background-input-disabled;
   }
 
   .media {

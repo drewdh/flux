@@ -39,7 +39,7 @@ export default function useChatMessages({
       setMessages([
         {
           type: 'info',
-          text: "Stream rejoined. Any messages sent while you were away won't be available.",
+          text: "Stream rejoined. Flux can't access messages sent while you're away.",
         },
         ...prevMessages,
       ]);

@@ -42,6 +42,7 @@
   "scripts": {
     "analyze": "source-map-explorer 'dist/assets/*.js*' --no-border-checks",
     "start": "vite",
+    "network": "vite --host",
     "build": "vite build",
     "preview": "vite preview",
     "format": "prettier . --write"

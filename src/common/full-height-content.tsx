@@ -13,7 +13,7 @@ export default function FullHeightContent({ children }: PropsWithChildren) {
     <div
       style={{
         display: 'flex',
-        height: `calc(100vh - ${topNavHeight}px - ${contentPadding} - ${breadcrumbsGap})`,
+        height: `calc(100dvh - ${topNavHeight}px - ${contentPadding} - ${breadcrumbsGap})`,
         justifyContent: 'center',
         alignItems: 'center',
         textAlign: 'center',

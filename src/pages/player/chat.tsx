@@ -84,7 +84,7 @@ export default function Chat({
             className={styles.body}
             ref={scrollContainerRef}
             style={{
-              height: `calc(100vh - ${topNavHeight} - ${drawerHeaderHeight} - ${footerHeight}px)`,
+              height: `calc(100dvh - ${topNavHeight} - ${drawerHeaderHeight} - ${footerHeight}px)`,
             }}
           >
             <div style={{ display: 'flex', flexDirection: 'column-reverse', padding: '5px 0' }}>

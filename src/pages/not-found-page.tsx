@@ -29,7 +29,7 @@ export default function NotFoundPage() {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            height: `calc(100vh - ${navHeight}px)`,
+            height: `calc(100dvh - ${navHeight}px)`,
           }}
         >
           <Box fontWeight="bold" fontSize="heading-xl">

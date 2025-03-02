@@ -3,7 +3,6 @@ import { NonCancelableCustomEvent } from '@cloudscape-design/components';
 
 import DhAppLayout from 'common/flux-app-layout';
 import TwitchComponent from './twitch';
-import ProfileDrawer from './profile-drawer';
 import { useParams } from 'react-router';
 import { useGetStreams, useGetUsers } from '../../api/api';
 import useLocalStorage, { LocalStorageKey } from 'utilities/use-local-storage';
@@ -12,7 +11,6 @@ import useChatMessages from 'common/use-chat-messages';
 import useMobile from 'utilities/use-mobile';
 
 enum DrawerId {
-  Profile = 'profile',
   Chat = 'chat',
 }
 
@@ -25,7 +23,6 @@ export default function TwitchPage() {
   const broadcasterId = usersData?.data[0].id ?? null;
   const isMobile = useMobile();
   const [activeDrawerId, setActiveDrawerId] = useState<string | null>(() => DrawerId.Chat);
-  const [selectedUserId, setSelectedUserId] = useState<string | null>(broadcasterId);
   const [hasUnread, setHasUnread] = useState<boolean>(false);
 
   const handleMessagesChange = useCallback(() => {
@@ -45,13 +42,6 @@ export default function TwitchPage() {
     streamId,
   });
 
-  // Load broadcaster profile by default
-  useEffect(() => {
-    if (broadcasterId && !selectedUserId) {
-      setSelectedUserId(broadcasterId);
-    }
-  }, [selectedUserId, broadcasterId]);
-
   // Hide full-screen drawer on mobile
   useEffect(() => {
     if (isMobile) {
@@ -68,10 +58,6 @@ export default function TwitchPage() {
           id: DrawerId.Chat,
           content: (
             <ChatDrawer
-              onUserIdChange={(userId) => {
-                setSelectedUserId(userId);
-                setActiveDrawerId(DrawerId.Profile);
-              }}
               error={error}
               isReconnectError={isReconnectError}
               isLoading={isLoading}
@@ -89,19 +75,6 @@ export default function TwitchPage() {
           defaultSize: drawerSize,
           resizable: true,
         },
-        {
-          id: DrawerId.Profile,
-          defaultSize: drawerSize,
-          resizable: true,
-          onResize: handleDrawerResize,
-          content: <ProfileDrawer userId={selectedUserId} />,
-          trigger: {
-            iconName: 'user-profile',
-          },
-          ariaLabels: {
-            drawerName: 'Profile details',
-          },
-        },
       ]}
       disableContentPaddings={isMobile}
       onDrawerChange={(event) => {
@@ -111,14 +84,7 @@ export default function TwitchPage() {
           setHasUnread(false);
         }
       }}
-      content={
-        <TwitchComponent
-          onUserIdChange={(userId) => {
-            setSelectedUserId(userId);
-            setActiveDrawerId(DrawerId.Profile);
-          }}
-        />
-      }
+      content={<TwitchComponent />}
     />
   );
 }

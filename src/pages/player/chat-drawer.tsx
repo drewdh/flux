@@ -15,13 +15,7 @@ import { ChatMessagesState } from 'common/use-chat-messages';
 //   Restrictions = 'restrictions',
 // }
 
-export default function ChatDrawer({
-  error,
-  isLoading,
-  isReconnectError,
-  messages,
-  onUserIdChange,
-}: Props) {
+export default function ChatDrawer({ error, isLoading, isReconnectError, messages }: Props) {
   const { user } = useParams();
   const { data: usersData } = useGetUsers({ logins: [user!] }, { enabled: !!user });
   const broadcasterId = usersData?.data[0].id;
@@ -71,7 +65,6 @@ export default function ChatDrawer({
         }
       >
         <Chat
-          onUserIdChange={onUserIdChange}
           broadcasterUserId={broadcasterId}
           error={error}
           isLoading={isLoading}
@@ -91,6 +84,5 @@ interface Props {
   error: Error | null;
   isLoading: boolean;
   isReconnectError: boolean;
-  onUserIdChange: (userId: string | null) => void;
   messages: ChatMessagesState.Message[];
 }

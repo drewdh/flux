@@ -23,7 +23,6 @@ const drawerHeaderHeight = '65px';
 
 export default function Chat({
   broadcasterUserId,
-  onUserIdChange,
   isReconnectError,
   messages,
   error,
@@ -179,7 +178,6 @@ export default function Chat({
                     }
                     return (
                       <ChatMessage
-                        onAvatarClick={(userId) => onUserIdChange(userId)}
                         onMessageClick={() => setHighlightedMessage(message)}
                         message={message.data}
                         chunkPosition={chunkPosition}
@@ -235,7 +233,6 @@ export default function Chat({
 }
 
 interface Props {
-  onUserIdChange: (userId: string | null) => void;
   broadcasterUserId: string | undefined;
   error: Error | null;
   isLoading: boolean;

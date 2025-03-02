@@ -1,14 +1,26 @@
 import React, { useEffect, useLayoutEffect, useMemo, useRef } from 'react';
 import { useParams } from 'react-router';
 import SpaceBetween from '@cloudscape-design/components/space-between';
+import Box from '@cloudscape-design/components/box';
+import Header from '@cloudscape-design/components/header';
+import Tabs from '@cloudscape-design/components/tabs';
 
 import styles from './styles.module.scss';
 import useTitle from 'utilities/use-title';
-import { useGetStreamByUserLogin } from '../../api/api';
+import { useGetChannelFollowers, useGetStreams } from '../../api/api';
 import StreamDetails from './stream-details';
 import { topNavSelector } from '../../top-navigation/constants';
+import InternalLink from 'common/internal-link';
+import { interpolatePathname, Pathname } from 'utilities/routes';
+import Avatar from 'common/avatar';
+import ProfileDetails from './profile-details';
 
-export default function TwitchComponent({ onUserIdChange }: Props) {
+enum TabId {
+  StreamDetails = 'streamDetails',
+  Profile = 'profile',
+}
+
+export default function TwitchComponent({}: Props) {
   const player = useRef<any>(null);
   const { user: username } = useParams();
   useTitle(`${username} - Flux`);
@@ -19,8 +31,11 @@ export default function TwitchComponent({ onUserIdChange }: Props) {
   }, [username]);
 
   // Viewer count seems to be updated every 60 seconds, so let's refetch that often
-  const { data } = useGetStreamByUserLogin(username, { refetchInterval: 1000 * 60 });
-  const streamData = data?.data?.[0];
+  const { data: _streamData } = useGetStreams(
+    { userLogins: [username!] },
+    { enabled: !!username, refetchInterval: 60000 }
+  );
+  const streamData = _streamData?.pages[0].data[0];
 
   const options = useMemo(
     () => ({
@@ -63,12 +78,59 @@ export default function TwitchComponent({ onUserIdChange }: Props) {
           style={{ maxHeight: `${maxPlayerHeight}px` }}
           className={styles.player}
         />
-        <StreamDetails broadcasterUserId={streamData?.user_id} />
+        <SpaceBetween size="l">
+          <SpaceBetween size="xxs">
+            <Header variant="h3" headingTagOverride="h1">
+              {streamData?.title}
+            </Header>
+            <UserInfo userId={streamData?.user_id} />
+          </SpaceBetween>
+          <StreamDetails broadcasterUserId={streamData?.user_id} />
+          <ProfileDetails userId={streamData?.user_id} />
+        </SpaceBetween>
       </SpaceBetween>
     </div>
   );
 }
 
-interface Props {
-  onUserIdChange: (userId: string | null) => void;
+interface Props {}
+
+interface UserInfoProps {
+  userId: string | undefined;
+}
+function UserInfo({ userId }: UserInfoProps) {
+  const { data: _streamData } = useGetStreams(
+    { userIds: [userId!] },
+    { enabled: !!userId, refetchInterval: 60000 }
+  );
+  const streamData = _streamData?.pages[0].data[0];
+  const { data: followerData } = useGetChannelFollowers({
+    broadcasterId: userId,
+  });
+
+  return (
+    <SpaceBetween size="xs" direction="horizontal" alignItems="center">
+      <InternalLink
+        variant="primary"
+        href={interpolatePathname(Pathname.Profile, {
+          login: streamData?.user_login ?? '',
+        })}
+      >
+        <Avatar userId={streamData?.user_id ?? ''} size="m" />
+      </InternalLink>
+      <SpaceBetween direction="vertical" size="xxs">
+        <InternalLink
+          variant="primary"
+          href={interpolatePathname(Pathname.Profile, {
+            login: streamData?.user_login ?? '',
+          })}
+        >
+          {streamData?.user_name}
+        </InternalLink>
+        <Box variant="small" color="text-body-secondary">
+          {followerData?.total.toLocaleString(undefined, { notation: 'compact' }) ?? '0'} followers
+        </Box>
+      </SpaceBetween>
+    </SpaceBetween>
+  );
 }

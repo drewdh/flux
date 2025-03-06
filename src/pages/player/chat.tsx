@@ -40,8 +40,7 @@ export default function Chat({
   const { mutate: sendChat } = useSendChatMessage();
 
   const handleScroll = useCallback(function (this: HTMLDivElement, event: Event) {
-    const isBottom = this.scrollHeight - (this.clientHeight + this.scrollTop) < 1;
-    setIsScrolled(!isBottom);
+    setIsScrolled(this.scrollTop < 0);
   }, []);
 
   useEffect(() => {

@@ -29,7 +29,6 @@ export default function Chat({
   isLoading,
 }: Props) {
   const [chatMessage, setChatMessage] = useState<string>('');
-  const { setIsFeedbackVisible } = useFeedback();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const { data: userData } = useGetUsers({});
   const user = userData?.data[0];
@@ -114,78 +113,10 @@ export default function Chat({
                   page to enable chat.
                 </Alert>
               )}
-              {error && !isReconnectError && (
-                <Alert type="error" header="Failed to load chat">
-                  <SpaceBetween size="m">
-                    <div>
-                      Reload the page or try again later.{' '}
-                      <Link
-                        href="#"
-                        onFollow={(e) => {
-                          e.preventDefault();
-                          setIsFeedbackVisible(true);
-                        }}
-                        variant="primary"
-                      >
-                        Send feedback
-                      </Link>{' '}
-                      and share more details.
-                    </div>
-                    <ExpandableSection headerText="Error details">
-                      <div style={{ overflow: 'auto' }}>
-                        <Box variant="pre">{JSON.stringify(error, null, 2)}</Box>
-                      </div>
-                    </ExpandableSection>
-                  </SpaceBetween>
-                </Alert>
+              {error && !isReconnectError && <Error error={error} />}
+              {!error && !isLoading && (
+                <Messages onMessageClick={setHighlightedMessage} messages={messages} />
               )}
-              {
-                !error &&
-                  !isLoading &&
-                  // <div className={styles.messages}>
-                  messages.map((message, index) => {
-                    if (message.type === 'info') {
-                      return (
-                        <Box variant="small" textAlign="center" padding={{ vertical: 'm' }}>
-                          {message.text}
-                        </Box>
-                      );
-                    }
-                    let chunkPosition: ChatMessageProps.ChunkPosition = 'none';
-                    const nextMessage: ChatMessagesState.Message | undefined = messages[index - 1];
-                    const prevMessage: ChatMessagesState.Message | undefined = messages[index + 1];
-                    if (
-                      message.data.reply ||
-                      prevMessage?.type === 'info' ||
-                      nextMessage?.type === 'info' ||
-                      (prevMessage?.data.reply && nextMessage?.data.reply)
-                    ) {
-                      chunkPosition = 'none';
-                    } else if (
-                      prevMessage?.data.chatter_user_id === message.data.chatter_user_id &&
-                      nextMessage?.data.chatter_user_id === message.data.chatter_user_id
-                    ) {
-                      chunkPosition = nextMessage?.data.reply
-                        ? 'last'
-                        : prevMessage?.data.reply
-                          ? 'first'
-                          : 'middle';
-                    } else if (nextMessage?.data.chatter_user_id === message.data.chatter_user_id) {
-                      chunkPosition = nextMessage?.data.reply ? 'none' : 'first';
-                    } else if (prevMessage?.data.chatter_user_id === message.data.chatter_user_id) {
-                      chunkPosition = prevMessage?.data.reply ? 'none' : 'last';
-                    }
-                    return (
-                      <ChatMessage
-                        onMessageClick={() => setHighlightedMessage(message)}
-                        message={message.data}
-                        chunkPosition={chunkPosition}
-                        key={message.data.message_id}
-                      />
-                    );
-                  })
-                // </div>
-              }
             </div>
           </div>
           <div ref={footerRef} className={styles.footer}>
@@ -227,6 +158,88 @@ export default function Chat({
           </div>
         </div>
       </div>
+    </>
+  );
+}
+
+function Error({ error }: { error: Error }) {
+  const { setIsFeedbackVisible } = useFeedback();
+
+  return (
+    <Alert type="error" header="Failed to load chat">
+      <SpaceBetween size="m">
+        <div>
+          Reload the page or try again later.{' '}
+          <Link
+            href="#"
+            onFollow={(e) => {
+              e.preventDefault();
+              setIsFeedbackVisible(true);
+            }}
+            variant="primary"
+          >
+            Send feedback
+          </Link>{' '}
+          and share more details.
+        </div>
+        <ExpandableSection headerText="Error details">
+          <div style={{ overflow: 'auto' }}>
+            <Box variant="pre">{JSON.stringify(error, null, 2)}</Box>
+          </div>
+        </ExpandableSection>
+      </SpaceBetween>
+    </Alert>
+  );
+}
+
+interface MessagesProps {
+  onMessageClick: (message: ChatMessagesState.ChatMessage) => void;
+  messages: ChatMessagesState.Message[];
+}
+function Messages({ messages, onMessageClick }: MessagesProps) {
+  return (
+    <>
+      {messages.map((message, index) => {
+        if (message.type === 'info') {
+          return (
+            <Box variant="small" textAlign="center" padding={{ vertical: 'm' }}>
+              {message.text}
+            </Box>
+          );
+        }
+        let chunkPosition: ChatMessageProps.ChunkPosition = 'none';
+        const nextMessage: ChatMessagesState.Message | undefined = messages[index - 1];
+        const prevMessage: ChatMessagesState.Message | undefined = messages[index + 1];
+        if (
+          message.data.reply ||
+          prevMessage?.type === 'info' ||
+          nextMessage?.type === 'info' ||
+          (prevMessage?.data.reply && nextMessage?.data.reply)
+        ) {
+          chunkPosition = 'none';
+        } else if (
+          prevMessage?.data.chatter_user_id === message.data.chatter_user_id &&
+          nextMessage?.data.chatter_user_id === message.data.chatter_user_id
+        ) {
+          chunkPosition = nextMessage?.data.reply
+            ? 'last'
+            : prevMessage?.data.reply
+              ? 'first'
+              : 'middle';
+        } else if (nextMessage?.data.chatter_user_id === message.data.chatter_user_id) {
+          chunkPosition = nextMessage?.data.reply ? 'none' : 'first';
+        } else if (prevMessage?.data.chatter_user_id === message.data.chatter_user_id) {
+          chunkPosition = prevMessage?.data.reply ? 'none' : 'last';
+        }
+        return (
+          <ChatMessage
+            onMessageClick={() => onMessageClick(message)}
+            message={message.data}
+            chunkPosition={chunkPosition}
+            key={message.data.message_id}
+          />
+        );
+      })}
     </>
   );
 }

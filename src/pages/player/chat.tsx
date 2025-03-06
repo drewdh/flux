@@ -199,7 +199,7 @@ export default function Chat({
                       iconName="close"
                     />
                   </Box>
-                  <ChatMessage message={highlightedMessage} variant="featured" />
+                  <ChatMessage message={highlightedMessage.data} variant="featured" />
                 </div>
               )}
               <div style={{ display: 'flex', gap: spaceScaledXs, flexWrap: 'nowrap' }}>

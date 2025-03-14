@@ -2,11 +2,20 @@
 
 .container {
   display: flex;
-  border: 1px solid cs.$color-border-divider-default;
-  border-radius: calc(24px - #{cs.$space-scaled-s});
+  position: relative;
+  border-radius: 16px;
   overflow: hidden;
   flex-direction: column;
   transition: all 150ms ease-out;
+
+  &:after {
+    position: absolute;
+    content: '';
+    block-size: 100%;
+    inline-size: 100%;
+    border-radius: 16px;
+    box-shadow: inset 0 0 1px 1px hsla(0,0%,100%,.12);
+  }
 
   &:hover {
     background-color: cs.$color-background-input-disabled;
@@ -21,14 +30,33 @@
   }
 
   .titleWrapper {
+    position: relative;
     padding: cs.$space-scaled-m;
     font-family: cs.$font-family-base;
     font-size: cs.$font-size-body-m;
     line-height: cs.$line-height-body-m;
     color: cs.$color-text-body-default;
+    .imageBg {
+      transform: scaleY(-1);
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      right: 0;
+    }
+    .imageBlur {
+      position: absolute;
+      left: 0;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(40, 40, 40, 0.4);
+      backdrop-filter: saturate(180%) blur(60px);
+    }
   }
 
   .title {
+    color: #c6c6cd;
     display: -webkit-box;
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
@@ -36,5 +64,6 @@
     text-overflow: ellipsis;
     word-break: break-word;
     text-align: center;
+    position: relative;
   }
 }

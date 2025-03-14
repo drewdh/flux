@@ -29,17 +29,26 @@ export default function VideoThumbnail({ isLive, stream }: VideoThumbnailProps) 
           src={`https://static-cdn.jtvnw.net/previews-ttv/live_user_${stream.user_login}-440x248.jpg`}
         />
         <div className={styles.contentWrapper}>
-          <Avatar userId={stream.user_id} size="m" />
-          <Box>
+          <img
+            alt=""
+            aria-hidden="true"
+            className={styles.background}
+            src={`https://static-cdn.jtvnw.net/previews-ttv/live_user_${stream.user_login}-440x248.jpg`}
+          />
+          <div className={styles.content}>
+            <Avatar userId={stream.user_id} size="m" />
+          </div>
+          <div className={styles.content}>
             <span className={styles.streamTitle}>{stream.user_name}</span>
-            <Box variant="small" display="block">
+            <Box variant="small" display="block" color="inherit">
               <SpaceBetween size="xxs" direction="horizontal">
                 <span>{stream.game_name}</span>
                 <span>&bull;</span>
                 {viewerCount} viewers
               </SpaceBetween>
             </Box>
-          </Box>
+          </div>
+          <div className={styles.blur} />
         </div>
       </Link>
     </div>

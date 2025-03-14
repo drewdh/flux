@@ -9,12 +9,24 @@ $viewport-breakpoint-xs: 688px;
   border: 1px solid cs.$color-border-divider-default;
 }
 .player {
+  position: relative;
   aspect-ratio: 16 / 9;
   border-radius: 16px;
   overflow: hidden;
   background-color: cs.$color-background-input-disabled;
   margin-left: auto;
   margin-right: auto;
+  &:after {
+    position: absolute;
+    content: '';
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    border-radius: 16px;
+    box-shadow: inset 0 0 1px 1px hsla(0, 0%, 100%, .12);
+    pointer-events: none;
+  }
 }
 .stats {
   display: flex;

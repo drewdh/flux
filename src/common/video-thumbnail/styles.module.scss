@@ -1,5 +1,11 @@
 @use '@cloudscape-design/design-tokens' as cs;
 
+:global(.awsui-dark-mode) {
+  .blur {
+    background-color: rgba(22, 29, 38, 0.4);
+  }
+}
+
 .wrapper {
   display: flex;
   flex-direction: column;
@@ -40,14 +46,14 @@ a {
   left: 0;
   height: 100%;
   width: 100%;
-  background-color: rgba(40, 40, 40, .4);
+  background-color: rgba(#fff, .5);
   backdrop-filter: blur(60px) saturate(180%);
 }
 .content {
   z-index: 1;
 }
 .contentWrapper {
-  color: #c6c6cd;
+  color: cs.$color-text-body-default;
   align-items: center;
   display: flex;
   position: relative;

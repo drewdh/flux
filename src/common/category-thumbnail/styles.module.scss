@@ -1,4 +1,21 @@
 @use '@cloudscape-design/design-tokens' as cs;
+@use 'sass:color';
+
+:global(.awsui-dark-mode) {
+  .imageBlur {
+    background-color: rgba(22, 29, 38, 0.4);
+  }
+}
+
+.imageBlur {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(#fff, 0.5);
+  backdrop-filter: saturate(180%) blur(60px);
+}
 
 .container {
   display: flex;
@@ -6,7 +23,6 @@
   border-radius: 16px;
   overflow: hidden;
   flex-direction: column;
-  transition: all 150ms ease-out;
 
   &:after {
     position: absolute;
@@ -45,19 +61,9 @@
       width: 100%;
       right: 0;
     }
-    .imageBlur {
-      position: absolute;
-      left: 0;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      background-color: rgba(40, 40, 40, 0.4);
-      backdrop-filter: saturate(180%) blur(60px);
-    }
   }
 
   .title {
-    color: #c6c6cd;
     display: -webkit-box;
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;

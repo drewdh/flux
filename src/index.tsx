@@ -23,70 +23,48 @@ const router = createBrowserRouter([
       {
         path: Pathname.Fallback,
         // TODO: Log 404s since it could be a broken link
-        lazy: async () => {
-          const file = await import('./pages/not-found-page');
-          return { Component: file.default };
-        },
+        lazy: () => lazyLoadPath('./pages/not-found-page'),
       },
       {
         path: Pathname.Live,
-        lazy: async () => {
-          const file = await import('./pages/player/twitch-page');
-          return { Component: file.default };
-        },
+        lazy: () => lazyLoadPath('./pages/player/twitch-page'),
       },
       {
         path: Pathname.Welcome,
-        lazy: async () => {
-          const file = await import('./pages/home/welcome-page');
-          return { Component: file.default };
-        },
+        lazy: () => lazyLoadPath('./pages/home/welcome-page'),
       },
       {
         path: Pathname.Home,
-        lazy: async () => {
-          const file = await import('./pages/home/page');
-          return { Component: file.default };
-        },
+        lazy: () => lazyLoadPath('./pages/home/page'),
       },
       {
         path: Pathname.Results,
-        lazy: async () => {
-          const file = await import('./pages/results/page');
-          return { Component: file.default };
-        },
+        lazy: () => lazyLoadPath('./pages/results/page'),
       },
       {
         path: Pathname.Settings,
-        lazy: async () => {
-          const file = await import('./pages/settings/settings');
-          return { Component: file.default };
-        },
+        lazy: () => lazyLoadPath('./pages/settings/settings'),
       },
       {
         path: Pathname.Profile,
-        lazy: async () => {
-          const file = await import('./pages/channel/page');
-          return { Component: file.default };
-        },
+        lazy: () => lazyLoadPath('./pages/channel/page'),
       },
       {
         path: Pathname.Game,
-        lazy: async () => {
-          const file = await import('./pages/game-detail/game-detail');
-          return { Component: file.default };
-        },
+        lazy: () => lazyLoadPath('./pages/game-detail/game-detail'),
       },
       {
         path: Pathname.Help,
-        lazy: async () => {
-          const file = await import('./pages/help');
-          return { Component: file.default };
-        },
+        lazy: () => lazyLoadPath('./pages/help'),
       },
     ],
   },
 ]);
+
+async function lazyLoadPath(path: string, componentName: string = 'default') {
+  const file = await import(path);
+  return { Component: file[componentName] };
+}
 
 const locale = 'en';
 const messages = await importMessages(locale);

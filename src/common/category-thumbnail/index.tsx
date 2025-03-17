@@ -6,7 +6,7 @@ import styles from './styles.module.scss';
 /** Container with top media that doesn't restrict the media's height */
 export default function CategoryThumbnail({ href, imgSrc, title }: Props) {
   return (
-    <Link to={href}>
+    <Link to={href} className={styles.link}>
       <div className={styles.container}>
         {/* Leave alt empty since it's the same text as the category title */}
         <FluxImage alt="" src={imgSrc} className={styles.media} />

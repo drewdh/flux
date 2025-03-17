@@ -84,6 +84,13 @@ const router = createBrowserRouter([
           return { Component: file.default };
         },
       },
+      {
+        path: Pathname.PopularCategories,
+        lazy: async () => {
+          const file = await import('./pages/popular-categories');
+          return { Component: file.default };
+        },
+      },
     ],
   },
 ]);

@@ -323,9 +323,11 @@ export class TwitchApiClient {
 
   async getTopGames(request: GetTopGamesRequest): Promise<GetTopGamesResponse> {
     const params = new URLSearchParams();
-    Object.keys(request).forEach((key) =>
-      params.append(key, request[key as keyof GetTopGamesRequest] as string)
-    );
+    Object.keys(request).forEach((key) => {
+      if (request[key as keyof GetTopGamesRequest]) {
+        params.append(key, request[key as keyof GetTopGamesRequest] as string);
+      }
+    });
     const resp = await fetch(`https://api.twitch.tv/helix/games/top?${params.toString()}`, {
       method: 'GET',
       headers: this.getDefaultHeaders(),

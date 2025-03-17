@@ -14,6 +14,7 @@ import styles from './styles.module.scss';
 import FullHeightContent from 'common/full-height-content';
 import CategoryThumbnail from 'common/category-thumbnail';
 import { interpolatePathname, Pathname } from 'utilities/routes';
+import ButtonLink from 'common/button-link';
 
 export default function TwitchPage() {
   useTitle('Flux');
@@ -39,6 +40,7 @@ export default function TwitchPage() {
   const { data: topGamesData, isLoading: isLoadingTopGames } = useGetTopGames({ first: 7 });
   const followedStreams = data?.pages.flatMap((page) => page.data);
   const topStreams = topStreamsData?.pages.flatMap((page) => page.data);
+  const topGames = topGamesData?.pages.flatMap((page) => page.data);
   const isLoading = isLoadingFollowed || isLoadingTopStreams || isLoadingTopGames;
 
   if (!getAccessToken()) {
@@ -69,9 +71,16 @@ export default function TwitchPage() {
           </FlexibleColumnLayout>
         </SpaceBetween>
         <SpaceBetween size="m">
-          <Header>Popular categories</Header>
+          <SpaceBetween size="xs" direction="horizontal">
+            <Header>Popular categories</Header>
+            <ButtonLink
+              iconName="angle-right"
+              ariaLabel="Show more"
+              href={Pathname.PopularCategories}
+            />
+          </SpaceBetween>
           <FlexibleColumnLayout columns={7} minColumnWidth={150}>
-            {topGamesData?.data?.map((game) => {
+            {topGames?.map((game) => {
               const href = interpolatePathname(Pathname.Game, { gameId: game.id });
               const imgSrc = game?.box_art_url.replace('{width}x{height}', '400x534');
               return <CategoryThumbnail imgSrc={imgSrc} href={href} title={game.name} />;

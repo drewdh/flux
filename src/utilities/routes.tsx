@@ -10,6 +10,7 @@ export enum Pathname {
   Settings = '/settings',
   Help = '/help',
   Game = '/category/:gameId',
+  PopularCategories = '/popular-categories',
 }
 /** This does not handle for optional static segments (e.g., `/projects/project?/:id`) */
 export function interpolatePathname(pathname: Pathname.Live, values: { user: string }): string;

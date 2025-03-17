@@ -349,14 +349,12 @@ export function useGetGames(
   });
 }
 
-export function useGetTopGames(
-  request: GetTopGamesRequest,
-  options: Omit<UseQueryOptions<GetTopGamesResponse, TwitchError>, 'queryKey' | 'queryFn'> = {}
-) {
-  return useQuery({
-    ...options,
-    queryKey: [],
-    queryFn: () => twitchClient.getTopGames(request),
+export function useGetTopGames(request: Omit<GetTopGamesRequest, 'after'>) {
+  return useInfiniteQuery({
+    queryKey: [request],
+    initialPageParam: undefined as string | undefined,
+    queryFn: ({ pageParam }) => twitchClient.getTopGames({ ...request, after: pageParam }),
+    getNextPageParam: (lastPage) => lastPage.pagination?.cursor,
     staleTime: Infinity,
   });
 }

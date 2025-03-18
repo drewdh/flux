@@ -69,6 +69,7 @@ export function useGetUsers(
     ...options,
     queryFn: () => twitchClient.getUsers(request),
     queryKey: [QueryKey.GetUser, request],
+    // This is called for every user on a page (e.g., chat or home page), so don't refetch data
     staleTime: Infinity,
   });
 }
@@ -88,8 +89,6 @@ export function useGetFollowedStreams(options: UseGetFollowedStreamsOptions = {}
   const { data: users } = useGetUsers({});
   const user = users?.data[0];
   return useInfiniteQuery({
-    // Overrideable options
-    staleTime: 1000 * 60 * 5,
     ...options,
     // Non-overrideable options
     queryFn: ({ pageParam }) =>
@@ -127,7 +126,6 @@ export function useGetStreams(
   > = {}
 ) {
   return useInfiniteQuery({
-    staleTime: 1000 * 60 * 5,
     ...options,
     queryFn: ({ pageParam }) =>
       twitchClient.getStreams({
@@ -184,7 +182,6 @@ export function useGetEmoteSets(emoteSetIds: string[]) {
   return useQuery({
     queryFn: () => twitchClient.getEmoteSets({ emoteSetIds }),
     queryKey: [QueryKey.GetEmoteSets, ...emoteSetIds],
-    staleTime: Number.MAX_VALUE,
   });
 }
 
@@ -345,7 +342,6 @@ export function useGetGames(
     ...options,
     queryKey: [QueryKey.GetGames, request],
     queryFn: () => twitchClient.getGames(request),
-    staleTime: Infinity,
   });
 }
 
@@ -355,6 +351,5 @@ export function useGetTopGames(request: Omit<GetTopGamesRequest, 'after'>) {
     initialPageParam: undefined as string | undefined,
     queryFn: ({ pageParam }) => twitchClient.getTopGames({ ...request, after: pageParam }),
     getNextPageParam: (lastPage) => lastPage.pagination?.cursor,
-    staleTime: Infinity,
   });
 }

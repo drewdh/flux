@@ -120,9 +120,6 @@ const queryClient = new QueryClient({
         }
         return error.message !== 'Missing access token.';
       },
-      refetchOnMount: false,
-      refetchOnReconnect: false,
-      refetchOnWindowFocus: false,
     },
   },
 });

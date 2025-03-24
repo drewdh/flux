@@ -3,22 +3,16 @@ import { useParams } from 'react-router';
 import SpaceBetween from '@cloudscape-design/components/space-between';
 import Box from '@cloudscape-design/components/box';
 import Header from '@cloudscape-design/components/header';
-import Tabs from '@cloudscape-design/components/tabs';
 
 import styles from './styles.module.scss';
 import useTitle from 'utilities/use-title';
-import { useGetChannelFollowers, useGetStreams } from '../../api/api';
+import { useGetChannelFollowers, useGetStreams, useGetUsers } from '../../api/api';
 import StreamDetails from './stream-details';
 import { topNavSelector } from '../../top-navigation/constants';
 import InternalLink from 'common/internal-link';
 import { interpolatePathname, Pathname } from 'utilities/routes';
 import Avatar from 'common/avatar';
 import ProfileDetails from './profile-details';
-
-enum TabId {
-  StreamDetails = 'streamDetails',
-  Profile = 'profile',
-}
 
 export default function TwitchComponent({}: Props) {
   const player = useRef<any>(null);
@@ -36,6 +30,9 @@ export default function TwitchComponent({}: Props) {
     { enabled: !!username, refetchInterval: 60000 }
   );
   const streamData = _streamData?.pages[0].data[0];
+
+  const { data: _userData } = useGetUsers({ logins: [username!] }, { enabled: !!username });
+  const streamerUserId = _userData?.data[0]?.id;
 
   const options = useMemo(
     () => ({
@@ -83,10 +80,10 @@ export default function TwitchComponent({}: Props) {
             <Header variant="h3" headingTagOverride="h1">
               {streamData?.title}
             </Header>
-            <UserInfo userId={streamData?.user_id} />
+            <UserInfo userId={streamerUserId} />
           </SpaceBetween>
-          <StreamDetails broadcasterUserId={streamData?.user_id} />
-          <ProfileDetails userId={streamData?.user_id} />
+          <StreamDetails broadcasterUserId={streamerUserId} />
+          <ProfileDetails userId={streamerUserId} />
         </SpaceBetween>
       </SpaceBetween>
     </div>
@@ -99,33 +96,30 @@ interface UserInfoProps {
   userId: string | undefined;
 }
 function UserInfo({ userId }: UserInfoProps) {
-  const { data: _streamData } = useGetStreams(
-    { userIds: [userId!] },
-    { enabled: !!userId, refetchInterval: 60000 }
-  );
-  const streamData = _streamData?.pages[0].data[0];
   const { data: followerData } = useGetChannelFollowers({
     broadcasterId: userId,
   });
+  const { data: _userData } = useGetUsers({ ids: [userId!] }, { enabled: !!userId });
+  const userData = _userData?.data[0];
 
   return (
     <SpaceBetween size="xs" direction="horizontal" alignItems="center">
       <InternalLink
         variant="primary"
         href={interpolatePathname(Pathname.Profile, {
-          login: streamData?.user_login ?? '',
+          login: userData?.login ?? '',
         })}
       >
-        <Avatar userId={streamData?.user_id ?? ''} size="m" />
+        <Avatar userId={userId} size="m" />
       </InternalLink>
       <SpaceBetween direction="vertical" size="xxs">
         <InternalLink
           variant="primary"
           href={interpolatePathname(Pathname.Profile, {
-            login: streamData?.user_login ?? '',
+            login: userData?.login ?? '',
           })}
         >
-          {streamData?.user_name}
+          {userData?.display_name}
         </InternalLink>
         <Box variant="small" color="text-body-secondary">
           {followerData?.total.toLocaleString(undefined, { notation: 'compact' }) ?? '0'} followers

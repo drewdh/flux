@@ -18,8 +18,8 @@ export default function TwitchPage() {
   const { user } = useParams();
   const [drawerSize, setDrawerSize] = useLocalStorage<number>(LocalStorageKey.DrawerSize, 290);
   const { data: usersData } = useGetUsers({ logins: [user!] }, { enabled: !!user });
-  const { data: streamsData } = useGetStreams({ userLogins: [user!] });
-  const streamId = streamsData?.pages[0].data[0].id;
+  const { data: streamsData } = useGetStreams({ userLogins: [user!], type: 'all' });
+  const streamId = streamsData?.pages[0].data[0]?.id;
   const broadcasterId = usersData?.data[0].id ?? null;
   const isMobile = useMobile();
   const [activeDrawerId, setActiveDrawerId] = useState<string | null>(() => DrawerId.Chat);

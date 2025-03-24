@@ -74,7 +74,7 @@ export default class ErrorBoundary extends React.Component<PropsWithChildren<Pro
                       and share more details.
                     </div>
                     <ExpandableSection headerText="Error details">
-                      <Box variant="pre">{this.state.error?.stack}</Box>
+                      <Box variant="pre">{this.state.error?.message}</Box>
                     </ExpandableSection>
                   </SpaceBetween>
                 </Alert>

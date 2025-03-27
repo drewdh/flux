@@ -9,6 +9,7 @@ import StatusIndicator from '@cloudscape-design/components/status-indicator';
 
 export default function App() {
   const location = useLocation();
+  console.log('TEST');
 
   return (
     <>

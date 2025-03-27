@@ -3,7 +3,7 @@ import Button from '@cloudscape-design/components/button';
 
 import { useGetStreams } from '../../api/api';
 import VideoThumbnail from 'common/video-thumbnail';
-import { useFeedback } from '../../feedback/feedback-context';
+import { useFeedback } from '../../feedback/feedback-store';
 import Empty from 'common/empty/empty';
 import FluxCards from 'common/cards';
 import { Stream } from '../../api/twitch-types';
@@ -15,7 +15,7 @@ export default function LiveChannels({ gameId }: LiveChannelsProps) {
       enabled: !!gameId.length,
     }
   );
-  const { setIsFeedbackVisible } = useFeedback();
+  const openFeedback = useFeedback((state) => state.openFeedback);
 
   return (
     <FluxCards<Stream>
@@ -25,7 +25,7 @@ export default function LiveChannels({ gameId }: LiveChannelsProps) {
         <Alert
           type="error"
           header={error?.name}
-          action={<Button onClick={() => setIsFeedbackVisible(true)}>Send feedback</Button>}
+          action={<Button onClick={openFeedback}>Send feedback</Button>}
         >
           {error?.message}
         </Alert>

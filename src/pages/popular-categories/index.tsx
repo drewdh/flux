@@ -11,11 +11,11 @@ import CategoryThumbnail from 'common/category-thumbnail';
 import FluxCards from 'common/cards';
 import { Game } from '../../api/twitch-types';
 import Empty from 'common/empty/empty';
-import { useFeedback } from '../../feedback/feedback-context';
+import { useFeedback } from '../../feedback/feedback-store';
 
 export default function PopularCategories() {
   useTitle('Popular categories - Flux');
-  const { setIsFeedbackVisible } = useFeedback();
+  const openFeedback = useFeedback((state) => state.openFeedback);
   const { data, isLoading, error, isFetchingNextPage, fetchNextPage } = useGetTopGames({
     first: 25,
   });
@@ -33,7 +33,7 @@ export default function PopularCategories() {
               <Alert
                 type="error"
                 header={error?.name}
-                action={<Button onClick={() => setIsFeedbackVisible(true)}>Send feedback</Button>}
+                action={<Button onClick={openFeedback}>Send feedback</Button>}
               >
                 {error?.message}
               </Alert>

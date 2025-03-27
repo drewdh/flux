@@ -4,9 +4,10 @@ import { TextareaProps } from '@cloudscape-design/components/textarea';
 import { RadioGroupProps } from '@cloudscape-design/components/radio-group';
 import { SelectProps } from '@cloudscape-design/components/select';
 import { InputProps } from '@cloudscape-design/components/input';
+import { useShallow } from 'zustand/react/shallow';
 
 import { sendFeedback } from './feedback-api';
-import { useFeedback as useFeedbackContext } from '../feedback-context';
+import { useFeedback as useFeedbackStore } from '../feedback-store';
 import getCountString from 'utilities/get-count-string';
 
 enum Satisfied {
@@ -35,7 +36,9 @@ export default function useFeedback(): State {
   const satisfiedRef = useRef<RadioGroupProps.Ref>(null);
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const [isApiError, setIsApiError] = useState<boolean>(false);
-  const { isFeedbackVisible: visible, setIsFeedbackVisible: setVisible } = useFeedbackContext();
+  const { visible, closeFeedback } = useFeedbackStore(
+    useShallow((state) => ({ visible: state.isFeedbackOpen, closeFeedback: state.closeFeedback }))
+  );
   const typeOptions: SelectProps.Option[] = [
     {
       label: 'General feedback',
@@ -99,7 +102,7 @@ export default function useFeedback(): State {
   }
 
   function handleDismiss(resetFormFn: () => void) {
-    setVisible(false);
+    closeFeedback();
     setIsSuccess(false);
     setIsApiError(false);
     resetFormFn();

@@ -13,7 +13,7 @@ import InternalLink from 'common/internal-link';
 import { interpolatePathname, Pathname } from 'utilities/routes';
 import RelativeTime from 'common/relative-time';
 import Empty from 'common/empty/empty';
-import { useFeedback } from '../../feedback/feedback-context';
+import { useFeedback } from '../../feedback/feedback-store';
 import Avatar from 'common/avatar';
 
 const languageLabelMap: Record<string, string> = {
@@ -40,7 +40,7 @@ export default function StreamDetails({ broadcasterUserId }: StreamDetailsProps)
     { enabled: !!broadcasterUserId, refetchInterval: 60000 }
   );
   const streamData = _streamData?.pages[0].data[0];
-  const { setIsFeedbackVisible } = useFeedback();
+  const openFeedback = useFeedback((state) => state.openFeedback);
 
   if (!broadcasterUserId) {
     return null;
@@ -77,7 +77,7 @@ export default function StreamDetails({ broadcasterUserId }: StreamDetailsProps)
                 href="#"
                 onFollow={(e) => {
                   e.preventDefault();
-                  setIsFeedbackVisible(true);
+                  openFeedback();
                 }}
                 variant="primary"
               >

@@ -13,7 +13,7 @@ import { useContainerQuery } from '@cloudscape-design/component-toolkit';
 import styles from './chat.module.scss';
 import ChatMessage, { ChatMessageProps } from './chat-message';
 import { connectHref } from '../../constants';
-import { useFeedback } from '../../feedback/feedback-context';
+import { useFeedback } from '../../feedback/feedback-store';
 import ChatBox from 'common/chat-box';
 import { useGetUsers, useSendChatMessage } from '../../api/api';
 import { ChatMessagesState } from 'common/use-chat-messages';
@@ -163,7 +163,7 @@ export default function Chat({
 }
 
 function Error({ error }: { error: Error }) {
-  const { setIsFeedbackVisible } = useFeedback();
+  const openFeedback = useFeedback((state) => state.openFeedback);
 
   return (
     <Alert type="error" header="Failed to load chat">
@@ -174,7 +174,7 @@ function Error({ error }: { error: Error }) {
             href="#"
             onFollow={(e) => {
               e.preventDefault();
-              setIsFeedbackVisible(true);
+              openFeedback();
             }}
             variant="primary"
           >

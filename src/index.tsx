@@ -13,7 +13,6 @@ import App from './app/app';
 const ErrorBoundary = lazy(() => import('common/error-boundary'));
 import { SettingsProvider } from 'utilities/settings';
 import { TwitchError } from './api/twitch-api-client';
-import { FeedbackProvider } from './feedback/feedback-context';
 
 const router = createBrowserRouter([
   {
@@ -127,15 +126,13 @@ const queryClient = new QueryClient({
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(
   <React.StrictMode>
-    <FeedbackProvider>
-      <SettingsProvider>
-        <QueryClientProvider client={queryClient}>
-          <I18nProvider locale={locale} messages={messages}>
-            <RouterProvider router={router} />
-          </I18nProvider>
-        </QueryClientProvider>
-      </SettingsProvider>
-    </FeedbackProvider>
+    <SettingsProvider>
+      <QueryClientProvider client={queryClient}>
+        <I18nProvider locale={locale} messages={messages}>
+          <RouterProvider router={router} />
+        </I18nProvider>
+      </QueryClientProvider>
+    </SettingsProvider>
   </React.StrictMode>
 );
 

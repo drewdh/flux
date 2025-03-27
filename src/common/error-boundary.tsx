@@ -8,7 +8,7 @@ import Button from '@cloudscape-design/components/button';
 import { Location } from 'react-router';
 
 import DhAppLayout from 'common/flux-app-layout';
-import { FeedbackContext } from '../feedback/feedback-context';
+import { useFeedback } from '../feedback/feedback-store';
 import { awsRum } from 'utilities/rum-init';
 
 export default class ErrorBoundary extends React.Component<PropsWithChildren<Props>, State> {
@@ -42,47 +42,43 @@ export default class ErrorBoundary extends React.Component<PropsWithChildren<Pro
       return this.props.children;
     }
     return (
-      <FeedbackContext.Consumer>
-        {({ setIsFeedbackVisible }) => (
-          <DhAppLayout
-            navigationHide
-            toolsHide
-            content={
-              <>
-                <Alert
-                  type="error"
-                  header="There was an error"
-                  action={
-                    <Button iconName="refresh" onClick={this.handleClick.bind(this)}>
-                      Reload
-                    </Button>
-                  }
-                >
-                  <SpaceBetween size="m">
-                    <div>
-                      Reload the page or try again later.{' '}
-                      <Link
-                        href="#"
-                        onFollow={(e) => {
-                          e.preventDefault();
-                          setIsFeedbackVisible(true);
-                        }}
-                        variant="primary"
-                      >
-                        Send feedback
-                      </Link>{' '}
-                      and share more details.
-                    </div>
-                    <ExpandableSection headerText="Error details">
-                      <Box variant="pre">{this.state.error?.message}</Box>
-                    </ExpandableSection>
-                  </SpaceBetween>
-                </Alert>
-              </>
-            }
-          />
-        )}
-      </FeedbackContext.Consumer>
+      <DhAppLayout
+        navigationHide
+        toolsHide
+        content={
+          <>
+            <Alert
+              type="error"
+              header="There was an error"
+              action={
+                <Button iconName="refresh" onClick={this.handleClick.bind(this)}>
+                  Reload
+                </Button>
+              }
+            >
+              <SpaceBetween size="m">
+                <div>
+                  Reload the page or try again later.{' '}
+                  <Link
+                    href="#"
+                    onFollow={(e) => {
+                      e.preventDefault();
+                      useFeedback.getState().openFeedback();
+                    }}
+                    variant="primary"
+                  >
+                    Send feedback
+                  </Link>{' '}
+                  and share more details.
+                </div>
+                <ExpandableSection headerText="Error details">
+                  <Box variant="pre">{this.state.error?.message}</Box>
+                </ExpandableSection>
+              </SpaceBetween>
+            </Alert>
+          </>
+        }
+      />
     );
   }
 }

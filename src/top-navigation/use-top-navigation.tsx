@@ -5,7 +5,7 @@ import { Pathname } from 'utilities/routes';
 import useNavigateWithRef from 'common/use-navigate-with-ref';
 import { useRevoke, useValidate } from '../api/api';
 import useFollow from 'common/use-follow';
-import { useFeedback } from '../feedback/feedback-context';
+import { useFeedback } from '../feedback/feedback-store';
 
 enum MenuItemId {
   Feedback = 'feedback',
@@ -14,7 +14,7 @@ enum MenuItemId {
 }
 
 export default function useTopNavigation(): State {
-  const { setIsFeedbackVisible } = useFeedback();
+  const openFeedback = useFeedback((state) => state.openFeedback);
   const queryClient = useQueryClient();
   const follow = useFollow();
   const navigate = useNavigateWithRef();
@@ -63,7 +63,7 @@ export default function useTopNavigation(): State {
         if (id === MenuItemId.SignOut) {
           signOut();
         } else if (id === MenuItemId.Feedback) {
-          setIsFeedbackVisible(true);
+          openFeedback();
         }
       },
       items: [

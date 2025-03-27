@@ -4,11 +4,11 @@ import Button from '@cloudscape-design/components/button';
 import { useSearchChannelsWithStreamData } from '../../api/api';
 import Empty from 'common/empty/empty';
 import VideoThumbnail from 'common/video-thumbnail';
-import { useFeedback } from '../../feedback/feedback-context';
+import { useFeedback } from '../../feedback/feedback-store';
 import FluxCards from 'common/cards';
 
 export default function ChannelResults({ query }: Props) {
-  const { setIsFeedbackVisible } = useFeedback();
+  const openFeedback = useFeedback((state) => state.openFeedback);
 
   const { data, isFetchingNextPage, isLoading, fetchNextPage, error } =
     useSearchChannelsWithStreamData({
@@ -26,7 +26,7 @@ export default function ChannelResults({ query }: Props) {
         <Alert
           type="error"
           header={error?.name}
-          action={<Button onClick={() => setIsFeedbackVisible(true)}>Send feedback</Button>}
+          action={<Button onClick={openFeedback}>Send feedback</Button>}
         >
           {error?.message}
         </Alert>

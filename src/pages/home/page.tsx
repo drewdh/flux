@@ -37,7 +37,7 @@ export default function TwitchPage() {
     type: 'live',
     pageSize: 10,
   });
-  const { data: topGamesData, isLoading: isLoadingTopGames } = useGetTopGames({ first: 5 });
+  const { data: topGamesData, isLoading: isLoadingTopGames } = useGetTopGames({ first: 10 });
   const followedStreams = data?.pages.flatMap((page) => page.data);
   const topStreams = topStreamsData?.pages.flatMap((page) => page.data);
   const topGames = topGamesData?.pages.flatMap((page) => page.data);
@@ -56,10 +56,10 @@ export default function TwitchPage() {
       );
     }
     return (
-      <SpaceBetween size="l">
+      <SpaceBetween size="xxl">
         <SpaceBetween size="m">
           <Header>Following</Header>
-          <FlexibleColumnLayout columns={6} minColumnWidth={500}>
+          <FlexibleColumnLayout columns={6} minColumnWidth={600}>
             {followedStreams?.map((stream) => (
               <VideoThumbnail showCategory isLive stream={stream} />
             ))}
@@ -79,7 +79,7 @@ export default function TwitchPage() {
               href={Pathname.PopularCategories}
             />
           </SpaceBetween>
-          <FlexibleColumnLayout columns={7} minColumnWidth={300}>
+          <FlexibleColumnLayout columns={15} minColumnWidth={200}>
             {topGames?.map((game) => {
               const href = interpolatePathname(Pathname.Game, { gameId: game.id });
               const imgSrc = game?.box_art_url.replace('{width}x{height}', '400x534');
@@ -89,7 +89,7 @@ export default function TwitchPage() {
         </SpaceBetween>
         <SpaceBetween size="m">
           <Header>Popular streams</Header>
-          <FlexibleColumnLayout columns={6} minColumnWidth={500}>
+          <FlexibleColumnLayout columns={6} minColumnWidth={600}>
             {topStreams?.map((stream, index) => (
               <VideoThumbnail
                 isLive

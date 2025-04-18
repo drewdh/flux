@@ -17,7 +17,9 @@ export default function Player({ username }: PlayerProps) {
   const player = useRef<any>(null);
   const [paused, setPaused] = useState<boolean>(false);
   const [isIdle, setIsIdle] = useState<boolean>(false);
-  const [muted, setMuted] = useState<boolean>(player.current?.getMuted());
+  const [muted, setMuted] = useState<boolean>();
+  const [audioDisabled, setAudioDisabled] = useState<boolean>(true);
+  const [playbackStarted, setPlaybackStarted] = useState<boolean>(false);
   const overlayRef = useRef<HTMLDivElement>(null);
   const isOverlayHovered = useHover(overlayRef);
   const [isInteractiveHovered, setIsInteractiveHovered] = useState<boolean>(false);
@@ -89,8 +91,16 @@ export default function Player({ username }: PlayerProps) {
     }
     // @ts-ignore
     player.current?.addEventListener(Twitch.Player.PLAY, () => {
-      player.current?.setMuted(false);
       setPaused(false);
+      /*
+       * Check muted state after playback. If it's muted the first time the video plays,
+       * even though we set it to play unmuted, then Twitch is likely showing the "Click
+       * to unmute" overlay.
+       */
+      const nextMuted = player.current?.getMuted();
+      setMuted(player.current?.getMuted());
+      setAudioDisabled(!playbackStarted && nextMuted);
+      setPlaybackStarted(true);
     });
     // @ts-ignore
     player.current?.addEventListener(Twitch.Player.PAUSE, () => {
@@ -100,10 +110,9 @@ export default function Player({ username }: PlayerProps) {
     player.current?.addEventListener(Twitch.Player.READY, () => {
       (document.querySelector('#twitch-player iframe') as HTMLIFrameElement)?.focus();
       player.current?.play();
-      player.current?.setMuted(false);
     });
     // return () => (player = undefined);
-  }, [options]);
+  }, [options, playbackStarted]);
 
   return (
     <div
@@ -136,9 +145,11 @@ export default function Player({ username }: PlayerProps) {
         <Interactive>
           <IconButton onClick={togglePlayback} iconName={paused ? 'play' : 'pause'} />
         </Interactive>
-        <Interactive>
-          <IconButton onClick={toggleMuted} iconName={muted ? 'audio-off' : 'audio-full'} />
-        </Interactive>
+        {!audioDisabled && (
+          <Interactive>
+            <IconButton onClick={toggleMuted} iconName={muted ? 'audio-off' : 'audio-full'} />
+          </Interactive>
+        )}
       </div>
     </div>
   );

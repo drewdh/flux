@@ -2,7 +2,6 @@
 
 $horizontal-input-padding: cs.$space-scaled-s;
 $vertical-input-padding: cs.$space-scaled-xxs;
-$border-width: 2px;
 
 .wrapper {
   position: relative;
@@ -10,7 +9,7 @@ $border-width: 2px;
 }
 .input {
   background-color: cs.$color-background-input-default;
-  border-width: $border-width;
+  border-width: cs.$border-width-field;
   word-break: break-word;
   border-style: solid;
   border-radius: cs.$border-radius-input;
@@ -37,6 +36,6 @@ $border-width: 2px;
   font-style: italic;
   position: absolute;
   z-index: 0;
-  top: calc(#{$vertical-input-padding} + $border-width);
-  left: calc(#{$horizontal-input-padding} + $border-width);
+  top: calc(#{$vertical-input-padding} + cs.$border-width-field);
+  left: calc(#{$horizontal-input-padding} + cs.$border-width-field);
 }

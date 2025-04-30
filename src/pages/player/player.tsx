@@ -97,6 +97,7 @@ export default function Player({ username }: PlayerProps) {
        * even though we set it to play unmuted, then Twitch is likely showing the "Click
        * to unmute" overlay.
        */
+      player.current?.setMuted(false);
       const nextMuted = player.current?.getMuted();
       setMuted(player.current?.getMuted());
       setAudioDisabled(!playbackStarted && nextMuted);
@@ -108,7 +109,6 @@ export default function Player({ username }: PlayerProps) {
     });
     // @ts-ignore
     player.current?.addEventListener(Twitch.Player.READY, () => {
-      (document.querySelector('#twitch-player iframe') as HTMLIFrameElement)?.focus();
       player.current?.play();
     });
     // return () => (player = undefined);

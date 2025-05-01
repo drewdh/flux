@@ -36,6 +36,6 @@ $vertical-input-padding: cs.$space-scaled-xxs;
   font-style: italic;
   position: absolute;
   z-index: 0;
-  top: calc(#{$vertical-input-padding} + cs.$border-width-field);
-  left: calc(#{$horizontal-input-padding} + cs.$border-width-field);
+  top: calc(#{$vertical-input-padding} + #{cs.$border-width-field});
+  left: calc(#{$horizontal-input-padding} + #{cs.$border-width-field});
 }

@@ -93,15 +93,16 @@ export default function Player({ username }: PlayerProps) {
     if (isEditable) {
       return;
     }
-    if (event.key === 'k' || event.key === ' ') {
+    const handlers: Record<string, Function> = {
+      k: togglePlayback,
+      ' ': togglePlayback,
+      m: toggleMuted,
+      f: toggleFullscreen,
+    };
+    const handler = handlers[event.key];
+    if (handler) {
       event.preventDefault();
-      return togglePlayback();
-    } else if (event.key === 'm') {
-      event.preventDefault();
-      return toggleMuted();
-    } else if (event.key === 'f') {
-      event.preventDefault();
-      toggleFullscreen();
+      handler();
     }
   }, []);
 

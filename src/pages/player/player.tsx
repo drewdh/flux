@@ -20,12 +20,12 @@ export default function Player({ username }: PlayerProps) {
   const [muted, setMuted] = useState<boolean>();
   const [audioDisabled, setAudioDisabled] = useState<boolean>(true);
   const [playbackStarted, setPlaybackStarted] = useState<boolean>(false);
-  const overlayRef = useRef<HTMLDivElement>(null);
-  const isOverlayHovered = useHover(overlayRef);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const isWrapperHovered = useHover(wrapperRef);
   const [isInteractiveHovered, setIsInteractiveHovered] = useState<boolean>(false);
   const idleMs = 3000;
   const idleTimer = useRef<number>();
-  const overlayVisible = isInteractiveHovered || (isOverlayHovered && !isIdle) || paused;
+  const overlayVisible = isInteractiveHovered || (isWrapperHovered && !isIdle) || paused;
 
   // Force player to update channel when URL changes
   useEffect(() => {
@@ -43,6 +43,17 @@ export default function Player({ username }: PlayerProps) {
     }),
     [username]
   );
+
+  async function toggleFullscreen() {
+    if (document.fullscreenElement) {
+      return document.exitFullscreen();
+    }
+    try {
+      await wrapperRef.current?.requestFullscreen();
+    } catch (_error) {
+      console.error('Failed to enter fullscreen.');
+    }
+  }
 
   function Interactive({ children }: PropsWithChildren) {
     return (
@@ -116,11 +127,11 @@ export default function Player({ username }: PlayerProps) {
 
   return (
     <div
-      ref={overlayRef}
-      className={styles.wrapper}
+      ref={wrapperRef}
+      className={clsx(styles.wrapper, document.fullscreenElement && styles.fullscreen)}
       onClick={togglePlayback}
       onMouseMove={() => {
-        if (!isOverlayHovered) {
+        if (!isWrapperHovered) {
           return;
         }
         clearIdle();
@@ -150,6 +161,14 @@ export default function Player({ username }: PlayerProps) {
             <IconButton onClick={toggleMuted} iconName={muted ? 'audio-off' : 'audio-full'} />
           </Interactive>
         )}
+        <div className={styles.endControls}>
+          <Interactive>
+            <IconButton
+              onClick={toggleFullscreen}
+              iconName={document.fullscreenElement ? 'exit-full-screen' : 'full-screen'}
+            />
+          </Interactive>
+        </div>
       </div>
     </div>
   );

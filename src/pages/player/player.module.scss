@@ -11,7 +11,10 @@ $border-radius: 16px;
   background-color: cs.$color-background-input-disabled;
   margin-left: auto;
   margin-right: auto;
-  &:after {
+  &.fullscreen {
+    border-radius: 0;
+  }
+  &:not(.fullscreen):after {
     position: absolute;
     content: '';
     left: 0;
@@ -62,6 +65,10 @@ $border-radius: 16px;
   padding-inline: $border-radius;
   bottom: 0;
   left: 0;
+  right: 0;
+}
+.endControls {
+  margin-inline-start: auto;
 }
 .overlay {
   @include hide-show;

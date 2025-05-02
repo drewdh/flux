@@ -93,11 +93,14 @@ export default function Player({ username }: PlayerProps) {
     if (isEditable) {
       return;
     }
-    if (event.key === 'k') {
+    if (event.key === 'k' || event.key === ' ') {
+      event.preventDefault();
       return togglePlayback();
     } else if (event.key === 'm') {
+      event.preventDefault();
       return toggleMuted();
     } else if (event.key === 'f') {
+      event.preventDefault();
       toggleFullscreen();
     }
   }, []);

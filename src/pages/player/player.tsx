@@ -1,6 +1,7 @@
 import React, {
   MouseEventHandler,
   PropsWithChildren,
+  useCallback,
   useEffect,
   useLayoutEffect,
   useMemo,
@@ -82,6 +83,29 @@ export default function Player({ username }: PlayerProps) {
       return !prev;
     });
   }
+
+  const keydownHandler = useCallback((event: KeyboardEvent): void => {
+    const tagName = document.activeElement?.tagName;
+    const isEditable =
+      tagName === 'INPUT' ||
+      tagName === 'TEXTAREA' ||
+      (document.activeElement as HTMLElement)?.isContentEditable;
+    if (isEditable) {
+      return;
+    }
+    if (event.key === 'k') {
+      return togglePlayback();
+    } else if (event.key === 'm') {
+      return toggleMuted();
+    } else if (event.key === 'f') {
+      toggleFullscreen();
+    }
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener('keydown', keydownHandler);
+    return () => document.removeEventListener('keydown', keydownHandler);
+  }, [keydownHandler]);
 
   const clearIdle = () => {
     setIsIdle(false);

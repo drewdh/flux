@@ -15,7 +15,7 @@ const items: RadioGroupProps.RadioButtonDefinition[] = [
   },
   {
     value: IAppearance.System,
-    label: 'Use system settings',
+    label: 'System default',
   },
 ];
 

@@ -39,9 +39,5 @@ export function NotificationsProvider({ children }: PropsWithChildren) {
     });
   }, []);
 
-  return (
-    <NotificationsContext.Provider value={{ items, addNotification }}>
-      {children}
-    </NotificationsContext.Provider>
-  );
+  return <NotificationsContext value={{ items, addNotification }}>{children}</NotificationsContext>;
 }

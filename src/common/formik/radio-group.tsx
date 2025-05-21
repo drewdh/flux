@@ -1,27 +1,23 @@
-import { forwardRef } from 'react';
+import { Ref } from 'react';
 import { useFormikContext } from 'formik';
 import RadioGroup, { RadioGroupProps } from '@cloudscape-design/components/radio-group';
 
-const FormikRadioGroup = forwardRef<RadioGroupProps.Ref, Props>(
-  ({ name, onChange, ...props }, ref) => {
-    const { values, setFieldValue } = useFormikContext<any>();
+export default function FormikRadioGroup({ name, onChange, ...props }: Props) {
+  const { values, setFieldValue } = useFormikContext<any>();
 
-    return (
-      <RadioGroup
-        {...props}
-        ref={ref}
-        value={values[name]}
-        onChange={(e) => {
-          setFieldValue(name, e.detail.value);
-          onChange?.(e);
-        }}
-      />
-    );
-  }
-);
+  return (
+    <RadioGroup
+      {...props}
+      value={values[name]}
+      onChange={(e) => {
+        setFieldValue(name, e.detail.value);
+        onChange?.(e);
+      }}
+    />
+  );
+}
 
 interface Props extends Omit<RadioGroupProps, 'value'> {
   name: string;
+  ref?: Ref<RadioGroupProps.Ref>;
 }
-
-export default FormikRadioGroup;

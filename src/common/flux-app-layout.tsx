@@ -1,33 +1,28 @@
 import AppLayout, { AppLayoutProps } from '@cloudscape-design/components/app-layout';
-import { forwardRef, Ref, useContext } from 'react';
+import { Ref, useContext } from 'react';
 import Flashbar from '@cloudscape-design/components/flashbar';
 
 import { topNavSelector } from '../top-navigation/constants';
 import { NotificationsContext, NotificationsProvider } from 'common/internal/notifications';
 
-const Layout = forwardRef(function DhAppLayout(props: Props, ref: Ref<AppLayoutProps.Ref>) {
+export default function FluxAppLayout(props: Props) {
   const notifications = useContext(NotificationsContext);
 
   return (
-    <AppLayout
-      {...props}
-      ref={ref}
-      notifications={<Flashbar items={notifications?.items ?? []} />}
-      headerSelector={topNavSelector}
-      navigationHide
-    />
-  );
-});
-
-export default forwardRef(function (props: Props, ref: Ref<AppLayoutProps.Ref>) {
-  return (
     <NotificationsProvider>
-      <Layout {...props} ref={ref} />
+      <AppLayout
+        {...props}
+        notifications={<Flashbar items={notifications?.items ?? []} />}
+        headerSelector={topNavSelector}
+        navigationHide
+      />
     </NotificationsProvider>
   );
-});
+}
 
 type Props = Omit<
   AppLayoutProps,
   'footerSelector' | 'headerSelector' | 'notifications' | 'navigation' | 'navigationWidth'
->;
+> & {
+  ref?: Ref<AppLayoutProps.Ref>;
+};

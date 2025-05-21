@@ -1,15 +1,14 @@
 import '@cloudscape-design/global-styles/index.css';
+import StatusIndicator from '@cloudscape-design/components/status-indicator';
+import { Suspense } from 'react';
 import { Outlet, useLocation } from 'react-router';
 
 import TopNavigation from '../top-navigation';
 import ErrorBoundary from 'common/error-boundary';
-import { Suspense } from 'react';
 import FluxAppLayout from 'common/flux-app-layout';
-import StatusIndicator from '@cloudscape-design/components/status-indicator';
 
 export default function App() {
   const location = useLocation();
-  console.log('TEST');
 
   return (
     <>

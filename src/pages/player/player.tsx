@@ -2,7 +2,6 @@ import React, {
   MouseEventHandler,
   PropsWithChildren,
   RefObject,
-  useCallback,
   useEffect,
   useLayoutEffect,
   useMemo,
@@ -20,14 +19,29 @@ export default function Player({ username }: PlayerProps) {
   const [paused, setPaused] = useState<boolean>(false);
   const [isIdle, setIsIdle] = useState<boolean>(false);
   const [muted, setMuted] = useState<boolean>();
-  const [audioDisabled, setAudioDisabled] = useState<boolean>(true);
+  const [isAudioBlocked, setIsAudioBlocked] = useState<boolean>(true);
   const [playbackStarted, setPlaybackStarted] = useState<boolean>(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const isWrapperHovered = useHover(wrapperRef as RefObject<HTMLDivElement>);
   const [isInteractiveHovered, setIsInteractiveHovered] = useState<boolean>(false);
   const idleMs = 3000;
-  const idleTimer = useRef<number>(null);
+  const idleTimer = useRef<number>(NaN);
   const overlayVisible = isInteractiveHovered || (isWrapperHovered && !isIdle) || paused;
+
+  useEffect(() => {
+    function logger(event: MessageEvent) {
+      if (event.origin !== 'https://player.twitch.tv' || event.data.namespace === 'twitch-embed') {
+        return;
+      }
+      const muted = event.data.params.muted;
+      setIsAudioBlocked(muted);
+      if (!muted) {
+        window.removeEventListener('message', logger);
+      }
+    }
+    window.addEventListener('message', logger);
+    return () => window.removeEventListener('message', logger);
+  }, []);
 
   // Force player to update channel when URL changes
   useEffect(() => {
@@ -79,13 +93,16 @@ export default function Player({ username }: PlayerProps) {
   }
 
   function toggleMuted() {
+    if (isAudioBlocked) {
+      return;
+    }
     setMuted((prev) => {
       player.current?.setMuted(!prev);
       return !prev;
     });
   }
 
-  const keydownHandler = useCallback((event: KeyboardEvent): void => {
+  function keydownHandler(event: KeyboardEvent) {
     const tagName = document.activeElement?.tagName;
     const isEditable =
       tagName === 'INPUT' ||
@@ -105,7 +122,7 @@ export default function Player({ username }: PlayerProps) {
       event.preventDefault();
       handler();
     }
-  }, []);
+  }
 
   useEffect(() => {
     document.addEventListener('keydown', keydownHandler);
@@ -132,15 +149,8 @@ export default function Player({ username }: PlayerProps) {
     // @ts-ignore
     player.current?.addEventListener(Twitch.Player.PLAY, () => {
       setPaused(false);
-      /*
-       * Check muted state after playback. If it's muted the first time the video plays,
-       * even though we set it to play unmuted, then Twitch is likely showing the "Click
-       * to unmute" overlay.
-       */
       player.current?.setMuted(false);
-      const nextMuted = player.current?.getMuted();
       setMuted(player.current?.getMuted());
-      setAudioDisabled(!playbackStarted && nextMuted);
       setPlaybackStarted(true);
     });
     // @ts-ignore
@@ -185,7 +195,7 @@ export default function Player({ username }: PlayerProps) {
         <Interactive>
           <IconButton onClick={togglePlayback} iconName={paused ? 'play' : 'pause'} />
         </Interactive>
-        {!audioDisabled && (
+        {!isAudioBlocked && (
           <Interactive>
             <IconButton onClick={toggleMuted} iconName={muted ? 'audio-off' : 'audio-full'} />
           </Interactive>

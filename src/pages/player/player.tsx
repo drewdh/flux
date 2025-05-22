@@ -1,6 +1,7 @@
 import React, {
   MouseEventHandler,
   PropsWithChildren,
+  RefObject,
   useCallback,
   useEffect,
   useLayoutEffect,
@@ -22,10 +23,10 @@ export default function Player({ username }: PlayerProps) {
   const [audioDisabled, setAudioDisabled] = useState<boolean>(true);
   const [playbackStarted, setPlaybackStarted] = useState<boolean>(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const isWrapperHovered = useHover(wrapperRef);
+  const isWrapperHovered = useHover(wrapperRef as RefObject<HTMLDivElement>);
   const [isInteractiveHovered, setIsInteractiveHovered] = useState<boolean>(false);
   const idleMs = 3000;
-  const idleTimer = useRef<number>();
+  const idleTimer = useRef<number>(null);
   const overlayVisible = isInteractiveHovered || (isWrapperHovered && !isIdle) || paused;
 
   // Force player to update channel when URL changes

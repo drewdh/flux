@@ -8,6 +8,8 @@ $vertical-input-padding: cs.$space-scaled-xxs;
   width: 100%;
 }
 .input {
+  // Save room for the focus shadow
+  margin-left: 1px;
   background-color: cs.$color-background-input-default;
   border-width: cs.$border-width-field;
   word-break: break-word;
@@ -25,6 +27,8 @@ $vertical-input-padding: cs.$space-scaled-xxs;
   }
   &:focus {
     border-color: cs.$color-border-input-focused;
+    box-shadow: 0 0 0 1px cs.$color-border-item-focused;
+    outline: 2px dotted transparent;
   }
   p {
     margin: 0;

@@ -9,7 +9,7 @@ import styles from './styles.module.scss';
 import { Stream } from '../../api/twitch-types';
 import FluxImage from 'common/flux-image';
 
-export default function VideoThumbnail({ isLive, stream }: VideoThumbnailProps) {
+export default function VideoThumbnail({ live, stream }: VideoThumbnailProps) {
   const videoHref = interpolatePathname(Pathname.Live, { user: stream.user_login });
   const viewerCount = stream.viewer_count.toLocaleString(undefined, {
     notation: 'compact',
@@ -60,7 +60,7 @@ export default function VideoThumbnail({ isLive, stream }: VideoThumbnailProps) 
 
 export interface VideoThumbnailProps {
   stream: Stream;
-  isLive?: boolean;
+  live?: boolean;
   rankText?: string;
   showCategory?: boolean;
 }

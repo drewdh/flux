@@ -60,9 +60,7 @@ export default function TwitchPage() {
         <SpaceBetween size="m">
           <Header>Following</Header>
           <FlexibleColumnLayout columns={4} minColumnWidth={400}>
-            {followedStreams?.map((stream) => (
-              <VideoThumbnail showCategory isLive stream={stream} />
-            ))}
+            {followedStreams?.map((stream) => <VideoThumbnail showCategory live stream={stream} />)}
             {followedStreams && !followedStreams.length && (
               <div className={styles.empty}>
                 <Empty header="No streams" message="No channel you follow is live right now." />
@@ -92,7 +90,7 @@ export default function TwitchPage() {
           <FlexibleColumnLayout columns={4} minColumnWidth={400}>
             {topStreams?.map((stream, index) => (
               <VideoThumbnail
-                isLive
+                live
                 rankText={Number(index + 1).toString()}
                 showCategory
                 stream={stream}

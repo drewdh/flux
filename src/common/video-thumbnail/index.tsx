@@ -28,24 +28,27 @@ export default function VideoThumbnail({ isLive, stream }: VideoThumbnailProps) 
         src={`https://static-cdn.jtvnw.net/previews-ttv/live_user_${stream.user_login}-440x248.jpg`}
       />
       <div className={styles.contentWrapper}>
-        <img
-          alt=""
-          aria-hidden="true"
-          className={styles.background}
-          src={`https://static-cdn.jtvnw.net/previews-ttv/live_user_${stream.user_login}-440x248.jpg`}
-        />
-        <div className={styles.content}>
-          <Avatar userId={stream.user_id} size="m" />
-        </div>
-        <div className={styles.content}>
-          <span className={styles.streamTitle}>{stream.user_name}</span>
-          <Box variant="small" display="block" color="inherit">
-            <SpaceBetween size="xxs" direction="horizontal">
-              <span>{stream.game_name}</span>
-              <span>&bull;</span>
-              {viewerCount} viewers
-            </SpaceBetween>
-          </Box>
+        <div className={styles.streamTitle}>{stream.title}</div>
+        <div className={styles.streamer}>
+          <img
+            alt=""
+            aria-hidden="true"
+            className={styles.background}
+            src={`https://static-cdn.jtvnw.net/previews-ttv/live_user_${stream.user_login}-440x248.jpg`}
+          />
+          <div className={styles.content}>
+            <Avatar userId={stream.user_id} size="m" />
+          </div>
+          <div className={styles.content}>
+            <span className={styles.streamTitle}>{stream.user_name}</span>
+            <Box variant="small" display="block" color="inherit">
+              <SpaceBetween size="xxs" direction="horizontal">
+                <span>{stream.game_name}</span>
+                <span>&bull;</span>
+                {viewerCount} viewers
+              </SpaceBetween>
+            </Box>
+          </div>
         </div>
         <div className={styles.blur} />
       </div>

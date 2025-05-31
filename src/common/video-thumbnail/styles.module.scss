@@ -56,19 +56,30 @@ a {
 }
 .contentWrapper {
   color: cs.$color-text-body-default;
-  align-items: center;
-  display: flex;
   position: relative;
-  column-gap: cs.$space-scaled-xs;
-  padding: cs.$space-scaled-m;
+  display: flex;
+  flex-direction: column;
+  gap: cs.$space-scaled-s;
+  padding: cs.$space-scaled-s cs.$space-scaled-m;
 }
-.streamTitle {
+.streamer {
+  display: flex;
+  align-items: center;
+  column-gap: cs.$space-scaled-xs;
+}
+.streamTitle,
+.userName {
   font-family: cs.$font-family-base;
   font-size: cs.$font-size-body-m;
+  line-height: cs.$line-height-heading-s;
+  font-weight: bold;
+}
+.streamTitle {
+  position: relative;
+  z-index: 2;
   display: -webkit-box;
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
-  line-height: cs.$line-height-heading-s;
   overflow: hidden;
   text-overflow: ellipsis;
   word-break: break-word;

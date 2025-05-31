@@ -10,6 +10,7 @@
   display: flex;
   flex-direction: column;
   border-radius: 16px;
+  height: 100%;
   position: relative;
   overflow: hidden;
   cursor: pointer;
@@ -54,31 +55,32 @@ a {
 .content {
   z-index: 1;
 }
+.avatar {
+  z-index: 1;
+}
 .contentWrapper {
   color: cs.$color-text-body-default;
   position: relative;
   display: flex;
   flex-direction: column;
   gap: cs.$space-scaled-s;
-  padding: cs.$space-scaled-s cs.$space-scaled-m;
+  padding: cs.$space-scaled-s;
+  height: 100%;
 }
 .streamer {
   display: flex;
-  align-items: center;
   column-gap: cs.$space-scaled-xs;
 }
-.streamTitle,
-.userName {
-  font-family: cs.$font-family-base;
-  font-size: cs.$font-size-body-m;
-  line-height: cs.$line-height-heading-s;
-  font-weight: bold;
-}
 .streamTitle {
+  font-family: cs.$font-family-base;
+  font-weight: bold;
+  margin-bottom: cs.$space-scaled-xxs;
+  font-size: cs.$font-size-heading-xs;
+  line-height: cs.$line-height-heading-xs;
   position: relative;
   z-index: 2;
   display: -webkit-box;
-  -webkit-line-clamp: 1;
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;

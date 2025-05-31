@@ -9,7 +9,7 @@ import styles from './styles.module.scss';
 import { Stream } from '../../api/twitch-types';
 import FluxImage from 'common/flux-image';
 
-export default function VideoThumbnail({ live, stream }: VideoThumbnailProps) {
+export default function VideoThumbnail({ live, stream, variant = 'normal' }: VideoThumbnailProps) {
   const videoHref = interpolatePathname(Pathname.Live, { user: stream.user_login });
   const viewerCount = stream.viewer_count.toLocaleString(undefined, {
     notation: 'compact',
@@ -35,9 +35,11 @@ export default function VideoThumbnail({ live, stream }: VideoThumbnailProps) {
             className={styles.background}
             src={`https://static-cdn.jtvnw.net/previews-ttv/live_user_${stream.user_login}-440x248.jpg`}
           />
-          <div className={styles.avatar}>
-            <Avatar userId={stream.user_id} size="m" />
-          </div>
+          {variant !== 'compact' && (
+            <div className={styles.avatar}>
+              <Avatar userId={stream.user_id} size="m" />
+            </div>
+          )}
           <div className={styles.content}>
             <div className={styles.streamTitle}>{stream.title}</div>
             {/*<span className={styles.userName}>{stream.user_name}</span>*/}
@@ -58,9 +60,13 @@ export default function VideoThumbnail({ live, stream }: VideoThumbnailProps) {
   );
 }
 
+export declare namespace VideoThumbnailProps {
+  type Variant = 'normal' | 'compact';
+}
 export interface VideoThumbnailProps {
   stream: Stream;
   live?: boolean;
   rankText?: string;
   showCategory?: boolean;
+  variant?: VideoThumbnailProps.Variant;
 }

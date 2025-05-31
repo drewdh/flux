@@ -33,7 +33,7 @@ export default function ChannelResults({ query }: Props) {
       }
       fetchingNextPage={isFetchingNextPage}
       invalid={!!error}
-      itemMapper={(stream) => <VideoThumbnail stream={stream} live />}
+      itemMapper={(stream) => <VideoThumbnail variant="compact" stream={stream} live />}
       items={items}
       loading={isLoading}
       loadingText="Loading live channels"

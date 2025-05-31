@@ -32,7 +32,7 @@ export default function LiveChannels({ gameId }: LiveChannelsProps) {
       }
       fetchingNextPage={isFetching}
       invalid={!!error}
-      itemMapper={(stream) => <VideoThumbnail stream={stream} live />}
+      itemMapper={(stream) => <VideoThumbnail variant="compact" stream={stream} live />}
       items={data?.pages?.flatMap((data) => data.data) ?? []}
       loading={isLoading}
       loadingText="Loading live channels"

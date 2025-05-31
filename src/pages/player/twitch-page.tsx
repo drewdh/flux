@@ -53,6 +53,7 @@ export default function TwitchPage() {
     <DhAppLayout
       activeDrawerId={activeDrawerId}
       toolsHide
+      maxContentWidth={1840}
       drawers={[
         {
           id: DrawerId.Chat,

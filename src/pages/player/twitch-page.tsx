@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useParams } from 'react-router';
 import { NonCancelableCustomEvent } from '@cloudscape-design/components';
+import { useLocalStorage } from 'usehooks-ts';
 
 import DhAppLayout from 'common/flux-app-layout';
 import TwitchComponent from './twitch';
-import { useParams } from 'react-router';
 import { useGetStreams, useGetUsers } from '../../api/api';
-import useLocalStorage, { LocalStorageKey } from 'utilities/use-local-storage';
+import { LocalStorageKey } from 'utilities/local-storage-keys';
 import ChatDrawer from './chat-drawer';
 import useChatMessages from 'common/use-chat-messages';
 import useMobile from 'utilities/use-mobile';

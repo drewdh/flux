@@ -7,7 +7,7 @@ import useNavigateWithRef from 'common/use-navigate-with-ref';
 import { useRevoke, useValidate } from '../api/api';
 import useFollow from 'common/use-follow';
 import { useFeedback } from '../feedback/feedback-store';
-import { LocalStorageKey } from 'utilities/use-local-storage';
+import { LocalStorageKey } from 'utilities/local-storage-keys';
 
 enum MenuItemId {
   Feedback = 'feedback',

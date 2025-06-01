@@ -12,7 +12,7 @@ import {
   useGetUsers,
 } from '../api/api';
 import { useLocalStorage, useSessionStorage } from 'usehooks-ts';
-import { LocalStorageKey } from 'utilities/use-local-storage';
+import { LocalStorageKey } from 'utilities/local-storage-keys';
 
 export enum EventSubStatus {
   Connected = 'connected',

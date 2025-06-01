@@ -8,8 +8,9 @@ import {
 } from 'react';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import { applyMode, Mode } from '@cloudscape-design/global-styles';
+import { useLocalStorage } from 'usehooks-ts';
 
-import useLocalStorage, { LocalStorageKey } from 'utilities/use-local-storage';
+import { LocalStorageKey } from 'utilities/local-storage-keys';
 
 function handleMatchChange(event: MediaQueryListEvent) {
   const mode = event.matches ? Mode.Dark : Mode.Light;

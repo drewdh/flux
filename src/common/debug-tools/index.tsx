@@ -6,7 +6,7 @@ import StatusIndicator, {
   StatusIndicatorProps,
 } from '@cloudscape-design/components/status-indicator';
 
-import { LocalStorageKey } from 'utilities/use-local-storage';
+import { LocalStorageKey } from 'utilities/local-storage-keys';
 import { EventSubStatus } from 'common/use-chat-messages';
 
 enum TabId {

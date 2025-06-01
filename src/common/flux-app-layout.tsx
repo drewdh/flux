@@ -5,7 +5,7 @@ import { useLocalStorage } from 'usehooks-ts';
 
 import { topNavSelector } from '../top-navigation/constants';
 import { NotificationsContext, NotificationsProvider } from 'common/internal/notifications';
-import { LocalStorageKey } from 'utilities/use-local-storage';
+import { LocalStorageKey } from 'utilities/local-storage-keys';
 import DebugTools from 'common/debug-tools';
 
 export default function FluxAppLayout(props: Props) {

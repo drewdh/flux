@@ -43,10 +43,11 @@ export default function VideoThumbnail({ live, stream, variant = 'normal' }: Vid
           <div className={styles.content}>
             <div className={styles.streamTitle}>{stream.title}</div>
             {/*<span className={styles.userName}>{stream.user_name}</span>*/}
-            <Box variant="small" display="block" color="inherit">
+            <Box variant="span" display="block" color="text-status-inactive">
+              {stream.user_name}
+            </Box>
+            <Box variant="span" display="block" color="text-status-inactive">
               <SpaceBetween size="xxs" direction="horizontal">
-                <span>{stream.user_name}</span>
-                <span>&bull;</span>
                 <span>{stream.game_name}</span>
                 <span>&bull;</span>
                 <span>{viewerCount} viewers</span>

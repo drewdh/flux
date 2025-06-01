@@ -1,20 +1,27 @@
 import { TopNavigationProps } from '@cloudscape-design/components/top-navigation';
 import { useQueryClient } from '@tanstack/react-query';
+import { useLocalStorage } from 'usehooks-ts';
 
 import { Pathname } from 'utilities/routes';
 import useNavigateWithRef from 'common/use-navigate-with-ref';
 import { useRevoke, useValidate } from '../api/api';
 import useFollow from 'common/use-follow';
 import { useFeedback } from '../feedback/feedback-store';
+import { LocalStorageKey } from 'utilities/use-local-storage';
 
 enum MenuItemId {
   Feedback = 'feedback',
   SignOut = 'signOut',
+  DebugTools = 'debugTools',
   Help = 'help',
 }
 
 export default function useTopNavigation(): State {
   const openFeedback = useFeedback((state) => state.openFeedback);
+  const [debugToolsOpen, setDebugToolsOpen] = useLocalStorage<boolean>(
+    LocalStorageKey.DebugToolsVisible,
+    false
+  );
   const queryClient = useQueryClient();
   const follow = useFollow();
   const navigate = useNavigateWithRef();
@@ -64,6 +71,8 @@ export default function useTopNavigation(): State {
           signOut();
         } else if (id === MenuItemId.Feedback) {
           openFeedback();
+        } else if (id === MenuItemId.DebugTools) {
+          setDebugToolsOpen((prev) => !prev);
         }
       },
       items: [
@@ -75,6 +84,10 @@ export default function useTopNavigation(): State {
           id: MenuItemId.Help,
           text: 'Help',
           href: Pathname.Help,
+        },
+        {
+          id: MenuItemId.DebugTools,
+          text: `${debugToolsOpen ? 'Hide' : 'View'} debug tools`,
         },
         {
           id: MenuItemId.Feedback,

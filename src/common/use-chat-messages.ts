@@ -11,7 +11,14 @@ import {
   useDeleteEventSubSubscription,
   useGetUsers,
 } from '../api/api';
+import { useLocalStorage, useSessionStorage } from 'usehooks-ts';
+import { LocalStorageKey } from 'utilities/use-local-storage';
 
+export enum EventSubStatus {
+  Connected = 'connected',
+  Closed = 'closed',
+  Error = 'error',
+}
 export default function useChatMessages({
   broadcasterId,
   onMessagesChange,
@@ -23,6 +30,10 @@ export default function useChatMessages({
   const [isReconnectError, setIsReconnectError] = useState<boolean>(false);
   const { mutate: deleteSubscription } = useDeleteEventSubSubscription();
   const { data: userData } = useGetUsers({});
+  const [, setConnectionStatus] = useSessionStorage<EventSubStatus>(
+    LocalStorageKey.EventSubStatus,
+    EventSubStatus.Closed
+  );
   const user = userData?.data[0];
 
   useEffect(() => {
@@ -73,8 +84,15 @@ export default function useChatMessages({
     }
     const ws = new WebSocket('wss://eventsub.wss.twitch.tv/ws');
 
+    ws.onopen = () => {
+      setConnectionStatus(EventSubStatus.Connected);
+    };
+    ws.onerror = () => {
+      setConnectionStatus(EventSubStatus.Error);
+    };
     ws.onclose = (event) => {
       console.warn(event);
+      setConnectionStatus(EventSubStatus.Closed);
     };
     ws.onmessage = (event) => {
       const message: WelcomeMessage | ChatMessageType = JSON.parse(event.data);

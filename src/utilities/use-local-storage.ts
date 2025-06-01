@@ -5,9 +5,15 @@ export enum LocalStorageKey {
   Language = 'i18nextLng',
   StreamLanguages = 'streamLanguages',
   ChatDrawerSize = 'drawerSize',
+  DebugToolsSize = 'debugToolsSize',
+  DebugToolsVisible = 'debugToolsVisible',
+  EventSubStatus = 'eventSubStatus',
 }
 
-/** Helper functions for accessing local storage that safely stringify and parse values */
+/**
+ * Helper functions for accessing local storage that safely stringify and parse values
+ * @deprecated Use `useLocalStorage` from usehooks-ts
+ * */
 export default function useLocalStorage<T>(key: LocalStorageKey, defaultValue: T): State<T> {
   const [item, setItem] = useState<T>(() => {
     if (key === LocalStorageKey.Language) {

@@ -16,7 +16,7 @@ enum DrawerId {
 
 export default function TwitchPage() {
   const { user } = useParams();
-  const [drawerSize, setDrawerSize] = useLocalStorage<number>(LocalStorageKey.DrawerSize, 290);
+  const [drawerSize, setDrawerSize] = useLocalStorage<number>(LocalStorageKey.ChatDrawerSize, 290);
   const { data: usersData } = useGetUsers({ logins: [user!] }, { enabled: !!user });
   const { data: streamsData } = useGetStreams({ userLogins: [user!], type: 'all' });
   const streamId = streamsData?.pages[0].data[0]?.id;

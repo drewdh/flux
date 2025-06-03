@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 
 export default function useElementHeight(selector: string): number {
-  const element = document.querySelector(selector);
   const [height, setHeight] = useState<number>(0);
 
   useEffect(() => {
+    const element = document.querySelector(selector);
     if (!element) {
       return;
     }
@@ -15,7 +15,7 @@ export default function useElementHeight(selector: string): number {
     return () => {
       observer.disconnect();
     };
-  }, [element]);
+  }, [selector]);
 
   return height;
 }

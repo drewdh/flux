@@ -1,7 +1,7 @@
 import AppLayout, { AppLayoutProps } from '@cloudscape-design/components/app-layout';
-import { Ref, useContext, useEffect, useState } from 'react';
+import { Ref, useContext } from 'react';
 import Flashbar from '@cloudscape-design/components/flashbar';
-import { useLocalStorage } from 'usehooks-ts';
+import { useLocalStorage, useSessionStorage } from 'usehooks-ts';
 
 import { topNavSelector } from '../top-navigation/constants';
 import { NotificationsContext, NotificationsProvider } from 'common/internal/notifications';
@@ -10,17 +10,14 @@ import DebugTools from 'common/debug-tools';
 
 export default function FluxAppLayout(props: Props) {
   const notifications = useContext(NotificationsContext);
-  const [splitPanelVisible] = useLocalStorage(LocalStorageKey.DebugToolsVisible, false);
-  const [splitPanelOpen, setSplitPanelOpen] = useState<boolean>(false);
+  const [splitPanelOpen, setSplitPanelOpen] = useSessionStorage<boolean>(
+    LocalStorageKey.DebugToolsOpen,
+    false
+  );
   const [splitPanelSize, setSplitPanelSize] = useLocalStorage<number | undefined>(
     LocalStorageKey.DebugToolsSize,
     undefined
   );
-
-  // When the visibility of the debug tools changes, open/close the panel
-  useEffect(() => {
-    setSplitPanelOpen(splitPanelVisible);
-  }, [splitPanelVisible]);
 
   return (
     <NotificationsProvider>

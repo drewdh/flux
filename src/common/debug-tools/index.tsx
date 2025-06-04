@@ -1,5 +1,5 @@
 import SplitPanel from '@cloudscape-design/components/split-panel';
-import { useLocalStorage, useSessionStorage } from 'usehooks-ts';
+import { useSessionStorage } from 'usehooks-ts';
 import Tabs from '@cloudscape-design/components/tabs';
 import KeyValuePairs from '@cloudscape-design/components/key-value-pairs';
 import StatusIndicator, {
@@ -25,8 +25,12 @@ const statusLabel: Record<EventSubStatus, string> = {
 };
 
 export default function DebugTools() {
-  const [isVisible] = useLocalStorage(LocalStorageKey.DebugToolsVisible, false);
+  const [isVisible] = useSessionStorage(LocalStorageKey.DebugToolsEnabled, false);
   const [status] = useSessionStorage(LocalStorageKey.EventSubStatus, EventSubStatus.Closed);
+
+  if (!isVisible) {
+    return null;
+  }
 
   return (
     <SplitPanel

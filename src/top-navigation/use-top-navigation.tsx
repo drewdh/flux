@@ -1,6 +1,6 @@
 import { TopNavigationProps } from '@cloudscape-design/components/top-navigation';
 import { useQueryClient } from '@tanstack/react-query';
-import { useLocalStorage } from 'usehooks-ts';
+import { useSessionStorage } from 'usehooks-ts';
 
 import { Pathname } from 'utilities/routes';
 import useNavigateWithRef from 'common/use-navigate-with-ref';
@@ -18,8 +18,9 @@ enum MenuItemId {
 
 export default function useTopNavigation(): State {
   const openFeedback = useFeedback((state) => state.openFeedback);
-  const [debugToolsOpen, setDebugToolsOpen] = useLocalStorage<boolean>(
-    LocalStorageKey.DebugToolsVisible,
+  const [, setDebugToolsOpen] = useSessionStorage<boolean>(LocalStorageKey.DebugToolsOpen, false);
+  const [debugToolsEnabled, setDebugToolsEnabled] = useSessionStorage<boolean>(
+    LocalStorageKey.DebugToolsEnabled,
     false
   );
   const queryClient = useQueryClient();
@@ -72,7 +73,10 @@ export default function useTopNavigation(): State {
         } else if (id === MenuItemId.Feedback) {
           openFeedback();
         } else if (id === MenuItemId.DebugTools) {
-          setDebugToolsOpen((prev) => !prev);
+          setDebugToolsEnabled((prevEnabled) => {
+            setDebugToolsOpen(!prevEnabled);
+            return !prevEnabled;
+          });
         }
       },
       items: [
@@ -87,7 +91,7 @@ export default function useTopNavigation(): State {
         },
         {
           id: MenuItemId.DebugTools,
-          text: `${debugToolsOpen ? 'Hide' : 'View'} debug tools`,
+          text: `${debugToolsEnabled ? 'Hide' : 'Show'} debug tools`,
         },
         {
           id: MenuItemId.Feedback,

@@ -2,6 +2,7 @@ import '@cloudscape-design/global-styles/index.css';
 import StatusIndicator from '@cloudscape-design/components/status-indicator';
 import { Suspense } from 'react';
 import { Outlet, useLocation } from 'react-router';
+import { ScrollRestoration } from 'react-router-dom';
 
 import TopNavigation from '../top-navigation';
 import ErrorBoundary from 'common/error-boundary';
@@ -12,6 +13,7 @@ export default function App() {
 
   return (
     <>
+      <ScrollRestoration />
       <TopNavigation />
       <ErrorBoundary location={location}>
         <Suspense fallback={<Loading />}>

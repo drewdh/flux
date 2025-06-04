@@ -3,6 +3,7 @@ export enum LocalStorageKey {
   Language = 'i18nextLng',
   StreamLanguages = 'streamLanguages',
   ChatDrawerSize = 'drawerSize',
+  DebugToolsPreferences = 'debugToolsPreferences',
   DebugToolsSize = 'debugToolsSize',
   DebugToolsEnabled = 'debugToolsEnabled',
   DebugToolsOpen = 'debugToolsOpen',

@@ -33,11 +33,7 @@ export default function DebugTools() {
   }
 
   return (
-    <SplitPanel
-      closeBehavior={isVisible ? 'collapse' : 'hide'}
-      hidePreferencesButton
-      header="Debug tools"
-    >
+    <SplitPanel closeBehavior={isVisible ? 'collapse' : 'hide'} header="Debug tools">
       <Tabs
         tabs={[
           {

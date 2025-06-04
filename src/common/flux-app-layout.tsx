@@ -18,6 +18,10 @@ export default function FluxAppLayout(props: Props) {
     LocalStorageKey.DebugToolsSize,
     undefined
   );
+  const [splitPanelPreferences, setSplitPanelPreferences] =
+    useLocalStorage<AppLayoutProps.SplitPanelPreferences>(LocalStorageKey.DebugToolsPreferences, {
+      position: 'side',
+    });
 
   return (
     <NotificationsProvider>
@@ -26,12 +30,13 @@ export default function FluxAppLayout(props: Props) {
         headerSelector={topNavSelector}
         navigationHide
         notifications={<Flashbar items={notifications?.items ?? []} />}
+        onSplitPanelPreferencesChange={(event) => setSplitPanelPreferences(event.detail)}
         onSplitPanelResize={(event) => setSplitPanelSize(event.detail.size)}
         onSplitPanelToggle={(event) => setSplitPanelOpen(event.detail.open)}
         splitPanel={<DebugTools />}
         splitPanelOpen={splitPanelOpen}
         splitPanelSize={splitPanelSize}
-        splitPanelPreferences={{ position: 'bottom' }}
+        splitPanelPreferences={splitPanelPreferences}
       />
     </NotificationsProvider>
   );

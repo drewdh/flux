@@ -3,8 +3,9 @@
 $viewport-breakpoint-xs: 688px;
 
 .content {
-  padding: cs.$space-scaled-m cs.$space-container-horizontal;
+  padding-block: cs.$space-scaled-m;
 }
+.userName,
 .userInfo {
   display: flex;
   align-items: center;
@@ -27,12 +28,6 @@ $viewport-breakpoint-xs: 688px;
   font-size: cs.$font-size-body-s;
   line-height: cs.$line-height-body-s;
   column-gap: cs.$space-static-xxs;
-}
-.container {
-  border: 1px solid cs.$color-border-divider-default;
-  border-radius: cs.$border-radius-container;
-  background-color: cs.$color-background-container-content;
-  box-shadow: cs.$shadow-container-active;
 }
 @media screen and (max-width: $viewport-breakpoint-xs) {
   .container {

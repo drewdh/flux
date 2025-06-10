@@ -41,29 +41,25 @@ export default function TwitchComponent({}: Props) {
               <Header variant="h2" headingTagOverride="h1">
                 {streamData?.title ?? '-'}
               </Header>
-              <Box variant="div" color="text-status-inactive">
-                {streamData?.game_name ?? '-'}
-              </Box>
+              <div className={styles.metadata}>
+                <div>{streamData?.game_name ?? '-'}</div>
+                <div>{streamData?.viewer_count.toLocaleString()} viewers</div>
+                <div>{getStreamDuration(streamData.started_at)}</div>
+              </div>
             </SpaceBetween>
           )}
           <div className={styles.userInfo}>
             <Avatar userId={userData?.id} size="l" />
-            <Box variant="h4">{userData?.display_name}</Box>
-            {streamData && (
-              <Badge color="red">
-                <b>LIVE</b>
-              </Badge>
-            )}
-            {!streamData && <Badge color="grey">Offline</Badge>}
-          </div>
-          <div className={styles.metadata}>
-            {streamData && (
-              <>
-                <div>{streamData?.viewer_count.toLocaleString()} viewers</div>
-                <div>{getStreamDuration(streamData.started_at)}</div>
-              </>
-            )}
-            <div>{followerCount} followers</div>
+            <div>
+              <div className={styles.userName}>
+                <Box variant="h4">{userData?.display_name}</Box>
+                {streamData && <Badge color="red">LIVE</Badge>}
+                {!streamData && <Badge color="grey">Offline</Badge>}
+              </div>
+              <Box variant="small" color="text-status-inactive">
+                {followerCount} followers
+              </Box>
+            </div>
           </div>
           {streamData && (
             <div className={styles.tags}>{streamData.tags?.map((tag) => <div>#{tag}</div>)}</div>

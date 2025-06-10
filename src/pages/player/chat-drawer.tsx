@@ -43,14 +43,14 @@ export default function ChatDrawer({ error, isLoading, isReconnectError, message
               <h2>Chat</h2>
               <Box color="text-status-info" display="inline">
                 <Popover
-                  header="Beta feature"
+                  header="Preview feature"
                   size="medium"
                   triggerType="text"
-                  content="Chat is in beta. Some functionality may not work as expected."
+                  content="Only basic chat functionality is supported at this time."
                   renderWithPortal
                 >
                   <Box color="text-status-info" fontSize="body-s" fontWeight="bold">
-                    Beta
+                    Preview
                   </Box>
                 </Popover>
               </Box>

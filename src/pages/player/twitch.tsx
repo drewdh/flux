@@ -3,6 +3,7 @@ import { useParams } from 'react-router';
 import SpaceBetween from '@cloudscape-design/components/space-between';
 import Box from '@cloudscape-design/components/box';
 import Badge from '@cloudscape-design/components/badge';
+import Header from '@cloudscape-design/components/header';
 
 import styles from './styles.module.scss';
 import useTitle from 'utilities/use-title';
@@ -31,43 +32,42 @@ export default function TwitchComponent({}: Props) {
     followerData?.total.toLocaleString(undefined, { notation: 'compact' }) ?? '0';
 
   return (
-    <div className={styles.pageWrapper}>
+    <div className={styles.container}>
       <Player username={username} />
-      <div className={styles.container}>
-        {/* TODO: Use custom style to prevent wrapping */}
-        <SpaceBetween size="m" direction="horizontal">
-          <Avatar userId={userData?.id} size="l" />
-          <SpaceBetween size="xs">
-            <Box variant="h2">{streamData?.title}</Box>
-            <SpaceBetween size="xs" direction="horizontal">
-              <Badge color="red">LIVE</Badge>
-              <Box variant="span" color="text-status-error">
-                {/* @ts-ignore */}
-                {getStreamDuration(new Date(streamData?.started_at))}
-              </Box>
-              <Box color="text-status-inactive" variant="span">
-                &bull;
-              </Box>
-              <Box variant="span" color="text-status-inactive">
-                {streamData?.viewer_count.toLocaleString()} viewers
-              </Box>
-              <Badge color="grey">{streamData?.game_name}</Badge>
-            </SpaceBetween>
-            <SpaceBetween size="xs" direction="horizontal">
-              <Box color="text-status-inactive" variant="span">
-                {userData?.display_name}
-              </Box>
-              <Box color="text-status-inactive" variant="span">
-                &bull;
-              </Box>
-              <Box color="text-status-inactive" variant="span">
-                {followerCount} followers
+      <div className={styles.content}>
+        <SpaceBetween size="s">
+          {streamData && (
+            <SpaceBetween size="s">
+              <Header variant="h2" headingTagOverride="h1">
+                {streamData?.title ?? '-'}
+              </Header>
+              <Box variant="div" color="text-status-inactive">
+                {streamData?.game_name ?? '-'}
               </Box>
             </SpaceBetween>
-            {/* TODO: Remove these */}
-            {/*<StreamDetails broadcasterUserId={streamerUserId} />*/}
-            {/*<ProfileDetails userId={streamerUserId} />*/}
-          </SpaceBetween>
+          )}
+          <div className={styles.userInfo}>
+            <Avatar userId={userData?.id} size="l" />
+            <Box variant="h4">{userData?.display_name}</Box>
+            {streamData && (
+              <Badge color="red">
+                <b>LIVE</b>
+              </Badge>
+            )}
+            {!streamData && <Badge color="grey">Offline</Badge>}
+          </div>
+          <div className={styles.metadata}>
+            {streamData && (
+              <>
+                <div>{streamData?.viewer_count.toLocaleString()} viewers</div>
+                <div>{getStreamDuration(streamData.started_at)}</div>
+              </>
+            )}
+            <div>{followerCount} followers</div>
+          </div>
+          {streamData && (
+            <div className={styles.tags}>{streamData.tags?.map((tag) => <div>#{tag}</div>)}</div>
+          )}
         </SpaceBetween>
       </div>
     </div>
@@ -76,16 +76,12 @@ export default function TwitchComponent({}: Props) {
 
 interface Props {}
 
-function getStreamDuration(streamStartDate: string | undefined) {
-  if (!streamStartDate) {
-    return '-';
-  }
+function getStreamDuration(streamStartDate: string) {
   const now = new Date();
   const startTime = new Date(streamStartDate);
 
   // Calculate difference in milliseconds
-  // @ts-ignore
-  const diffMs = now - startTime;
+  const diffMs = now.getTime() - startTime.getTime();
 
   // Handle invalid dates or negative durations
   if (isNaN(diffMs) || diffMs < 0) {

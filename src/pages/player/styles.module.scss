@@ -18,16 +18,14 @@ $viewport-breakpoint-xs: 688px;
   font-family: cs.$font-family-base;
   align-items: center;
   color: cs.$color-text-status-inactive;
-}
-.metadata {
   font-size: cs.$font-size-body-m;
   line-height: cs.$line-height-body-m;
+}
+.metadata {
   column-gap: cs.$space-static-l;
 }
 .tags {
-  font-size: cs.$font-size-body-s;
-  line-height: cs.$line-height-body-s;
-  column-gap: cs.$space-static-xxs;
+  column-gap: cs.$space-static-xs;
 }
 @media screen and (max-width: $viewport-breakpoint-xs) {
   .container {

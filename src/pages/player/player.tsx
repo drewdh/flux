@@ -23,10 +23,8 @@ export default function Player({ username }: PlayerProps) {
   const [playbackStarted, setPlaybackStarted] = useState<boolean>(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const isWrapperHovered = useHover(wrapperRef as RefObject<HTMLDivElement>);
-  const [isInteractiveHovered, setIsInteractiveHovered] = useState<boolean>(false);
   const idleMs = 3000;
   const idleTimer = useRef<number>(NaN);
-  const overlayVisible = isInteractiveHovered || (isWrapperHovered && !isIdle) || paused;
 
   useEffect(() => {
     function logger(event: MessageEvent) {
@@ -55,7 +53,7 @@ export default function Player({ username }: PlayerProps) {
       channel: username,
       autoplay: true,
       muted: false,
-      controls: false,
+      controls: true,
     }),
     [username]
   );
@@ -69,17 +67,6 @@ export default function Player({ username }: PlayerProps) {
     } catch (_error) {
       console.error('Failed to enter fullscreen.');
     }
-  }
-
-  function Interactive({ children }: PropsWithChildren) {
-    return (
-      <div
-        onMouseEnter={() => setIsInteractiveHovered(true)}
-        onMouseLeave={() => setIsInteractiveHovered(false)}
-      >
-        {children}
-      </div>
-    );
   }
 
   function togglePlayback() {
@@ -169,59 +156,30 @@ export default function Player({ username }: PlayerProps) {
       ref={wrapperRef}
       className={clsx(styles.wrapper, document.fullscreenElement && styles.fullscreen)}
       onClick={togglePlayback}
-      onMouseMove={() => {
-        if (!isWrapperHovered) {
-          return;
-        }
-        clearIdle();
-        startIdleTimer();
-      }}
-      onMouseEnter={() => {
-        clearIdle();
-        startIdleTimer();
-      }}
-      onMouseLeave={() => {
-        setIsIdle(false);
-        clearTimeout(idleTimer.current);
-      }}
     >
       <div id="twitch-player" className={styles.player} />
-      <div className={clsx(styles.overlay, overlayVisible && styles.visible)} />
-      <div className={clsx(styles.background, overlayVisible && styles.visible)} />
-      <div
-        className={clsx(styles.controls, overlayVisible && styles.visible)}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <Interactive>
-          <IconButton onClick={togglePlayback} iconName={paused ? 'play' : 'pause'} />
-        </Interactive>
-        {!isAudioBlocked && (
-          <Interactive>
-            <IconButton onClick={toggleMuted} iconName={muted ? 'audio-off' : 'audio-full'} />
-          </Interactive>
-        )}
-        <div className={styles.endControls}>
-          <Interactive>
-            <IconButton
-              onClick={toggleFullscreen}
-              iconName={document.fullscreenElement ? 'exit-full-screen' : 'full-screen'}
-            />
-          </Interactive>
-        </div>
-      </div>
+      {/*<div className={clsx(styles.overlay, overlayVisible && styles.visible)} />*/}
+      {/*<div className={clsx(styles.background, overlayVisible && styles.visible)} />*/}
+      {/*<div*/}
+      {/*  className={clsx(styles.controls, overlayVisible && styles.visible)}*/}
+      {/*  onClick={(e) => e.stopPropagation()}*/}
+      {/*>*/}
+      {/*<IconButton onClick={togglePlayback} iconName={paused ? 'play' : 'pause'} />*/}
+      {/*{!isAudioBlocked && (*/}
+      {/*  <Interactive>*/}
+      {/*    <IconButton onClick={toggleMuted} iconName={muted ? 'audio-off' : 'audio-full'} />*/}
+      {/*  </Interactive>*/}
+      {/*)}*/}
+      {/*<div className={styles.endControls}>*/}
+      {/*  <Interactive>*/}
+      {/*    <IconButton*/}
+      {/*      onClick={toggleFullscreen}*/}
+      {/*      iconName={document.fullscreenElement ? 'exit-full-screen' : 'full-screen'}*/}
+      {/*    />*/}
+      {/*  </Interactive>*/}
+      {/*</div>*/}
+      {/*</div>*/}
     </div>
-  );
-}
-
-interface IconButtonProps {
-  onClick?: MouseEventHandler<HTMLButtonElement>;
-  iconName: IconProps.Name;
-}
-function IconButton({ onClick, iconName }: IconButtonProps) {
-  return (
-    <button onClick={onClick} className={styles.iconButton}>
-      <Icon name={iconName} size="inherit" />
-    </button>
   );
 }
 

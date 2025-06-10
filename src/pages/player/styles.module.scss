@@ -3,10 +3,7 @@
 $viewport-breakpoint-xs: 688px;
 
 .container {
-  padding: 16px 20px;
-  border-radius: 16px;
-  position: relative;
-  border: 1px solid cs.$color-border-divider-default;
+  padding: cs.$space-scaled-m cs.$space-container-horizontal;
 }
 .stats {
   display: flex;
@@ -27,6 +24,11 @@ $viewport-breakpoint-xs: 688px;
   &:hover {
     text-decoration: none !important;
   }
+}
+.pageWrapper {
+  border: 1px solid cs.$color-border-divider-default;
+  border-radius: cs.$border-radius-container;
+  background-color: cs.$color-background-container-content;
 }
 @media screen and (max-width: $viewport-breakpoint-xs) {
   .pageWrapper {

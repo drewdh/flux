@@ -4,7 +4,8 @@ $xxs: 16px;
 $xs: 18px;
 $s: 28px;
 $m: 36px;
-$l: 180px;
+$l: 48px;
+$xl: 180px;
 
 .avatar {
   border-radius: $m;
@@ -30,5 +31,10 @@ $l: 180px;
     border-radius: $l;
     width: $l;
     height: $l;
+  }
+  &.xl {
+    border-radius: $xl;
+    width: $xl;
+    height: $xl;
   }
 }

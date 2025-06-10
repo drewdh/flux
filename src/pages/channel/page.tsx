@@ -61,7 +61,7 @@ export default function ChannelPage() {
             headerVariant="high-contrast"
             header={
               <div className={styles.header}>
-                <Avatar userId={userData?.data[0].id ?? ''} size="l" />
+                <Avatar userId={userData?.data[0].id ?? ''} size="xl" />
                 <SpaceBetween size="xs">
                   <Box fontSize="display-l" fontWeight="bold">
                     {userData?.data[0].display_name}

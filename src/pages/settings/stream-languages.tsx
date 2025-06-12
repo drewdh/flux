@@ -1,108 +1,75 @@
 import Container from '@cloudscape-design/components/container';
 import Header from '@cloudscape-design/components/header';
-import { useState } from 'react';
-import SpaceBetween from '@cloudscape-design/components/space-between';
-import FormField from '@cloudscape-design/components/form-field';
+import { useMemo } from 'react';
 import Multiselect, { MultiselectProps } from '@cloudscape-design/components/multiselect';
-import Tiles from '@cloudscape-design/components/tiles';
-import Modal from '@cloudscape-design/components/modal';
-import Button from '@cloudscape-design/components/button';
-import Box from '@cloudscape-design/components/box';
 
 import { useSettings } from 'utilities/settings';
 
-enum TileOption {
-  All = 'all',
-  Custom = 'custom',
-}
-
 const languageOptions: MultiselectProps.Option[] = [
   { label: 'English', value: 'en' },
+  { label: 'Español', value: 'es' },
+  { label: 'Italiano', value: 'it' },
+  { label: 'Bahasa Indonesia', value: 'id' },
+  { label: 'Català', value: 'ca' },
+  { label: 'Dansk', value: 'da' },
   { label: 'Deutsch', value: 'de' },
+  { label: 'Français', value: 'fr' },
+  { label: 'Magyar', value: 'hu' },
+  { label: 'Nederlands', value: 'nl' },
+  { label: 'Norsk', value: 'no' },
+  { label: 'Polski', value: 'pl' },
+  { label: 'Português', value: 'pt' },
+  { label: 'Română', value: 'ro' },
+  { label: 'Slovenčina', value: 'sk' },
+  { label: 'Suomi', value: 'fi' },
+  { label: 'Svenska', value: 'sv' },
+  { label: 'Tagalog', value: 'tl' },
+  { label: 'Tiếng Việt', value: 'vi' },
+  { label: 'Türkçe', value: 'tr' },
+  { label: 'Čeština', value: 'cs' },
+  { label: 'Ελληνικά', value: 'el' },
+  { label: 'Български', value: 'bg' },
+  { label: 'Русский', value: 'ru' },
+  { label: 'Українська', value: 'uk' },
+  { label: 'العربية', value: 'ar' },
+  { label: 'بهاس ملايو', value: 'ms' },
+  { label: 'मानक हिन्दी', value: 'hi' },
+  { label: 'ภาษาไทย', value: 'th' },
+  { label: '中文', value: 'zh' },
+  { label: '日本語', value: 'ja' },
+  { label: '한국어', value: 'ko' },
+  { label: 'American Sign Language', value: 'ase' },
 ];
-
-const langMap: Record<string, string> = {
-  en: 'English',
-  de: 'Deutsch',
-};
 
 export default function StreamLanguages() {
   const { streamLanguages, setStreamLanguages } = useSettings();
-  const [modalVisible, setModalVisible] = useState<boolean>(false);
-  const [tileValue, setTileValue] = useState<TileOption>(TileOption.All);
-  const [selectedOptions, setSelectedOptions] = useState<ReadonlyArray<MultiselectProps.Option>>(
-    []
-  );
 
-  function edit() {
-    setSelectedOptions(languageOptions.filter((option) => streamLanguages.includes(option.value!)));
-    setTileValue(streamLanguages.length ? TileOption.Custom : TileOption.All);
-    setModalVisible(true);
-  }
-
-  function cancel() {
-    setModalVisible(false);
-  }
-
-  function save() {
-    setModalVisible(false);
-    if (tileValue === TileOption.All) {
-      setStreamLanguages([]);
-    } else {
-      setStreamLanguages(selectedOptions.map((option) => option.value!));
-    }
-  }
+  const selectedOptions = useMemo((): MultiselectProps.Options => {
+    return streamLanguages.map((lang) => {
+      const match = languageOptions.find((option) => option.value === lang);
+      return match || { label: lang, value: lang };
+    });
+  }, [streamLanguages]);
 
   return (
     <>
       <Container
-        header={<Header actions={<Button onClick={edit}>Edit</Button>}>Stream languages</Header>}
-      >
-        {streamLanguages.map((code) => langMap[code]).join(', ') || 'All languages'}
-      </Container>
-      <Modal
-        header="Stream languages"
-        onDismiss={cancel}
-        visible={modalVisible}
-        footer={
-          <Box float="right">
-            <SpaceBetween size="xs" direction="horizontal">
-              <Button variant="link" onClick={cancel}>
-                Cancel
-              </Button>
-              <Button variant="primary" onClick={save}>
-                Save
-              </Button>
-            </SpaceBetween>
-          </Box>
+        header={
+          <Header description="Streams in your preferred languages will be shown more frequently.">
+            Preferred stream languages
+          </Header>
         }
       >
-        <SpaceBetween size="l">
-          <Tiles
-            value={tileValue}
-            items={[
-              { label: 'Any', value: TileOption.All, description: 'Show streams in any language.' },
-              {
-                label: 'Custom',
-                value: TileOption.Custom,
-                description:
-                  'Only show streams in the selected languages. This does not affect followed streams.',
-              },
-            ]}
-            onChange={(e) => setTileValue(e.detail.value as TileOption)}
-          />
-          {tileValue === TileOption.Custom && (
-            <FormField label="Languages">
-              <Multiselect
-                placeholder="Choose languages"
-                selectedOptions={selectedOptions}
-                options={languageOptions}
-                onChange={(e) => setSelectedOptions(e.detail.selectedOptions)}
-              />
-            </FormField>
-          )}
-        </SpaceBetween>
-      </Modal>
+        {/* TODO: Consider adding ordering for weighting */}
+        <Multiselect
+          ariaLabel="Preferred stream languages"
+          filteringType="auto"
+          placeholder="Choose languages"
+          selectedOptions={selectedOptions}
+          options={languageOptions}
+          onChange={(e) => setStreamLanguages(e.detail.selectedOptions.map((opt) => opt.value!))}
+        />
+      </Container>
     </>
   );
 }

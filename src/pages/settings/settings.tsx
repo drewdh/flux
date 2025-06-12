@@ -4,6 +4,7 @@ import SpaceBetween from '@cloudscape-design/components/space-between';
 import FluxAppLayout from 'common/flux-app-layout';
 import useTitle from 'utilities/use-title';
 import Appearance from './appearance';
+import StreamLanguages from './stream-languages';
 
 export default function SettingsPage() {
   useTitle('Settings - Flux');
@@ -17,7 +18,7 @@ export default function SettingsPage() {
           <Header variant="h1" description="Edit Flux settings for this browser.">
             Settings
           </Header>
-          <SpaceBetween size="l">
+          <SpaceBetween size="xxl">
             <Appearance />
             {/* Most strings aren't translated, so let's not even show this for now. */}
             {/*<Language />*/}

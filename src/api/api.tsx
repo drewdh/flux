@@ -23,7 +23,6 @@ import {
   GetStreamsRequest,
   GetStreamsResponse,
   GetTopGamesRequest,
-  GetTopGamesResponse,
   GetUsersRequest,
   GetUsersResponse,
   SendChatMessageRequest,

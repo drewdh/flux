@@ -25,7 +25,7 @@ export default function Appearance() {
   return (
     <Container header={<Header>Appearance</Header>}>
       <RadioGroup
-        onChange={(e) => setAppearance(e.detail.value)}
+        onChange={(e) => setAppearance(e.detail.value as IAppearance)}
         value={appearance}
         items={items}
       />

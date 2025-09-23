@@ -74,14 +74,12 @@ export default function GameDetailPage() {
                         <Box color="text-status-inactive">
                           <SpaceBetween size="xxs" direction="horizontal">
                             {igdbData?.[0].first_release_date && (
-                              <>
-                                <span>
-                                  {format(igdbData?.[0].first_release_date * 1000, 'yyyy')}
-                                </span>
-                                &bull;
-                              </>
+                              <span>{format(igdbData?.[0].first_release_date * 1000, 'yyyy')}</span>
                             )}
-                            <span>{igdbData?.[0].genres[0].name}</span>
+                            {igdbData?.[0].genres?.[0].name && igdbData?.[0].first_release_date && (
+                              <>&bull;</>
+                            )}
+                            <span>{igdbData?.[0].genres?.[0].name}</span>
                           </SpaceBetween>
                         </Box>
                         <div style={{ maxWidth: '500px' }}>

@@ -5,8 +5,10 @@ import { useLocation } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
 
 import { interpolatePathname, Pathname } from 'utilities/routes';
-import { useGetStreams, useSearchChannels, useValidate } from '../api/api';
+import { useSearchCategories, useSearchChannels, useValidate } from '../api/api';
 import useNavigateWithRef from 'common/use-navigate-with-ref';
+
+const pageSize = 5;
 
 export default function useGlobalSearch(): State {
   const isNavigating = useRef<boolean>(false);
@@ -18,11 +20,8 @@ export default function useGlobalSearch(): State {
   const navigate = useNavigateWithRef();
 
   const { data: scopeData } = useValidate();
-  const { data: channelSearchData } = useSearchChannels({ query: debouncedQuery, pageSize: 5 });
-  const { data: streamData } = useGetStreams(
-    { userIds: channelSearchData?.pages.flatMap((page) => page.data).map((stream) => stream.id) },
-    { enabled: !!channelSearchData }
-  );
+  const { data: streamResults } = useSearchChannels({ query: debouncedQuery, pageSize });
+  const { data: gameResults } = useSearchCategories({ query: debouncedQuery, pageSize });
 
   useEffect(() => {
     isNavigating.current = false;
@@ -46,27 +45,37 @@ export default function useGlobalSearch(): State {
   }, []);
 
   const autosuggestOptions = useMemo((): AutosuggestProps.Options => {
-    if (!query) {
+    if (!query || !debouncedQuery) {
       return [];
     }
-    const formatter = new Intl.NumberFormat(undefined, { notation: 'compact' });
-    return (
-      channelSearchData?.pages
+    const options: Array<AutosuggestProps.Option | AutosuggestProps.OptionGroup> = [];
+    const gameOptions: AutosuggestProps.Option[] =
+      gameResults?.pages
         .flatMap((page) => page.data)
-        .filter((result) => result.is_live)
-        .map((result) => {
-          const thisStreamData = streamData?.pages
-            .flatMap((page) => page.data)
-            .find((stream) => stream.user_id === result.id);
-          const viewerCount = thisStreamData?.viewer_count ?? 0;
+        .map((game) => {
           return {
-            label: result.display_name,
-            tags: [`${formatter.format(viewerCount)} watching`, result.game_name],
-            value: result.display_name.toLowerCase(),
+            label: game.name,
+            value: `gameId:${game.id}`,
           };
-        }) ?? []
-    );
-  }, [query, channelSearchData?.pages, streamData?.pages]);
+        }) ?? [];
+    const streamOptions: AutosuggestProps.Option[] =
+      streamResults?.pages
+        .flatMap((page) => page.data)
+        .map((stream) => {
+          return {
+            label: stream.display_name,
+            labelTag: stream.game_name,
+            value: `login:${stream.broadcaster_login}`,
+          };
+        }) ?? [];
+    if (streamOptions.length) {
+      options.push({ label: 'Live channels', options: streamOptions });
+    }
+    if (gameOptions.length) {
+      options.push({ label: 'Categories', options: gameOptions });
+    }
+    return options;
+  }, [query, gameResults, streamResults]);
 
   function submitSearch(nextQuery?: string) {
     const finalQuery = nextQuery || query;
@@ -87,9 +96,16 @@ export default function useGlobalSearch(): State {
   }
 
   function handleSelect(event: NonCancelableCustomEvent<AutosuggestProps.SelectDetail>) {
-    const { value, selectedOption } = event.detail;
+    const { value: rawValue, selectedOption } = event.detail;
+    const delimiterIndex = rawValue.indexOf(':');
+    const type = rawValue.slice(0, delimiterIndex);
+    const value = rawValue.slice(delimiterIndex + 1);
     if (selectedOption) {
-      navigate(interpolatePathname(Pathname.Live, { user: value }));
+      const pathname =
+        type === 'gameId'
+          ? interpolatePathname(Pathname.Game, { gameId: value })
+          : interpolatePathname(Pathname.Live, { user: value });
+      navigate(pathname);
       setQuery('');
       isNavigating.current = true;
     } else {
@@ -122,7 +138,7 @@ export default function useGlobalSearch(): State {
 }
 
 interface State {
-  autosuggestRef: RefObject<AutosuggestProps.Ref>;
+  autosuggestRef: RefObject<AutosuggestProps.Ref | null>;
   autosuggestOptions: AutosuggestProps.Options;
   handleKeyDown: (event: CustomEvent<AutosuggestProps.KeyDetail>) => void;
   handleLoadItems: (event: NonCancelableCustomEvent<AutosuggestProps.LoadItemsDetail>) => void;

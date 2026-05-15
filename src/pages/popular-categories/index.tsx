@@ -6,12 +6,13 @@ import Button from '@cloudscape-design/components/button';
 
 import useTitle from 'utilities/use-title';
 import { useGetTopGames } from '../../api/api';
-import { interpolatePathname, Pathname } from 'utilities/routes';
+import { Pathname } from 'utilities/routes';
 import CategoryThumbnail from 'common/category-thumbnail';
 import FluxCards from 'common/cards';
 import { Game } from '../../api/twitch-types';
 import Empty from 'common/empty/empty';
 import { useFeedback } from '../../feedback/feedback-store';
+import { generatePath } from 'react-router-dom';
 
 export default function PopularCategories() {
   useTitle('Popular categories - Flux');
@@ -41,7 +42,7 @@ export default function PopularCategories() {
             fetchingNextPage={isFetchingNextPage}
             invalid={!!error}
             itemMapper={(game) => {
-              const href = interpolatePathname(Pathname.Game, { gameId: game.id });
+              const href = generatePath(Pathname.Game, { gameId: game.id });
               const imgSrc = game?.box_art_url.replace('{width}x{height}', '400x534');
               return <CategoryThumbnail imgSrc={imgSrc} href={href} title={game.name} />;
             }}

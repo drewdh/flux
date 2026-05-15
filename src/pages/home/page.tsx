@@ -3,6 +3,7 @@ import { Navigate, useLocation, useNavigate } from 'react-router';
 import SpaceBetween from '@cloudscape-design/components/space-between';
 import Header from '@cloudscape-design/components/header';
 import StatusIndicator from '@cloudscape-design/components/status-indicator';
+import { generatePath } from 'react-router-dom';
 
 import DhAppLayout from 'common/flux-app-layout';
 import { useGetFollowedStreams, useGetStreams, useGetTopGames } from '../../api/api';
@@ -13,7 +14,7 @@ import Empty from 'common/empty/empty';
 import styles from './styles.module.scss';
 import FullHeightContent from 'common/full-height-content';
 import CategoryThumbnail from 'common/category-thumbnail';
-import { interpolatePathname, Pathname } from 'utilities/routes';
+import { Pathname } from 'utilities/routes';
 import ButtonLink from 'common/button-link';
 
 export default function TwitchPage() {
@@ -79,7 +80,7 @@ export default function TwitchPage() {
           </SpaceBetween>
           <FlexibleColumnLayout columns={10} minColumnWidth={200}>
             {topGames?.map((game) => {
-              const href = interpolatePathname(Pathname.Game, { gameId: game.id });
+              const href = generatePath(Pathname.Game, { gameId: game.id });
               const imgSrc = game?.box_art_url.replace('{width}x{height}', '400x534');
               return <CategoryThumbnail imgSrc={imgSrc} href={href} title={game.name} />;
             })}

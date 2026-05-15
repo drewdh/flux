@@ -1,6 +1,8 @@
+import { generatePath } from 'react-router-dom';
+
 import { useSearchCategories } from '../../api/api';
 import { CategoryResult } from '../../api/twitch-types';
-import { interpolatePathname, Pathname } from 'utilities/routes';
+import { Pathname } from 'utilities/routes';
 import Empty from 'common/empty/empty';
 import FluxCards from 'common/cards';
 import CategoryThumbnail from 'common/category-thumbnail';
@@ -19,7 +21,7 @@ export default function CategoryResults({ query }: Props) {
       empty={<Empty header="No matches" />}
       fetchingNextPage={isFetchingNextPage}
       itemMapper={(item) => {
-        const href = interpolatePathname(Pathname.Game, { gameId: item.id });
+        const href = generatePath(Pathname.Game, { gameId: item.id });
         const imgSrc = item?.box_art_url.replace(/-\d+x\d+/g, `-${400}x${534}`);
         return <CategoryThumbnail imgSrc={imgSrc} href={href} title={item.name} />;
       }}

@@ -1,5 +1,6 @@
 import ContentLayout from '@cloudscape-design/components/content-layout';
 import { useParams } from 'react-router';
+import { generatePath } from 'react-router-dom';
 import StatusIndicator from '@cloudscape-design/components/status-indicator';
 import SpaceBetween from '@cloudscape-design/components/space-between';
 import Tabs from '@cloudscape-design/components/tabs';
@@ -13,7 +14,7 @@ import { useGetChannelFollowers, useGetUsers } from '../../api/api';
 import FullHeightContent from 'common/full-height-content';
 import Avatar from 'common/avatar';
 import useTitle from 'utilities/use-title';
-import { interpolatePathname, Pathname } from 'utilities/routes';
+import { Pathname } from 'utilities/routes';
 import styles from './styles.module.scss';
 import useNavigableTabs from 'utilities/use-navigable-tabs';
 
@@ -80,7 +81,7 @@ export default function ChannelPage() {
                 {
                   id: TabId.Details,
                   label: 'Details',
-                  href: interpolatePathname(Pathname.Profile, { login, tabId: TabId.Details }),
+                  href: generatePath(Pathname.Profile, { login, tabId: TabId.Details }),
                   content: (
                     <KeyValuePairs
                       columns={4}

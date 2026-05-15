@@ -2,9 +2,9 @@ import { RefObject, useEffect, useMemo, useRef, useState } from 'react';
 import { AutosuggestProps } from '@cloudscape-design/components/autosuggest';
 import { NonCancelableCustomEvent } from '@cloudscape-design/components';
 import { useLocation } from 'react-router';
-import { useSearchParams } from 'react-router-dom';
+import { generatePath, useSearchParams } from 'react-router-dom';
 
-import { interpolatePathname, Pathname } from 'utilities/routes';
+import { Pathname } from 'utilities/routes';
 import { useSearchCategories, useSearchChannels, useValidate } from '../api/api';
 import useNavigateWithRef from 'common/use-navigate-with-ref';
 
@@ -103,8 +103,8 @@ export default function useGlobalSearch(): State {
     if (selectedOption) {
       const pathname =
         type === 'gameId'
-          ? interpolatePathname(Pathname.Game, { gameId: value })
-          : interpolatePathname(Pathname.Live, { user: value });
+          ? generatePath(Pathname.Game, { gameId: value })
+          : generatePath(Pathname.Live, { user: value });
       navigate(pathname);
       setQuery('');
       isNavigating.current = true;

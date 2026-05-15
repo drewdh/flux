@@ -7,10 +7,11 @@ import Icon from '@cloudscape-design/components/icon';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBadgeCheck, faSignalStream } from '@fortawesome/pro-solid-svg-icons';
 import { spaceScaledL } from '@cloudscape-design/design-tokens';
+import { generatePath } from 'react-router-dom';
 
 import { ChannelResult } from '../../api/twitch-types';
 import { useGetStreamByUserLogin, useGetUsers } from '../../api/api';
-import { interpolatePathname, Pathname } from 'utilities/routes';
+import { Pathname } from 'utilities/routes';
 import FluxImage from 'common/flux-image';
 
 export default function Result({ channel }: Props) {
@@ -18,7 +19,7 @@ export default function Result({ channel }: Props) {
   const { data: userData } = useGetUsers({ ids: [channel.id] });
   const streamData = data?.data[0];
   const imgSrc = streamData?.thumbnail_url.replace('{width}x{height}', '720x404');
-  const href = interpolatePathname(Pathname.Live, { user: channel.broadcaster_login });
+  const href = generatePath(Pathname.Live, { user: channel.broadcaster_login });
 
   return (
     <div style={{ display: 'flex', gap: spaceScaledL }}>
@@ -47,9 +48,7 @@ export default function Result({ channel }: Props) {
           {Number(streamData?.viewer_count ?? 0).toLocaleString(undefined, { notation: 'compact' })}{' '}
           watching
         </Box>
-        <InternalLink
-          href={interpolatePathname(Pathname.Profile, { login: channel.broadcaster_login })}
-        >
+        <InternalLink href={generatePath(Pathname.Profile, { login: channel.broadcaster_login })}>
           <Box color="text-body-secondary" fontSize="body-s" padding={{ bottom: 'm' }}>
             <SpaceBetween size="xs" alignItems="center" direction="horizontal">
               <Avatar userId={channel.id} size="s" />

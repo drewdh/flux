@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import Badge from '@cloudscape-design/components/badge';
-import Icon from '@cloudscape-design/components/icon';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSignalStream } from '@fortawesome/pro-solid-svg-icons';
 import { spaceScaledXs } from '@cloudscape-design/design-tokens';
 
 function preloadImage(src: string) {
@@ -47,9 +44,7 @@ export default function FluxImage({ src, isLive, ...rest }: Props) {
               pointerEvents: 'none',
             }}
           >
-            <Badge color="red">
-              <Icon svg={<FontAwesomeIcon icon={faSignalStream} />} /> LIVE
-            </Badge>
+            <Badge color="red">LIVE</Badge>
           </div>
         )}
       </div>

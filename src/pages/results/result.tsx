@@ -4,8 +4,6 @@ import Box from '@cloudscape-design/components/box';
 import Avatar from 'common/avatar';
 import InternalLink from 'common/internal-link';
 import Icon from '@cloudscape-design/components/icon';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBadgeCheck, faSignalStream } from '@fortawesome/pro-solid-svg-icons';
 import { spaceScaledL } from '@cloudscape-design/design-tokens';
 import { generatePath } from 'react-router-dom';
 
@@ -54,18 +52,12 @@ export default function Result({ channel }: Props) {
               <Avatar userId={channel.id} size="s" />
               <SpaceBetween direction="horizontal" size="xxs" alignItems="center">
                 {channel.display_name}
-                {userData?.data[0].broadcaster_type === 'partner' && (
-                  <Icon svg={<FontAwesomeIcon icon={faBadgeCheck} color="#a970ff" />} />
-                )}
+                {userData?.data[0].broadcaster_type === 'partner' && <Icon name="check" />}
               </SpaceBetween>
             </SpaceBetween>
           </Box>
         </InternalLink>
-        {channel.is_live && (
-          <Badge color="red">
-            <Icon svg={<FontAwesomeIcon icon={faSignalStream} />} /> LIVE
-          </Badge>
-        )}
+        {channel.is_live && <Badge color="red">LIVE</Badge>}
       </div>
     </div>
   );

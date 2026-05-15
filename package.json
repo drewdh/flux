@@ -23,8 +23,8 @@
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-keyed-flatten-children": "^3.0.0",
-    "react-router": "^6.8.1",
-    "react-router-dom": "^6.8.1",
+    "react-router": "^6.30.3",
+    "react-router-dom": "^6.30.3",
     "sass": "^1.58.0",
     "typescript": "^4.9.5",
     "usehooks-ts": "^3.1.1",
@@ -69,6 +69,6 @@
     "browserslist-to-esbuild": "^2.1.1",
     "prettier": "3.1.0",
     "source-map-explorer": "^2.5.3",
-    "vite": "^5.4.11"
+    "vite": "^5.4.21"
   }
 }

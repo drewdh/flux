@@ -28,12 +28,22 @@ export default function useGlobalSearch(): State {
   }, [location]);
 
   useEffect(() => {
+    function isTypingContext(event: KeyboardEvent) {
+      const { target } = event;
+      if (!target || !(target instanceof HTMLElement)) return false;
+      const tag = target.tagName;
+      return (
+        tag === 'INPUT' ||
+        tag === 'TEXTAREA' ||
+        tag === 'SELECT' ||
+        target.isContentEditable ||
+        target.closest('[contenteditable="true"]') !== null
+      );
+    }
+
     function eventListener(event: KeyboardEvent) {
+      if (isTypingContext(event)) return;
       if (event.key === '/') {
-        // Don't trigger shortcut if body isn't focused
-        if (document.activeElement?.tagName !== 'BODY') {
-          return;
-        }
         event.preventDefault();
         autosuggestRef.current!.focus();
       }

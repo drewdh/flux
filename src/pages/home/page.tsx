@@ -74,7 +74,7 @@ export default function TwitchPage() {
             <Header>Popular categories</Header>
             <ButtonLink
               iconName="angle-right"
-              ariaLabel="Show more"
+              ariaLabel="View all popular categories"
               href={Pathname.PopularCategories}
             />
           </SpaceBetween>

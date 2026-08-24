@@ -7,10 +7,6 @@
   }
 }
 
-.link {
-  text-decoration: none;
-}
-
 .imageBlur {
   position: absolute;
   left: 0;
@@ -22,6 +18,7 @@
 }
 
 .container {
+  cursor: pointer;
   display: flex;
   position: relative;
   border-radius: 16px;
@@ -39,7 +36,7 @@
     transition: all cs.$motion-duration-responsive cs.$motion-easing-responsive;
   }
 
-  &:hover:after {
+  &.focused:after {
     background-color: rgba(255, 255, 255, 0.1);
   }
 
@@ -69,6 +66,7 @@
   }
 
   .title {
+    color: cs.$color-text-body-default;
     display: -webkit-box;
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;

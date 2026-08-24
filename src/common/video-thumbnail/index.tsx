@@ -56,6 +56,7 @@ export default function VideoThumbnail({ live, stream, variant = 'normal' }: Vid
           <div className={styles.content}>
             <Link
               to={videoHref}
+              title={stream.title}
               className={styles.streamTitle}
               onClick={(e) => e.stopPropagation()}
             >
